@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="${project.name}">
+    <bannerLeft>
+        <name>${project.name}</name>
+        <src>${mixed-image-location}</src>
+        <href>index.html</href>
+    </bannerLeft>
+    <body>
+        <links>
+            <item name="DANS" href="http://www.dans.knaw.nl/"/>
+            <item name="KNAW" href="http://www.knaw.nl"/>
+            <item name="NWO" href="http://www.nwo.nl"/>
+            <item name="MIXED" href="http://mixed.dans.knaw.nl/"/>
+        </links>
+
+        <menu name="Navigation" inheritance="none">
+            <item name="${project.parent.parent.name}" href="../../index.html"/>
+            <item name="${project.parent.name}" href="../index.html"/>
+        </menu>
+
+        <menu name="${project.name}" inheritance="none">
+            <item name="Overview" href="index.html"/>
+        </menu>
+
+        <menu ref="modules"/>
+
+        <menu ref="reports"/>
+    </body>
+</project>
