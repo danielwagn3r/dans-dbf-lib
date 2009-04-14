@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="${project.name}">
     <bannerLeft>
-        <name>${project.name}</name>
-        <src>${mixed-image-location}</src>
-        <href>index.html</href>
+        <src>images/logos/dans_dbf.gif</src>
     </bannerLeft>
+
     <body>
         <links>
             <item name="DANS" href="http://www.dans.knaw.nl/"/>
-            <item name="KNAW" href="http://www.knaw.nl"/>
-            <item name="NWO" href="http://www.nwo.nl"/>
-            <item name="MIXED" href="http://mixed.dans.knaw.nl/"/>
         </links>
 
-        <menu name="Navigation" inheritance="none">
-            <item name="${project.parent.parent.name}" href="../../index.html"/>
-            <item name="${project.parent.name}" href="../index.html"/>
-        </menu>
-
-        <menu name="${project.name}" inheritance="none">
+        <menu name="Documentation" inheritance="none">
             <item name="Overview" href="index.html"/>
+            <item name="References" href="references.html" />
+            <item name="Javadocs" href="http://dans-dbf-lib.sourceforge.net/apidocs/index.html" />
         </menu>
 
-        <menu ref="modules"/>
+        <menu name="Sourceforge Project" >
+            <item name="Overview/Download" href="https://sourceforge.net/projects/dans-dbf-lib/" />
+            <item name="Download" href="https://sourceforge.net/project/showfiles.php?group_id=258772" />
+            <item name="Forums" href="https://sourceforge.net/forum/?group_id=258772" />
+            <item name="Issue Tracking" href="https://sourceforge.net/tracker/?group_id=258772" />
+        </menu>
 
-        <menu ref="reports"/>
+        <menu ref="reports" />
     </body>
 </project>

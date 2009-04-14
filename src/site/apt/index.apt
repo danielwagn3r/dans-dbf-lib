@@ -1,35 +1,10 @@
-DANS DBF Library
+Welcome
 
-    Library to read and write xBase DBF files.
+    DANS DBF Library is a Java library for reading and writing xBase database files.
+xBase is the name commonly used for dBase and its dialects.  The central file in
+these databases is the DBF file or DataBase File, hence the name of this library.
 
-What Is DBF?
-
-    DBF is the file format of dBase databases.  Many other products have also used it to store their
-data.   Additional files are used to store a complete xBase database (such as index files etc), but they
-are outside the scope of this project.
-
-What Version Of DBF?
-
-    This converter step supports (will support) version ... of the DBF format (to be decided).
-
-Open Source Java Libraries For Reading DBF
-
-    Several open source (Java) libraries exist to read and write DBF files.  None of these seemed to be
-mature products.  For reference and inspiration see the following links:
-
-    * {{{https://javadbf.dev.java.net/}JavaDBF (br.com.softsite.sfc.tini.persistence)}} (last update 2005)
-
-    * {{{http://sarovar.org/projects/javadbf/}Another JavaDBF (com.linuxense.javadbf)}} (last update 2004)
-
-    * {{{http://code.google.com/p/java-dbf/}JDBF (com.hexiong.jdbf)}} (last update 2008, but looks <very> experimental)
-
-    * {{{http://www.codeplex.com/fastdbf/}A C# library, but may be ported}}
-
-
-References
-
-    * {{{http://en.wikipedia.org/wiki/Dbf#File_formats}Wikipedia article on dBase}}
-
-    * {{{http://www.clicketyclick.dk/databases/xbase/format/index.html}DBF file format description}}
-
-    * {{{http://www.dbase.com/knowledgebase/int/db7_file_fmt.htm}DBF version 7 format description}}
+    DANS is a Dutch electronic archiving institute under the auspices of Royal
+Netherlands Academy of Arts and Sciences (KNAW).  It is the initiator of this
+project.  DANS is making this library available under the GNU Public Licence. For
+more information about DANS, see {{{http://www.dans.knaw.nl/en}the DANS website}}.
