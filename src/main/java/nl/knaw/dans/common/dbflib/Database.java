@@ -46,7 +46,7 @@ public class Database
      * file represents a regular file and not a directory, an <tt>IllegalArgumentException</tt>
      * is thrown.
      *
-     * @param aDbDirectory a <tt>java.io.File</tt> object pointing to the directory containing
+     * @param aDatabaseDirectory a <tt>java.io.File</tt> object pointing to the directory containing
      *   the database
      */
     public Database(final File aDatabaseDirectory)

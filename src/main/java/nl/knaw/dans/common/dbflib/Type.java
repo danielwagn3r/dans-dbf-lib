@@ -21,17 +21,38 @@ package nl.knaw.dans.common.dbflib;
 
 
 /**
- * Enumeration of the field types available in an xBase database.
+ * Enumeration of the field types available in an xBase database.  xBase types are
+ * mapped to Java types as specified in the enumarated constant descriptions below.
  *
  * @author Jan van Mansum
  * @author Vesa Åkerman
  */
 public enum Type
 {
+    /**
+     * Numeric value, mapped to <tt>java.lang.Double</tt>.
+     */
     NUMBER('N'),
+
+    /**
+     * String values, mapped to <tt>java.lang.String</tt>.
+     */
     CHARACTER('C'),
+
+    /**
+     * Logical, or boolean value, mapped to <tt>java.lang.Boolean</tt>.
+     */
     LOGICAL('L'),
+
+    /**
+     * Date value, mapped to <tt>java.util.Date</tt>.  Note that in xBase the date does <em>not</em> have a
+     * time component.  The time related fields of <tt>java.util.Date</tt> are therefore set to 0.
+     */
     DATE('D'),
+
+    /**
+     * A String value (without length limitations), mapped to <tt>java.lang.String</tt>.
+     */
     MEMO('M');
 
     private final char code;

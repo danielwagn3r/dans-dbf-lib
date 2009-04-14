@@ -25,13 +25,14 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 /**
+ * Represents a memo (.DBT) file.
  *
  * @author Vesa Åkerman
  */
 class Memo
 {
-    static private final int MEMO_BLOCK_LENGTH = 512;
-    static private final int OFFSET_VERSION = 16;
+    private static final int MEMO_BLOCK_LENGTH = 512;
+    private static final int OFFSET_VERSION = 16;
     private File memoFile = null;
     private RandomAccessFile raf = null;
     private int nextAvailableBlock = 0;
@@ -40,7 +41,7 @@ class Memo
     /**
      * Creates a new Memo object.
      *
-     * @param aMemoFile DOCUMENT ME!
+     * @param aMemoFile the <tt>
      */
     public Memo(File aMemoFile)
     {
@@ -127,9 +128,10 @@ class Memo
     }
 
     /**
-     * Reads a string of characters from memo file
+     * Reads a string of characters from memo file.
+     * 
      * @param aIndex blocknumber  where the
-     * string of characters starts
+     *          string of characters starts
      *
      */
     public String readMemo(int aIndex)
@@ -157,7 +159,7 @@ class Memo
     }
 
     /**
-     * Writes a string of characters to memo file
+     * Writes a string of characters to memo file.
      */
     public int writeMemo(String aMemo)
                   throws IOException
@@ -187,7 +189,7 @@ class Memo
     }
 
     /*
-    * Writes a header for a memo file
+    * Writes a header for a memo file.
     */
     private void writeMemoHeader()
                           throws IOException

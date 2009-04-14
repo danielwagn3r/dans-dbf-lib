@@ -43,7 +43,8 @@ public class Record
 
     /**
      * Returns the value of the specified field in the record.  The type of the
-     * object returned depends on the type of
+     * object returned depends on the type of data in the field.  For the mappings
+     * of xBase types to Java types see {@link Type}.
      *
      * @param aFieldName the name of the field for which to retrieve the value
      *
