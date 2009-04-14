@@ -8,3 +8,4 @@ these databases is the DBF file or DataBase File, hence the name of this library
 Netherlands Academy of Arts and Sciences (KNAW).  It is the initiator of this
 project.  DANS is making this library available under the GNU Public Licence. For
 more information about DANS, see {{{http://www.dans.knaw.nl/en}the DANS website}}.
+This library is used by DANS for the {{{http://mixed.dans.knaw.nl}MIXED Project}}.
