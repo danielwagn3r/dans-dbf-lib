@@ -20,8 +20,8 @@
 package nl.knaw.dans.common.dbflib;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,56 +43,74 @@ public class Database
     /**
      * Creates a new Database object.  A file representing the database directory
      * must be provided.  If the directory does not exist, it is created.  If the
-     * file represents a regular file and not a directory, an <tt>IllegalArgumentException</tt>
-     * is thrown.
+     * file represents a regular file and not a directory, throws an <tt>IllegalArgumentException</tt>.
+     * <p>
+     * All tables that exist in the database directory are added as <tt>Table</tt> objects and can be
+     * retrieved by {@link #getTable(java.lang.String) }
      *
      * @param aDatabaseDirectory a <tt>java.io.File</tt> object pointing to the directory containing
      *   the database
      */
     public Database(final File aDatabaseDirectory)
     {
-        if ((aDatabaseDirectory == null) || aDatabaseDirectory.isFile())
+        if (aDatabaseDirectory == null || aDatabaseDirectory.isFile())
         {
             throw new IllegalArgumentException("Database must be a directory");
         }
 
-        databaseDirectory = aDatabaseDirectory;
-    }
+        if (! aDatabaseDirectory.exists())
+        {
+            aDatabaseDirectory.mkdirs();
+        }
 
-    /**
-     * Returns the <tt>java.util.Set</tt> of table Names in a given directory.
-     * The names include the extension.  Multiple invocations return different objects.
-     * Although these objects are not immutable, they cannot be used to change the database.
-     *
-     * @return a set of table names
-     */
-    public Set<String> getTableNames()
-    {
-        final String[] fileNames = databaseDirectory.list();
-        final Set tableNames = new HashSet();
+        databaseDirectory = aDatabaseDirectory;
+
+        final String[] fileNames = aDatabaseDirectory.list();
 
         for (String fileName : fileNames)
         {
             if (fileName.toLowerCase().endsWith(".dbf") && (fileName.length() > ".dbf".length()))
             {
-                tableNames.add(fileName);
+                addTable(fileName);
             }
         }
-
-        return tableNames;
     }
 
     /**
-     * Returns a {@link Table} object representing the table with the specified name.
-     * A <tt>Database</tt> object always returns the same object for the same table.
-     * The underlying table file does not have to exist.  It can be created when the
-     * table if opened with {@link Table#open(boolean) }.
+      * Returns an unmodifiable <tt>java.util.Set</tt> of table names.
+      *
+      * @return a <tt>java.util.Set</tt> of <tt>Table</tt> objects.
+      */
+    public Set<String> getTableNames()
+    {
+        return Collections.unmodifiableSet(tableMap.keySet());
+    }
+
+    /**
+     * Returns the <tt>Table</tt> object with the specified name of <tt>null</tt>
+     * if it has not been added yet.
+     *
+     * @param aName the name of the table, including extension
+     * @return a <tt>Table</tt> object
+     */
+    public Table getTable(final String aName)
+    {
+        return tableMap.get(aName);
+    }
+
+    /**
+     * Adds a new {@link Table} object to the set of <tt>Table</tt>s maintained
+     * by this <tt>Database</tt> object and returns it.  If a <tt>Table</tt>
+     * object with <tt>aName</tt> already exists, it is returned.
+     * <p>
+     * Note that the actual table file (the .DBF file) may or may not exists.  To
+     * create a new table on disk, see {@link Table#open(boolean) }.
      *
      * @param aName the name of the table
      *
      * @return a <tt>Table</tt> object
      */
-    public Table getTable(final String aName)
+    public Table addTable(final String aName)
     {
         Table table = tableMap.get(aName);
 
@@ -103,5 +121,33 @@ public class Database
         }
 
         return table;
+    }
+
+    /**
+     * Removes a {@link Table} object from the list of <tt>Table</tt> objects maintained
+     * by this <tt>Database</tt> object.
+     * <p>
+     * Note that the actual table file (the .DBF file) is not deleted by removing the
+     * table object.  To delete a file on disk, see {@link Table#delete() }.
+     *
+     * @param aName the name of the table to remove
+     */
+    public void removeTable(final String aName)
+    {
+        tableMap.remove(aName);
+    }
+
+    /**
+     * Removes a {@link Table} object from the list of <tt>Table</tt> objects maintained
+     * by this <tt>Database</tt> object.
+     * <p>
+     * Note that the actual table file (the .DBF file) is not deleted by removing the
+     * table object.  To delete a file on disk, see {@link Table#delete() }.
+     *
+     * @param aTable the table to remove
+     */
+    public void removeTable(final Table aTable)
+    {
+        tableMap.remove(aTable.getName());
     }
 }

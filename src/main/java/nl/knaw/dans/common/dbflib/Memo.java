@@ -129,7 +129,7 @@ class Memo
 
     /**
      * Reads a string of characters from memo file.
-     * 
+     *
      * @param aIndex blocknumber  where the
      *          string of characters starts
      *

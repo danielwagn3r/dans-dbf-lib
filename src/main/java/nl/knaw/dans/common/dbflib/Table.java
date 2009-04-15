@@ -19,14 +19,11 @@
  */
 package nl.knaw.dans.common.dbflib;
 
-import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,36 +42,11 @@ import java.util.NoSuchElementException;
  */
 public class Table
 {
-    private static final int OFFSET_NUMBER_OF_RECORDS = 4;
-    private static final long OFFSET_LENGTH_OF_RECORDS = 10;
-    private static final long OFFSET_FIELD_DESCRIPTOR_ARRAY = 32;
-    private static final int OFFSET_FIELD_TYPE = 11;
-    private static final int OFFSET_FIELD_LENGTH = 16;
-    private static final int OFFSET_DECIMAL_COUNT = 17;
-    private static final int OFFSET_WORK_AREA_ID = 20;
-    private static final int LENGTH_FIELD_DESCRIPTOR = 32;
-    private static final int LENGTH_FIELD_NAME = 11;
     private static final int LENGTH_RECORD_DATE = 8;
-    private static final int LENGTH_TABLE_HEADER = 32;
-    private static final int LENGTH_DELETE_FLAG = 1;
     private static final int LENGTH_MEMO_FIELD = 10;
-    private static final int LENGTH_FIELD_DESCRIPTOR_ARRAY_TERMINATOR = 1;
     private static final int RECORD_DELETED = 0x2A;
     private static final int EOF_MARKER = 0x1A;
-    static private final int RECORD_VALID = 0x20;
-    private static final Map<Character, Type> typeMap = new HashMap<Character, Type>();
-
-    static
-    {
-        /*
-         * Maps the type characters from the .DBF file to type enum constants.
-         */
-        for (Type t : Type.values())
-        {
-            typeMap.put(t.getCode(),
-                        t);
-        }
-    }
+    private static final int RECORD_VALID = 0x20;
 
     private class RecordIterator
         implements Iterator<Record>
@@ -123,14 +95,9 @@ public class Table
     }
 
     private final File tableFile;
+    private final DbfHeader header = new DbfHeader();
     private Memo memo = null;
-    private List<Field> fields = new ArrayList<Field>();
     private RandomAccessFile raFile = null;
-    private int version;
-    private Date lastUpdated;
-    private int headerLength = 0;
-    private int nrRecords;
-    private int recordLength;
 
     /**
      * Creates a new Table object.  A <tt>java.io.File</tt> object representing the .DBF file
@@ -158,11 +125,11 @@ public class Table
      * @param version DOCUMENT ME!
      * @param aFields DOCUMENT ME!
      */
-    public Table(final File aTableFile, int version, final List<Field> aFields)
+    public Table(final File aTableFile, int aVersion, final List<Field> aFields)
     {
         this(aTableFile);
-        this.version = version;
-        fields = new ArrayList<Field>(aFields);
+        header.setVersion(aVersion);
+        header.setFields(aFields);
     }
 
     /**
@@ -195,12 +162,12 @@ public class Table
             }
 
             raFile = new RandomAccessFile(tableFile, "rw");
-            writeHeader();
+            header.writeAll(raFile);
         }
         else if (tableFile.exists())
         {
             raFile = new RandomAccessFile(tableFile, "rw");
-            readHeader();
+            header.readAll(raFile);
         }
         else
         {
@@ -263,11 +230,11 @@ public class Table
      *
      * @return the last modified date of the table
      */
-    public Date getLastUpdated()
+    public Date getLastModifiedDate()
     {
         checkOpen();
 
-        return lastUpdated;
+        return header.getLastModifiedDate();
     }
 
     /**
@@ -290,7 +257,7 @@ public class Table
      */
     public List<Field> getFields()
     {
-        return new ArrayList<Field>(fields);
+        return header.getFields();
     }
 
     /**
@@ -305,24 +272,24 @@ public class Table
     }
 
     /**
-     * DOCUMENT ME!
+     * Adds a record to the database.
      *
-     * @param aRecord DOCUMENT ME!
+     * @param aRecord the record to add.
      *
-     * @throws IOException DOCUMENT ME!
+     * @throws IOException if the underlying file threw an I/O exception
      */
     public void addRecord(final Record aRecord)
                    throws IOException, CorruptedTableException
     {
         String name = null;
 
-        raFile.seek(headerLength + (nrRecords * recordLength));
+        raFile.seek(header.getLength() + (header.getRecordCount() * header.getRecordLength()));
 
         // write record deleted tag
         raFile.writeByte(RECORD_VALID);
 
         // write record contents
-        for (Field field : fields)
+        for (Field field : header.getFields())
         {
             name = field.getName().trim();
 
@@ -336,8 +303,9 @@ public class Table
                     break;
 
                 case CHARACTER:
-                    writeString((String) aRecord.getValue(name),
-                                field.getLength());
+                    Util.writeString(raFile,
+                                     (String) aRecord.getValue(name),
+                                     field.getLength());
 
                     break;
 
@@ -354,7 +322,7 @@ public class Table
                     }
                     else
                     {
-                        writeString("          ", LENGTH_RECORD_DATE);
+                        writeSpaces(LENGTH_RECORD_DATE);
                     }
 
                     break;
@@ -373,11 +341,9 @@ public class Table
 
         // rewrite EOF byte
         raFile.writeByte(0x1a);
-
-        // increment number of records in the header
-        nrRecords++;
-        raFile.seek(OFFSET_NUMBER_OF_RECORDS);
-        raFile.writeInt(Util.changeEndianness(nrRecords));
+        raFile.seek(DbfHeader.OFFSET_RECORD_COUNT);
+        header.setRecordCount(header.getRecordCount() + 1);
+        header.writeRecordCount(raFile);
     }
 
     private void checkOpen()
@@ -388,124 +354,10 @@ public class Table
         }
     }
 
-    private void readHeader()
-                     throws IOException, CorruptedTableException
-    {
-        version = raFile.read();
-
-        if (version == -1)
-        {
-            throw new EOFException("Input file is empty");
-        }
-
-        readLastUpdated();
-
-        nrRecords = Util.changeEndianness(raFile.readInt());
-        headerLength = Util.changeEndianness((short) raFile.readUnsignedShort());
-        recordLength = Util.changeEndianness((short) raFile.readUnsignedShort());
-
-        raFile.seek(OFFSET_FIELD_DESCRIPTOR_ARRAY);
-
-        // read field definitions
-        final int nrBytesFieldDescriptorArray =
-            headerLength - LENGTH_TABLE_HEADER - LENGTH_FIELD_DESCRIPTOR_ARRAY_TERMINATOR;
-
-        if ((nrBytesFieldDescriptorArray % LENGTH_FIELD_DESCRIPTOR) != 0)
-        {
-            throw new CorruptedTableException("Number of field descriptions in file could not be calculated.");
-        }
-
-        int numberOfFields = (int) nrBytesFieldDescriptorArray / LENGTH_FIELD_DESCRIPTOR;
-
-        for (int i = 0; i < numberOfFields; ++i)
-        {
-            fields.add(readNextField());
-        }
-    }
-
-    private void readLastUpdated()
-                          throws IOException
-    {
-        /*
-         * The number of years in the last modified date is actually the number of
-         * years since 1900. (See also comment below.)
-         */
-        int year = raFile.read() + 1900;
-
-        /*
-         * DBase III+ (and presumable II) has a Year 2000 bug.  It stores the year
-         * as simply the last two digits of the actual year.  DBFs created after 1999
-         * will therefore have the wrong date.  To get around this, we add 100 for
-         * all DBFs seemingly created before 1980 (when dBase II was launched).
-         */
-        if (year < 1980)
-        {
-            year += 100;
-        }
-
-        int month = raFile.read();
-        int day = raFile.read();
-
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.MONDAY, month - 1 /* Calendar's months are zero-based */        );
-        cal.set(Calendar.DAY_OF_MONTH, day);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-
-        lastUpdated = cal.getTime();
-    }
-
-    private Field readNextField()
-                         throws IOException
-    {
-        final String name = readNextString(LENGTH_FIELD_NAME);
-        final char typeChar = (char) raFile.read();
-
-        raFile.skipBytes(OFFSET_FIELD_LENGTH - OFFSET_FIELD_TYPE - 1);
-
-        final int length = raFile.readUnsignedByte();
-
-        final Type type = typeMap.get(typeChar);
-
-        // TODO: What if type == null ?
-        // read amount bytes given in length and write to log file?
-        final int decimalCount = raFile.readUnsignedByte();
-
-        raFile.skipBytes(LENGTH_FIELD_DESCRIPTOR - OFFSET_DECIMAL_COUNT - 1);
-
-        return new Field(name, type, length, decimalCount);
-    }
-
-    private String readNextString(int maxLength)
-                           throws IOException
-    {
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        int c = 0;
-        int read = 1; // at least one byte will be read
-
-        while (((c = raFile.read()) != 0) && read < maxLength)
-        {
-            bos.write(c);
-            ++read;
-        }
-
-        if (c != 0)
-        {
-            bos.write(c);
-        }
-
-        raFile.skipBytes(maxLength - read);
-
-        return new String(bos.toByteArray());
-    }
-
     private Double readNextDouble(final int aLength)
                            throws IOException
     {
-        String s = readNextString(aLength);
+        String s = Util.readString(raFile, aLength);
 
         if (s.trim().isEmpty())
         {
@@ -531,9 +383,9 @@ public class Table
     private Date readNextRecordDate()
                              throws IOException
     {
-        String yearString = readNextString(4);
-        String monthString = readNextString(2);
-        String dayString = readNextString(2);
+        String yearString = Util.readString(raFile, 4);
+        String monthString = Util.readString(raFile, 2);
+        String dayString = Util.readString(raFile, 2);
 
         Calendar cal = Calendar.getInstance();
 
@@ -567,7 +419,7 @@ public class Table
             openMemo();
         }
 
-        String sIndex = readNextString(fieldLength);
+        String sIndex = Util.readString(raFile, fieldLength);
 
         if (sIndex.trim().isEmpty())
         {
@@ -616,19 +468,20 @@ public class Table
         }
 
         memo = new Memo(dbtFile);
-        memo.open(aCreate, version);
+        memo.open(aCreate,
+                  header.getVersion());
     }
 
     private Record readRecord(final int aIndex)
                        throws IOException, CorruptedTableException
     {
-        raFile.seek(headerLength + (aIndex * recordLength));
+        raFile.seek(header.getLength() + (aIndex * header.getRecordLength()));
 
         byte firstByteOfRecord = raFile.readByte();
 
         while (firstByteOfRecord == RECORD_DELETED)
         {
-            raFile.skipBytes(recordLength - 1);
+            raFile.skipBytes(header.getRecordLength() - 1);
         }
 
         if (firstByteOfRecord == EOF_MARKER)
@@ -638,7 +491,7 @@ public class Table
 
         final Map<String, Object> recordValues = new HashMap<String, Object>();
 
-        for (final Field field : fields)
+        for (final Field field : header.getFields())
         {
             switch (field.getType())
             {
@@ -650,7 +503,8 @@ public class Table
 
                 case CHARACTER:
                     recordValues.put(field.getName(),
-                                     readNextString(field.getLength()));
+                                     Util.readString(raFile,
+                                                     field.getLength()));
 
                     break;
 
@@ -683,135 +537,6 @@ public class Table
         return new Record(recordValues);
     }
 
-    private void writeHeader()
-                      throws IOException
-    {
-        // count number of fields and sum of field definition lengths
-        int fieldCount = 0;
-        int sumFieldLengths = 0;
-
-        for (Field field : fields)
-        {
-            fieldCount++;
-            sumFieldLengths += field.getLength();
-        }
-
-        // write first part of header
-        writeFileHeader(fieldCount, sumFieldLengths + LENGTH_DELETE_FLAG);
-
-        // write field definitions to the header
-        for (Field field : fields)
-        {
-            writeFieldDefinition(field);
-        }
-
-        // write header termination byte and EOF byte
-        raFile.writeByte(0x0d);
-        raFile.writeByte(0x1a);
-    }
-
-    private void writeFileHeader(int fieldCount, int recordLength)
-                          throws IOException
-    {
-        raFile.writeByte(version);
-
-        /*
-         * The number of years in the last modified date is actually the number of
-         * years since 1900.
-         * DBase III+ (and presumable II) has a Year 2000 bug.  It stores the year
-         * as simply the last two digits of the actual year.  DBFs created after 1999
-         * will therefore have the wrong date.
-         * To comply with this practise, we subtract 1900 from the given year if it is
-         * less than 2000, and 200 0if it is greater than or equal to 2000
-         */
-        final Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR) - 1900;
-
-        if (year >= 100)
-        {
-            year -= 100;
-        }
-
-        raFile.writeByte(year);
-        raFile.writeByte(cal.get(Calendar.MONTH) + 1);
-        raFile.writeByte(cal.get(Calendar.DAY_OF_MONTH));
-
-        // in the table object and in the file number of records initialized to zero
-        nrRecords = 0;
-        raFile.writeInt(0);
-
-        // store in the table object and write to the file length of the header
-        headerLength = (LENGTH_TABLE_HEADER + (fieldCount * LENGTH_FIELD_DESCRIPTOR) + 1);
-        raFile.writeShort(Util.changeEndianness((short) (headerLength)));
-
-        // store in the table object and write to the file length of records
-        this.recordLength = recordLength;
-        raFile.writeShort(Util.changeEndianness((short) recordLength));
-
-        // rest of the header is filled with 00h
-        for (int i = 0; i < (LENGTH_TABLE_HEADER - OFFSET_LENGTH_OF_RECORDS - 2); i++)
-        {
-            raFile.writeByte(0x00);
-        }
-    }
-
-    private void writeFieldDefinition(Field field)
-                               throws IOException
-    {
-        // name of the field, terminated with 00h
-        // (in LENGTH_FIELD_NAME the terminating 00h byte is already taken in account)
-        writeString(field.getName(),
-                    LENGTH_FIELD_NAME - 1);
-        raFile.writeByte(0x00);
-
-        // field type
-        raFile.writeByte(field.getType().getCode());
-
-        // field data address.  Used only with FoxPro. In other cases fill with 00h
-        raFile.writeInt(0x00);
-
-        // field length
-        raFile.writeByte(field.getLength());
-
-        // field decimal count
-        raFile.writeByte(field.getDecimalCount());
-
-        // the next two bytes are set to 0x00
-        raFile.writeByte(0x00);
-        raFile.writeByte(0x00);
-
-        // work area ID
-        raFile.writeByte(0x01);
-
-        // rest of the field description block is filled with 00h
-        for (int i = 0; i < (LENGTH_FIELD_DESCRIPTOR - OFFSET_WORK_AREA_ID - 1); i++)
-        {
-            raFile.writeByte(0x00);
-        }
-    }
-
-    private void writeString(String s, int aLength)
-                      throws IOException
-    {
-        char[] charArray = new char[aLength + 1];
-        int lengthString = s.length();
-        int i = 0;
-
-        charArray = s.toCharArray();
-
-        // write the contents of the input string
-        for (i = 0; (i < aLength) && (i < lengthString); i++)
-        {
-            raFile.writeByte(charArray[i]);
-        }
-
-        // fill the rest of the given length with 0x0h
-        for (; i < aLength; i++)
-        {
-            raFile.writeByte(0x00);
-        }
-    }
-
     private void writeSpaces(final int aLength)
                       throws IOException
     {
@@ -832,8 +557,9 @@ public class Table
         }
 
         String doubleFormatter = "%" + Integer.toString(aLength) + "." + Integer.toString(aDecimalCount) + "f";
-        writeString(String.format(Locale.US, doubleFormatter, aValue),
-                    aLength);
+        Util.writeString(raFile,
+                         String.format(Locale.US, doubleFormatter, aValue),
+                         aLength);
     }
 
     private void writeBoolean(final Boolean aValue)
@@ -869,7 +595,7 @@ public class Table
         String recordDate;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         recordDate = sdf.format(aRecordDate);
-        writeString(recordDate, LENGTH_RECORD_DATE);
+        Util.writeString(raFile, recordDate, LENGTH_RECORD_DATE);
     }
 
     private void writeMemo(final String aMemo)

@@ -19,8 +19,14 @@
  */
 package nl.knaw.dans.common.dbflib;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 
 class Util
 {
@@ -130,5 +136,84 @@ class Util
         }
 
         return null;
+    }
+
+    /**
+     * Writes a <tt>java.lang.String</tt> to a <tt>java.io.DataOutput</tt>.  The String is
+     * truncate if it exceeds <tt>aMaxLength</tt>.  If it is shorter, the remaining bytes
+     * are filled with null characters.
+     *
+     * @param aDataOutput the <tt>java.io.DataOutput</tt> to write to
+     * @param aString the String to write
+     * @param aMaxLength the maximum length of the string
+     * @throws java.io.IOException
+     */
+    static void writeString(final DataOutput aDataOutput, final String aString, final int aLength)
+                     throws IOException
+    {
+        char[] charArray = new char[aLength + 1];
+        int lengthString = aString.length();
+        int i = 0;
+
+        charArray = aString.toCharArray();
+
+        for (i = 0; (i < aLength) && (i < lengthString); i++)
+        {
+            aDataOutput.writeByte(charArray[i]);
+        }
+
+        for (; i < aLength; i++)
+        {
+            aDataOutput.writeByte(0x00);
+        }
+    }
+
+    static String readString(final DataInput aDataInput, final int aLength)
+                      throws IOException
+    {
+        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        int c = 0;
+        int read = 1; // at least one byte will be read
+
+        while (((c = aDataInput.readByte()) != 0) && read < aLength)
+        {
+            bos.write(c);
+            ++read;
+        }
+
+        if (c != 0)
+        {
+            bos.write(c);
+        }
+
+        aDataInput.skipBytes(aLength - read);
+
+        return new String(bos.toByteArray());
+    }
+
+    /**
+        * Creates a Date object with the specfied value and the time fields set to zero.
+        * Note that month is zero-based.  The <tt>java.util.Calendar</tt> class has constants
+        * for all the months.
+        *
+        * @param year the year
+        * @param month zero-based month number
+        * @param day one-based day number
+        *
+        * @return a <tt>java.util.Date</tt> object
+        */
+    public static Date createDate(int year, int month, int day)
+    {
+        final Calendar cal = Calendar.getInstance();
+
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        return cal.getTime();
     }
 }

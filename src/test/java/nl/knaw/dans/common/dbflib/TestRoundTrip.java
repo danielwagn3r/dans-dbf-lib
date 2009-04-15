@@ -77,8 +77,8 @@ public class TestRoundTrip
                          "TABLE1.DBF",
                          t1.getName());
             assertEquals("Last modified date incorrect",
-                         UnitTestUtil.createDate(2009, Calendar.APRIL, 1),
-                         t1.getLastUpdated());
+                         Util.createDate(2009, Calendar.APRIL, 1),
+                         t1.getLastModifiedDate());
 
             final List<Field> fields = t1.getFields();
 
@@ -132,7 +132,7 @@ public class TestRoundTrip
                          r0.getValue("STRFIELD").toString().trim());
             assertEquals(true,
                          r0.getValue("LOGICFIELD"));
-            assertEquals(UnitTestUtil.createDate(1909, Calendar.MARCH, 18),
+            assertEquals(Util.createDate(1909, Calendar.MARCH, 18),
                          r0.getValue("DATEFIELD"));
             assertEquals(1234.56,
                          r0.getValue("FLOATFIELD"));
@@ -145,7 +145,7 @@ public class TestRoundTrip
                          r1.getValue("STRFIELD").toString().trim());
             assertEquals(false,
                          r1.getValue("LOGICFIELD"));
-            assertEquals(UnitTestUtil.createDate(1909, Calendar.MARCH, 20),
+            assertEquals(Util.createDate(1909, Calendar.MARCH, 20),
                          r1.getValue("DATEFIELD"));
             assertEquals(-23.45,
                          r1.getValue("FLOATFIELD"));
@@ -171,7 +171,7 @@ public class TestRoundTrip
                          r3.getValue("STRFIELD").toString().trim());
             assertEquals(false,
                          r3.getValue("LOGICFIELD"));
-            assertEquals(UnitTestUtil.createDate(1909, Calendar.MARCH, 20),
+            assertEquals(Util.createDate(1909, Calendar.MARCH, 20),
                          r3.getValue("DATEFIELD"));
             assertEquals(-0.30,
                          r3.getValue("FLOATFIELD"));
@@ -181,7 +181,7 @@ public class TestRoundTrip
             t1.close();
         }
 
-        final Table t2 = database.getTable("TABLE2.DBF");
+        final Table t2 = database.addTable("TABLE2.DBF");
 
         try
         {

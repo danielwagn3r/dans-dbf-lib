@@ -23,10 +23,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -88,32 +86,6 @@ class UnitTestUtil
             });
 
         return recordList;
-    }
-
-    /**
-     * Creates a Date object with the specfied value and the time fields set to zero.
-     * Note that month is zero-based.  The <tt>java.util.Calendar</tt> class has constants
-     * for all the months.
-     *
-     * @param year the year
-     * @param month zero-based month number
-     * @param day one-based day number
-     *
-     * @return a <tt>java.util.Date</tt> object
-     */
-    public static Date createDate(int year, int month, int day)
-    {
-        final Calendar cal = Calendar.getInstance();
-
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.MONTH, month);
-        cal.set(Calendar.DAY_OF_MONTH, day);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-
-        return cal.getTime();
     }
 
     /**

@@ -204,11 +204,11 @@ public class TestReadingDataTypes
     {
         assertEquals(null,
                      r0.getValue("PROD_DATE"));
-        assertEquals(UnitTestUtil.createDate(1977, Calendar.JANUARY, 01),
+        assertEquals(Util.createDate(1977, Calendar.JANUARY, 01),
                      r1.getValue("PROD_DATE"));
-        assertEquals(UnitTestUtil.createDate(1990, Calendar.FEBRUARY, 12),
+        assertEquals(Util.createDate(1990, Calendar.FEBRUARY, 12),
                      r2.getValue("PROD_DATE"));
-        assertEquals(UnitTestUtil.createDate(1901, Calendar.DECEMBER, 03),
+        assertEquals(Util.createDate(1901, Calendar.DECEMBER, 03),
                      r3.getValue("PROD_DATE"));
     }
 

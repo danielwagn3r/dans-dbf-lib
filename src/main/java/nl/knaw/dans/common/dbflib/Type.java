@@ -19,6 +19,8 @@
  */
 package nl.knaw.dans.common.dbflib;
 
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Enumeration of the field types available in an xBase database.  xBase types are
@@ -33,29 +35,37 @@ public enum Type
      * Numeric value, mapped to <tt>java.lang.Double</tt>.
      */
     NUMBER('N'),
-
     /**
      * String values, mapped to <tt>java.lang.String</tt>.
      */
-    CHARACTER('C'),
-
+    CHARACTER('C'), 
     /**
      * Logical, or boolean value, mapped to <tt>java.lang.Boolean</tt>.
      */
-    LOGICAL('L'),
-
+    LOGICAL('L'), 
     /**
      * Date value, mapped to <tt>java.util.Date</tt>.  Note that in xBase the date does <em>not</em> have a
      * time component.  The time related fields of <tt>java.util.Date</tt> are therefore set to 0.
      */
-    DATE('D'),
-
+    DATE('D'), 
     /**
      * A String value (without length limitations), mapped to <tt>java.lang.String</tt>.
      */
     MEMO('M');
-
+    private static final Map<Character, Type> typeMap = new HashMap<Character, Type>();
     private final char code;
+
+    static
+    {
+        /*
+         * Maps the type characters from the .DBF file to type enum constants.
+         */
+        for (Type t : Type.values())
+        {
+            typeMap.put(t.getCode(),
+                        t);
+        }
+    }
 
     Type(char aCode)
     {
@@ -65,5 +75,10 @@ public enum Type
     char getCode()
     {
         return code;
+    }
+
+    static Type getTypeByCode(final char aCode)
+    {
+        return typeMap.get(aCode);
     }
 }
