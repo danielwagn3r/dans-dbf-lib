@@ -40,7 +40,7 @@ import java.util.Map;
  * @author Jan van Mansum
  * @author Vesa Åkerman
  */
-public class TestReadingDataTypes
+public class TestReadingDataTypesSimpleCases
 {
     private Table cars = null;
     private List<Record> records = null;

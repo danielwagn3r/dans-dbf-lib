@@ -23,18 +23,20 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import java.io.File;
+
 /**
- * Tests the changeEndianness functions.
+ * Tests the utility functions in {@link Util}.
  *
  * @author Jan van Mansum
  */
-public class TestChangeEndianness
+public class TestUtil
 {
     /**
-     * Tests {@link Util#changeEndianness(int) }.
-     */
+       * Tests {@link Util#changeEndianness(int) }.
+       */
     @Test
-    public void integerConversion()
+    public void changeEndianness_integer()
     {
         int le;
         int be;
@@ -76,7 +78,7 @@ public class TestChangeEndianness
      * Tests {@link Util#changeEndianness(short) }.
      */
     @Test
-    public void shortConversion()
+    public void changeEndianness_short()
     {
         short le;
         short be;
@@ -112,5 +114,39 @@ public class TestChangeEndianness
                      Util.changeEndianness((short) 0));
         assertEquals((short) 0xFFFF,
                      Util.changeEndianness((short) 0xFFFF));
+    }
+
+    /**
+     * DOCUMENT ME!
+     */
+    @Test
+    public void getDbtFile_simple_case()
+    {
+        File dbtFile = Util.getDbtFile(new File("src/test/resources/util/get_dbt_file1/x.DBF"));
+
+        assertNotNull(".DBT file is null", dbtFile);
+        assertEquals("x.DBT",
+                     dbtFile.getName());
+    }
+
+    /**
+     * DOCUMENT ME!
+     */
+    @Test
+    public void getDbtFile_returns_null_if_dbt_non_existent()
+    {
+        File dbtFile = Util.getDbtFile(new File("src/test/resources/util/get_dbt_file2/x.DBF"));
+
+        assertNull("Found non-existing .DBT", dbtFile);
+    }
+
+    /**
+     * DOCUMENT ME!
+     */
+    @Test
+    public void getDbtFile_returns_null_if_dbf_non_existent()
+    {
+        File dbtFile = Util.getDbtFile(new File("src/test/resources/util/get_dbt_file3/x.DBF"));
+        assertNull("Found non-existing .DBT", dbtFile);
     }
 }

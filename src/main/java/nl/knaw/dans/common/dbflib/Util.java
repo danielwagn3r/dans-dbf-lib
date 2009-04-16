@@ -202,7 +202,7 @@ class Util
         *
         * @return a <tt>java.util.Date</tt> object
         */
-    public static Date createDate(int year, int month, int day)
+    static Date createDate(int year, int month, int day)
     {
         final Calendar cal = Calendar.getInstance();
 
