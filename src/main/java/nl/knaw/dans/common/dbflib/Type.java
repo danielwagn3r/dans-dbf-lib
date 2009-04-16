@@ -36,6 +36,10 @@ public enum Type
      */
     NUMBER('N'),
     /**
+     * Float value, mapped to <tt>java.lang.Double</tt>.
+     */
+    FLOAT('F'), 
+    /**
      * String values, mapped to <tt>java.lang.String</tt>.
      */
     CHARACTER('C'), 

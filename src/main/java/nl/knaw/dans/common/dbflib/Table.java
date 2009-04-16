@@ -56,6 +56,8 @@ public class Table
 
         public boolean hasNext()
         {
+            checkOpen();
+
             if (lastReadRecord == null)
             {
                 try
@@ -257,6 +259,8 @@ public class Table
      */
     public List<Field> getFields()
     {
+        checkOpen();
+
         return header.getFields();
     }
 
@@ -281,6 +285,8 @@ public class Table
     public void addRecord(final Record aRecord)
                    throws IOException, CorruptedTableException
     {
+        checkOpen();
+
         String name = null;
 
         raFile.seek(header.getLength() + (header.getRecordCount() * header.getRecordLength()));
@@ -299,6 +305,13 @@ public class Table
                     writeDouble((Double) aRecord.getValue(name),
                                 field.getLength(),
                                 field.getDecimalCount());
+
+                    break;
+
+                case FLOAT:
+                    writeFloat((Double) aRecord.getValue(name),
+                               field.getLength(),
+                               field.getDecimalCount());
 
                     break;
 
@@ -354,8 +367,8 @@ public class Table
         }
     }
 
-    private Double readNextDouble(final int aLength)
-                           throws IOException
+    private Double readDouble(final int aLength)
+                       throws IOException
     {
         String s = Util.readString(raFile, aLength);
 
@@ -367,8 +380,14 @@ public class Table
         return Double.parseDouble(s);
     }
 
-    private Boolean readNextBoolean()
-                             throws IOException
+    private Double readFloat(final int aLength)
+                      throws IOException
+    {
+        return readDouble(aLength);
+    }
+
+    private Boolean readBoolean()
+                         throws IOException
     {
         byte c = raFile.readByte();
 
@@ -380,8 +399,8 @@ public class Table
         return (c == 'Y') || (c == 'y') || (c == 'T') || (c == 't');
     }
 
-    private Date readNextRecordDate()
-                             throws IOException
+    private Date readRecordDate()
+                         throws IOException
     {
         String yearString = Util.readString(raFile, 4);
         String monthString = Util.readString(raFile, 2);
@@ -411,8 +430,8 @@ public class Table
         return cal.getTime();
     }
 
-    private String readNextMemo(int fieldLength)
-                         throws IOException, CorruptedTableException
+    private String readMemo(int fieldLength)
+                     throws IOException, CorruptedTableException
     {
         if (memo == null)
         {
@@ -497,7 +516,13 @@ public class Table
             {
                 case NUMBER:
                     recordValues.put(field.getName(),
-                                     readNextDouble(field.getLength()));
+                                     readDouble(field.getLength()));
+
+                    break;
+
+                case FLOAT:
+                    recordValues.put(field.getName(),
+                                     readFloat(field.getLength()));
 
                     break;
 
@@ -510,19 +535,19 @@ public class Table
 
                 case LOGICAL:
                     recordValues.put(field.getName(),
-                                     readNextBoolean());
+                                     readBoolean());
 
                     break;
 
                 case DATE:
                     recordValues.put(field.getName(),
-                                     readNextRecordDate());
+                                     readRecordDate());
 
                     break;
 
                 case MEMO:
                     recordValues.put(field.getName(),
-                                     readNextMemo(field.getLength()));
+                                     readMemo(field.getLength()));
 
                     break;
 
@@ -560,6 +585,12 @@ public class Table
         Util.writeString(raFile,
                          String.format(Locale.US, doubleFormatter, aValue),
                          aLength);
+    }
+
+    private void writeFloat(final Double aValue, final int aLength, final int aDecimalCount)
+                     throws IOException
+    {
+        writeDouble(aValue, aLength, aDecimalCount);
     }
 
     private void writeBoolean(final Boolean aValue)
