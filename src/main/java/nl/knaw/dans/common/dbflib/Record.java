@@ -58,24 +58,28 @@ public class Record
     /**
      * Returns the value of the specified field as a <tt>java.lang.Number</tt>.  The exact class
      * used depends on the size of the corresponding {@link Field} and its <tt>decimalCount</tt>
-     * property.  If <tt>decimalCount</tt> an integral type is returned, otherwise a fractional
+     * property.  If <tt>decimalCount</tt> is zero an integral type is returned, otherwise a fractional
      * type.  Depending on the size <tt>java.lang.Integer</tt>, <tt>java.lang.Long</tt> or
      * <tt>java.math.BigInteger</tt> is used as an integral type.  For non-integral types the
      * classes used are either <tt>java.lang.Double</tt> or <tt>java.math.BigDecimal</tt>.
      * <p>
-     * It is not necessary to know the exact type used.  You can use conversion methods on the
+     * It is not necessary to know the exact type used.  You can use the conversion methods on the
      * <tt>java.lang.Number</tt> class to convert the value before using it.  (E.g., <tt>Number.intValue()</tt>.)
      * Of course you do need to know whether the value will fit in the chosen type.  Note that
      * comparisons may fail if you do not first convert the values.  For instance if you compare
      * the a <tt>java.math.BigInteger</tt> with a <tt>long</tt> using the <tt>equals</tt> method,
      * <tt>false</tt> wil be returned even if the values represent the same logical value.
      * <p>
-     * Examples:
+     * Example:
      * <pre>
      *
      * public Record searchSomeNum(final double val)
      * {
-     *      // ... retrieve table1
+     *      //
+     *      //... SOME CODE HERE THAT RETRIEVES table1 ...
+     *      //
+     *
+     *      // Get a record iterator to loop over all the records.
      *      Iterator<Record> ri = table1.recordIterator();
      *
      *      // Search for the record with SOMENUM = val
@@ -84,6 +88,7 @@ public class Record
      *         Record r = ri.next();
      *         Number n = r.getNumberValue("SOMENUM");
      *
+     *         // Convert n to a double before comparing it.
      *         if(n.doubleValue() == val)
      *         {
      *            return r;

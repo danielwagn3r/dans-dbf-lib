@@ -26,7 +26,7 @@ import org.junit.Test;
 import java.io.File;
 
 /**
- * Tests the utility functions in {@link Util}.
+ * Tests the utility functions in the <tt>Util</tt> class.
  *
  * @author Jan van Mansum
  */
