@@ -7,6 +7,8 @@
     <body>
         <links>
             <item name="DANS" href="http://www.dans.knaw.nl/"/>
+            <item name="KNAW" href="http://www.knaw.nl/"/>
+            <item name="NWO" href="http://www.nwo.nl/"/>
         </links>
 
         <menu name="Documentation" inheritance="none">

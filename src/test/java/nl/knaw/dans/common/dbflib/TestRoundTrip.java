@@ -127,7 +127,7 @@ public class TestRoundTrip
                                                                              "ID");
             final Record r0 = records.get(0);
 
-            assertEquals(1.0,
+            assertEquals(1,
                          r0.getValue("ID"));
             assertEquals("String data 01",
                          r0.getValue("STRFIELD").toString().trim());
@@ -140,7 +140,7 @@ public class TestRoundTrip
 
             final Record r1 = records.get(1);
 
-            assertEquals(2.0,
+            assertEquals(2,
                          r1.getValue("ID"));
             assertEquals("String data 02",
                          r1.getValue("STRFIELD").toString().trim());
@@ -153,7 +153,7 @@ public class TestRoundTrip
 
             final Record r2 = records.get(2);
 
-            assertEquals(3.0,
+            assertEquals(3,
                          r2.getValue("ID"));
             assertEquals("",
                          r2.getValue("STRFIELD").toString().trim());
@@ -166,7 +166,7 @@ public class TestRoundTrip
 
             final Record r3 = records.get(3);
 
-            assertEquals(4.0,
+            assertEquals(4,
                          r3.getValue("ID"));
             assertEquals("Full5678901234567890123456789012345678901234567890",
                          r3.getValue("STRFIELD").toString().trim());
@@ -228,7 +228,7 @@ public class TestRoundTrip
             declarationOfIndependence += "that they are endowed by their Creator with certain unalienable Rights, ";
             declarationOfIndependence += "that among these are Life, Liberty and the persuit of Happiness.";
 
-            assertEquals(1.0,
+            assertEquals(1,
                          r.getValue("ID2"));
             assertEquals(declarationOfIndependence,
                          r.getValue("MEMOFIELD"));

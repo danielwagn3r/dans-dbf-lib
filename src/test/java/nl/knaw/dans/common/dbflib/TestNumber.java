@@ -61,111 +61,130 @@ public class TestNumber
             assertNull(r0.getValue("MINDEC"));
 
             final Record r1 = records.get(1);
-            assertEquals(1.0,
-                         r1.getValue("ID"));
-            assertEquals(1.0,
-                         r1.getValue("MININT"));
-            assertEquals(1111111111111111040.0,
-                         r1.getValue("MAXINT"));
+            assertEquals(1,
+                         r1.getNumberValue("ID").intValue());
+            assertEquals(1,
+                         r1.getNumberValue("MININT").intValue());
+            assertEquals(1111111111111111040L,
+                         r1.getNumberValue("MAXINT").longValue());
             assertEquals(111.1111111111111,
-                         r1.getValue("MAXDEC"));
+                         r1.getNumberValue("MAXDEC").doubleValue(),
+                         0.0);
             assertEquals(1.1,
-                         r1.getValue("MINDEC"));
+                         r1.getNumberValue("MINDEC").doubleValue(),
+                         0.0);
 
             final Record r2 = records.get(2);
-            assertEquals(2.0,
-                         r2.getValue("ID"));
-            assertEquals(2.0,
-                         r2.getValue("MININT"));
-            assertEquals(2222222222222222080.0,
-                         r2.getValue("MAXINT"));
+            assertEquals(2,
+                         r2.getNumberValue("ID").intValue());
+            assertEquals(2,
+                         r2.getNumberValue("MININT").intValue());
+            assertEquals(2222222222222222080L,
+                         r2.getNumberValue("MAXINT").longValue());
             assertEquals(222.2222222222222,
-                         r2.getValue("MAXDEC"));
+                         r2.getNumberValue("MAXDEC").doubleValue(),
+                         0.0);
             assertEquals(2.2,
-                         r2.getValue("MINDEC"));
+                         r2.getNumberValue("MINDEC").doubleValue(),
+                         0.0);
 
             final Record r3 = records.get(3);
-            assertEquals(3.0,
-                         r3.getValue("ID"));
-            assertEquals(3.0,
-                         r3.getValue("MININT"));
-            assertEquals(3333333333333332992.0,
-                         r3.getValue("MAXINT"));
+            assertEquals(3,
+                         r3.getNumberValue("ID").intValue());
+            assertEquals(3,
+                         r3.getNumberValue("MININT").intValue());
+            assertEquals(3333333333333332992L,
+                         r3.getNumberValue("MAXINT").longValue());
             assertEquals(333.33333333333334,
-                         r3.getValue("MAXDEC"));
+                         r3.getNumberValue("MAXDEC").doubleValue(),
+                         0.0);
             assertEquals(3.3,
-                         r3.getValue("MINDEC"));
+                         r3.getNumberValue("MINDEC").doubleValue(),
+                         0.0);
 
             final Record r4 = records.get(4);
-            assertEquals(4.0,
-                         r4.getValue("ID"));
-            assertEquals(4.0,
-                         r4.getValue("MININT"));
-            assertEquals(4444444444444444160.0,
-                         r4.getValue("MAXINT"));
+            assertEquals(4,
+                         r4.getNumberValue("ID").intValue());
+            assertEquals(4,
+                         r4.getNumberValue("MININT").intValue());
+            assertEquals(4444444444444444160L,
+                         r4.getNumberValue("MAXINT").longValue());
             assertEquals(444.4444444444444,
-                         r4.getValue("MAXDEC"));
+                         r4.getNumberValue("MAXDEC").doubleValue(),
+                         0.0);
             assertEquals(4.4,
-                         r4.getValue("MINDEC"));
+                         r4.getNumberValue("MINDEC").doubleValue(),
+                         0.0);
 
             final Record r5 = records.get(5);
-            assertEquals(5.0,
-                         r5.getValue("ID"));
-            assertEquals(5.0,
-                         r5.getValue("MININT"));
-            assertEquals(5555555555555555328.0,
-                         r5.getValue("MAXINT"));
+            assertEquals(5,
+                         r5.getNumberValue("ID").intValue());
+            assertEquals(5,
+                         r5.getNumberValue("MININT").intValue());
+            assertEquals(5555555555555555328L,
+                         r5.getNumberValue("MAXINT").longValue());
             assertEquals(555.5555555555555,
-                         r5.getValue("MAXDEC"));
+                         r5.getNumberValue("MAXDEC").doubleValue(),
+                         0.0);
             assertEquals(5.5,
-                         r5.getValue("MINDEC"));
+                         r5.getNumberValue("MINDEC").doubleValue(),
+                         0.0);
 
             final Record r6 = records.get(6);
-            assertEquals(6.0,
-                         r6.getValue("ID"));
-            assertEquals(6.0,
-                         r6.getValue("MININT"));
-//            assertEquals(666666666666665984.0, r6.getValue("MAXINT"));
+            assertEquals(6,
+                         r6.getNumberValue("ID").intValue());
+            assertEquals(6,
+                         r6.getNumberValue("MININT").intValue());
+            assertEquals(6666666666666599424L,
+                         r6.getNumberValue("MAXINT").longValue());
             assertEquals(666.66666666666668,
-                         r6.getValue("MAXDEC"));
+                         r6.getNumberValue("MAXDEC").doubleValue(),
+                         0.0);
             assertEquals(6.6,
-                         r6.getValue("MINDEC"));
+                         r6.getNumberValue("MINDEC").doubleValue(),
+                         0.0);
 
             final Record r7 = records.get(7);
-            assertEquals(7.0,
-                         r7.getValue("ID"));
-            assertEquals(7.0,
-                         r7.getValue("MININT"));
-            assertEquals(7777777777777777664.0,
-                         r7.getValue("MAXINT"));
+            assertEquals(7,
+                         r7.getNumberValue("ID").intValue());
+            assertEquals(7,
+                         r7.getNumberValue("MININT").intValue());
+            assertEquals(7777777777777777664L,
+                         r7.getNumberValue("MAXINT").longValue());
             assertEquals(777.777777777779,
-                         r7.getValue("MAXDEC"));
+                         r7.getNumberValue("MAXDEC").doubleValue(),
+                         0.0);
             assertEquals(7.7,
-                         r7.getValue("MINDEC"));
+                         r7.getNumberValue("MINDEC").doubleValue(),
+                         0.0);
 
             final Record r8 = records.get(8);
-            assertEquals(8.0,
-                         r8.getValue("ID"));
-            assertEquals(8.0,
-                         r8.getValue("MININT"));
-            assertEquals(8888888888888888320.0,
-                         r8.getValue("MAXINT"));
+            assertEquals(8,
+                         r8.getNumberValue("ID").intValue());
+            assertEquals(8,
+                         r8.getNumberValue("MININT").intValue());
+            assertEquals(8888888888888888320L,
+                         r8.getNumberValue("MAXINT").longValue());
             assertEquals(888.8888888888888,
-                         r8.getValue("MAXDEC"));
+                         r8.getNumberValue("MAXDEC").doubleValue(),
+                         0.0);
             assertEquals(8.8,
-                         r8.getValue("MINDEC"));
+                         r8.getNumberValue("MINDEC").doubleValue(),
+                         0.0);
 
             final Record r9 = records.get(9);
-            assertEquals(9.0,
-                         r9.getValue("ID"));
-            assertEquals(9.0,
-                         r9.getValue("MININT"));
-            assertEquals(9999999999999998.0,
-                         r9.getValue("MAXINT"));
+            assertEquals(9,
+                         r9.getNumberValue("ID").intValue());
+            assertEquals(9,
+                         r9.getNumberValue("MININT").intValue());
+            assertEquals(9999999999999998L,
+                         r9.getNumberValue("MAXINT").longValue());
             assertEquals(999.9999999999998,
-                         r9.getValue("MAXDEC"));
+                         r9.getNumberValue("MAXDEC").doubleValue(),
+                         0.0);
             assertEquals(9.9,
-                         r9.getValue("MINDEC"));
+                         r9.getNumberValue("MINDEC").doubleValue(),
+                         0.0);
         }
         finally
         {

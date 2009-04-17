@@ -32,6 +32,7 @@ public class Field
     private final Type type;
     private final int length;
     private final int decimalCount;
+    private final String formatString;
 
     /**
      * Creates a new Field object.
@@ -46,6 +47,8 @@ public class Field
         type = aType;
         length = aLength;
         decimalCount = aDecimalCount;
+
+        formatString = "%" + length + (decimalCount == 0 ? "d" : "." + decimalCount + "f");
     }
 
     /**
@@ -86,5 +89,10 @@ public class Field
     public int getDecimalCount()
     {
         return decimalCount;
+    }
+
+    String getFormatString()
+    {
+        return formatString;
     }
 }

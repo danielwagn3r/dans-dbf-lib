@@ -147,11 +147,11 @@ public class TestReadingDataTypesSimpleCases
     {
         assertEquals(null,
                      r0.getValue("YEAR"));
-        assertEquals(0.0,
+        assertEquals(0,
                      r1.getValue("YEAR"));
-        assertEquals(1990.0,
+        assertEquals(1990,
                      r2.getValue("YEAR"));
-        assertEquals(2000.0,
+        assertEquals(2000,
                      r3.getValue("YEAR"));
 
         assertEquals(null,

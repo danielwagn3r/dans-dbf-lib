@@ -23,10 +23,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.Format;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -51,18 +50,7 @@ public class Table
     private static final int MARKER_RECORD_DELETED = 0x2A;
     private static final int MARKER_EOF = 0x1A;
     private static final int MARKER_RECORD_VALID = 0x20;
-    private static final DecimalFormat decimalParser = new DecimalFormat();
     private static final Format dateFormat = new SimpleDateFormat("yyyyMMdd");
-
-    static
-    {
-        decimalParser.setParseBigDecimal(true);
-
-        /*
-         * Set Locale to US so that decimal point (not comma) is always expected.
-         */
-        decimalParser.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
-    }
 
     private class RecordIterator
         implements Iterator<Record>
@@ -148,7 +136,7 @@ public class Table
      * open a new <tt>Table</tt> object.
      *
      * @param aTableFile the .DBF file that contains the table data
-     * @param version the dBase version to support
+     * @param aVersion the dBase version to support
      * @param aFields the fields to create if this is a new table
      *
      * @see #open(nl.knaw.dans.common.dbflib.IfNonExistent)
@@ -182,6 +170,7 @@ public class Table
      * {@link Table#open(nl.knaw.dans.common.dbflib.IfNonExistent)  Table.open(IfNonExistent.ERROR)}
      *
      * @throws IOException if the table file does not exist or could not be opened
+     * @throws CorruptedTableException if the header of the table file was corrupt
      */
     public void open()
               throws IOException, CorruptedTableException
@@ -194,7 +183,8 @@ public class Table
      *
      * @param aIfNonExistent what to do if the table file does not exist yet
      *
-     * @throws java.io.IOException if the table does not exist or cannot be opened
+     * @throws java.io.IOException if the table does not exist or could be opened
+     * @throws CorruptedTableException if the header of the table file was corrupt
      */
     public void open(final IfNonExistent aIfNonExistent)
               throws IOException, CorruptedTableException
@@ -240,7 +230,7 @@ public class Table
     /**
      * Closes and deletes the underlying table file and associated files.
      *
-     * @throws java.io.IOException if the table file or an associated file cannot be closed.
+     * @throws java.io.IOException if the table file or an associated file cannot be closed or deleted
      */
     public void delete()
                 throws IOException
@@ -255,7 +245,7 @@ public class Table
     }
 
     /**
-     * Returns the last updated date of the table.  Note that the hours, minutes,
+     * Returns the date on which this table was last modified.  Note that the hours, minutes,
      * seconds and milliseconds fields are always set to zero.  Also, the date time
      * is not normalized to UTC.
      *
@@ -294,7 +284,8 @@ public class Table
     }
 
     /**
-     * Returns a <tt>Record</tt> iterator.
+     * Returns a <tt>Record</tt> iterator.  Note that, to use the iterator the table
+     * must be opened.
      *
      * @return a <tt>Record</tt> iterator
      *
@@ -306,11 +297,12 @@ public class Table
     }
 
     /**
-     * Adds a record to the database.
+     * Adds a record to this table.
      *
      * @param aRecord the record to add.
      *
      * @throws IOException if the record could not be written to the database file
+     * @throws CorruptedTableException if the table was corrupt
      *
      * @see Record
      */
@@ -326,17 +318,14 @@ public class Table
         {
             final Object value = aRecord.getValue(field.getName());
             final int length = field.getLength();
-            final int decimalCount = field.getDecimalCount();
 
             switch (field.getType())
             {
                 case NUMBER:
-                    writeDouble((Double) value, length, decimalCount);
-
-                    break;
-
                 case FLOAT:
-                    writeFloat((Double) value, length, decimalCount);
+                    writeNumber((Number) value,
+                                length,
+                                field.getFormatString());
 
                     break;
 
@@ -397,36 +386,57 @@ public class Table
         }
     }
 
-    private Double readDouble(final int aLength)
+    private Number readNumber(final int aLength, final int aDecimalCount)
                        throws IOException
     {
         String s = Util.readString(raFile, aLength);
+        s = s.trim();
 
-        if (s.trim().isEmpty())
+        if (s.isEmpty())
         {
             return null;
         }
 
-        return Double.parseDouble(s);
-    }
-
-    private Number readBigDecimal(final int aLength)
-                           throws IOException, ParseException
-    {
-        String s = Util.readString(raFile, aLength);
-
-        if (s.trim().isEmpty())
+        if (aDecimalCount == 0)
         {
-            return null;
+            /*
+             * Values less than 10 digits long can always be represented in an Integer, because
+             * Integer.MAX_VALUE = 2 147 483 647 ...
+             */
+            if (aLength < 10)
+            {
+                return Integer.parseInt(s);
+            } /*
+            * Longer values MAY need a Long.  To be on the safe side, we always use Long here.
+            * Long can accomodate at least 18 digits.
+            *
+            * Long.MAX_VALUE = 9 223 372 036 854 775 807
+            */
+            else if (aLength < 19)
+            {
+                return Long.parseLong(s);
+            } /*
+            * If all else fails, use a BigInteger.
+            */
+            else
+            {
+                return new BigInteger(s);
+            }
         }
 
-        return decimalParser.parse(s);
-    }
+        /*
+         * Not sure yet what number of digits is safe to parse a value into a double.
+         * 14 seems to be reasonably safe, but this needs to be proved.
+         */
+        if (aLength < 14)
+        {
+            return Double.parseDouble(s);
+        }
 
-    private Double readFloat(final int aLength)
-                      throws IOException
-    {
-        return readDouble(aLength);
+        /*
+         * BigDecimal can hold anything.
+         */
+        return new BigDecimal(s);
     }
 
     private Boolean readBoolean()
@@ -488,7 +498,7 @@ public class Table
     }
 
     private void ensureMemoOpened(final IfNonExistent aIfNonExistent)
-                           throws CorruptedTableException, IOException
+                           throws IOException, CorruptedTableException
     {
         if (memo != null)
         {
@@ -515,7 +525,7 @@ public class Table
     }
 
     private void openMemo(final IfNonExistent aIfNonExistent)
-                   throws CorruptedTableException, IOException
+                   throws IOException, CorruptedTableException
     {
         File dbtFile = Util.getDbtFile(tableFile);
 
@@ -562,14 +572,10 @@ public class Table
             switch (field.getType())
             {
                 case NUMBER:
-                    recordValues.put(field.getName(),
-                                     readDouble(field.getLength()));
-
-                    break;
-
                 case FLOAT:
                     recordValues.put(field.getName(),
-                                     readFloat(field.getLength()));
+                                     readNumber(field.getLength(),
+                                                field.getDecimalCount()));
 
                     break;
 
@@ -618,7 +624,7 @@ public class Table
         }
     }
 
-    private void writeDouble(final Double aValue, final int aLength, final int aDecimalCount)
+    private void writeNumber(final Number aValue, final int aLength, final String aFormatString)
                       throws IOException
     {
         if (aValue == null)
@@ -628,16 +634,9 @@ public class Table
             return;
         }
 
-        String doubleFormatter = "%" + Integer.toString(aLength) + "." + Integer.toString(aDecimalCount) + "f";
         Util.writeString(raFile,
-                         String.format(Locale.US, doubleFormatter, aValue),
+                         String.format(Locale.US, aFormatString, aValue),
                          aLength);
-    }
-
-    private void writeFloat(final Double aValue, final int aLength, final int aDecimalCount)
-                     throws IOException
-    {
-        writeDouble(aValue, aLength, aDecimalCount);
     }
 
     private void writeBoolean(final Boolean aValue)
@@ -687,9 +686,9 @@ public class Table
             ensureMemoOpened(IfNonExistent.CREATE);
 
             int index = memo.writeMemo(aMemo);
-            writeDouble(Double.valueOf(index),
+            writeNumber(Integer.valueOf(index),
                         LENGTH_MEMO_FIELD,
-                        0);
+                        "%" + LENGTH_MEMO_FIELD + "d");
         }
     }
 }

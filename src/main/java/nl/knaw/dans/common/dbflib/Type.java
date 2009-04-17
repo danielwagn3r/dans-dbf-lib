@@ -36,11 +36,11 @@ import java.util.Map;
 public enum Type
 {
     /**
-     * Numeric value, mapped to <tt>java.lang.Double</tt>.
+     * Numeric value, mapped to <tt>java.lang.Number</tt> subclass.
      */
     NUMBER('N'),
     /**
-     * Float value, mapped to <tt>java.lang.Double</tt>.
+     * Float value, mapped to <tt>java.lang.Number</tt> subclass.
      */
     FLOAT('F'), 
     /**

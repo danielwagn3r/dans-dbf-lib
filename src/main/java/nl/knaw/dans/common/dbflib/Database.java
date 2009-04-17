@@ -104,7 +104,7 @@ public class Database
      * object with <tt>aName</tt> already exists, it is returned.
      * <p>
      * Note that the actual table file (the .DBF file) may or may not exists.  To
-     * create a new table on disk, see {@link Table#open(boolean) }.
+     * create a new table on disk, see {@link Table#open(nl.knaw.dans.common.dbflib.IfNonExistent) }
      *
      * @param aName the name of the table
      *
