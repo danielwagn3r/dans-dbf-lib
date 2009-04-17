@@ -43,8 +43,6 @@ import java.util.Set;
  */
 public class TestRoundTrip
 {
-    private final int VERSION_BYTE_DBF_WITH_MEMO = 0x83;
-
     /**
      * A short roundtrip of the library.  Covers:
      * <ul>
@@ -74,7 +72,7 @@ public class TestRoundTrip
 
         try
         {
-            t1.open(false);
+            t1.open(IfNonExistent.ERROR);
 
             assertEquals("Table name incorrect",
                          "TABLE1.DBF",
@@ -188,7 +186,7 @@ public class TestRoundTrip
 
         try
         {
-            t2.open(false);
+            t2.open(IfNonExistent.ERROR);
 
             final List<Field> fields = t2.getFields();
 
@@ -264,8 +262,8 @@ public class TestRoundTrip
             cars.open();
 
             List<Field> fields = cars.getFields();
-            carsCopy = new Table(carsFileCopy, VERSION_BYTE_DBF_WITH_MEMO, fields);
-            carsCopy.open(true);
+            carsCopy = new Table(carsFileCopy, Version.DBASE_3, fields);
+            carsCopy.open(IfNonExistent.CREATE);
 
             Iterator<Record> recordIterator = cars.recordIterator();
 

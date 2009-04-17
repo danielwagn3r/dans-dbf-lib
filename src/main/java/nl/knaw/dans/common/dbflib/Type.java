@@ -25,6 +25,10 @@ import java.util.Map;
 /**
  * Enumeration of the field types available in an xBase database.  xBase types are
  * mapped to Java types as specified in the enumarated constant descriptions below.
+ * <p>
+ * <b>Note on NUMBER and FLOAT values:</b>  In dBase III NUMBER and in dbBase IV
+ * FLOAT values are represented internally as floating point values.  When parsed
+ * by Java they may have slight rounding errors.
  *
  * @author Jan van Mansum
  * @author Vesa Åkerman

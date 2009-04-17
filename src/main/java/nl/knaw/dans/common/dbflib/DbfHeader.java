@@ -88,12 +88,18 @@ class DbfHeader
      * Special bytes.
      */
     private static final byte FIELD_DESCRIPTOR_ARRAY_TERMINATOR = 0x0D;
-    private int version;
+    private static final byte MEMO_FLAG = (byte) 0x80;
+
+    /*
+     * Fields.
+     */
+    private Version version;
     private int recordCount;
     private List<Field> fields = new ArrayList<Field>();
     private short headerLength;
     private short recordLength;
     private Date lastModifiedDate;
+    private boolean hasMemo;
 
     void readAll(final DataInput aDataInput)
           throws IOException, CorruptedTableException
@@ -121,6 +127,11 @@ class DbfHeader
     int getRecordLength()
     {
         return recordLength;
+    }
+
+    void setHasMemo(final boolean aHasMemo)
+    {
+        hasMemo = aHasMemo;
     }
 
     private void calculateRecordLength()
@@ -231,7 +242,7 @@ class DbfHeader
     void readVersion(final DataInput aDataInput)
               throws IOException
     {
-        version = aDataInput.readByte();
+        version = Version.getVersion(aDataInput.readByte());
     }
 
     void readRecordCount(final DataInput aDataInput)
@@ -266,7 +277,7 @@ class DbfHeader
         calculateHeaderLength();
     }
 
-    void setVersion(int aVersion)
+    void setVersion(final Version aVersion)
     {
         version = aVersion;
     }
@@ -281,7 +292,7 @@ class DbfHeader
         return fields;
     }
 
-    int getVersion()
+    Version getVersion()
     {
         return version;
     }
@@ -419,7 +430,7 @@ class DbfHeader
     void writeVersion(final DataOutput aDataOutput)
                throws IOException
     {
-        aDataOutput.writeByte(version);
+        aDataOutput.writeByte(version.getVersionByte() | (hasMemo ? MEMO_FLAG : 0x00));
     }
 
     void writeZeros(final DataOutput aDataOutput, int n)

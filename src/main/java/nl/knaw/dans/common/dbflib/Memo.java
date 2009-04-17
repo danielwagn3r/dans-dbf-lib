@@ -28,22 +28,45 @@ import java.io.RandomAccessFile;
  * Represents a memo (.DBT) file.
  *
  * @author Vesa Åkerman
+ * @author Jan van Mansum
  */
 class Memo
 {
-    private static final int MEMO_BLOCK_LENGTH = 512;
+    /*
+     * Offsets.
+     */
+    private static final int OFFSET_NEXT_AVAILABLE_BLOCK_INDEX = 0;
     private static final int OFFSET_VERSION = 16;
-    private File memoFile = null;
+
+    /*
+     * Lengths.
+     */
+    private static final int LENGTH_MEMO_BLOCK = 512;
+    private static final int LENGTH_NEXT_AVAILABLE_BLOCK_INDEX = 4;
+
+    /*
+     * Markers.
+     */
+    private static final byte MARKER_SOFT_RETURN = (byte) 0x8d;
+    private static final byte MARKER_END = 0x1a;
+
+    /*
+     * Fields.
+     */
+    private final File memoFile;
     private RandomAccessFile raf = null;
     private int nextAvailableBlock = 0;
-    private int version = 0;
+    private Version version;
 
     /**
-     * Creates a new Memo object.
+     * Creates a new <tt>Memo</tt> object.
      *
-     * @param aMemoFile the <tt>
+     * @param aMemoFile the underlying .DBT file
+     *
+     * @throws IllegalArgumentException if <tt>aMemoFile</tt> is <tt>null</tt>
      */
-    public Memo(File aMemoFile)
+    Memo(final File aMemoFile, final Version aVersion)
+        throws IllegalArgumentException
     {
         if (aMemoFile == null)
         {
@@ -51,51 +74,35 @@ class Memo
         }
 
         memoFile = aMemoFile;
+        version = aVersion;
     }
 
     /**
-     * Opens the memo file for reading and writing.  Equivalent to
-     * {@link Memo#open(boolean) Memo.open(false)}
      *
-     * @throws IOException if the memo file does not exist
+     * @throws java.io.IOException
      */
-    public void open()
-              throws IOException
+    void open()
+       throws IOException
     {
-        open(false, 0);
+        open(IfNonExistent.ERROR);
     }
 
-    /**
-     * Opens the memo file for reading and writing.
-     *
-     * @param aCreate create the memo file if it does not exist
-     * @param aVersion .DBF file version
-     *
-     * @throws java.io.IOException if the memo file does not exist and <tt>aCreate</tt> is <tt>false</tt>
-     */
-    public void open(boolean aCreate, int aVersion)
-              throws IOException
+    void open(final IfNonExistent aIfNonExistent)
+       throws IOException
     {
-        if (aCreate)
+        if (memoFile.exists())
         {
-            if (memoFile.exists())
-            {
-                throw new IOException("Memofile " + memoFile + " already exists");
-            }
-
-            version = aVersion;
+            raf = new RandomAccessFile(memoFile, "rw");
+        }
+        else if (aIfNonExistent.isCreate())
+        {
             raf = new RandomAccessFile(memoFile, "rw");
             writeMemoHeader();
             nextAvailableBlock = 1;
         }
-        else
+        else if (aIfNonExistent.isError())
         {
-            if (memoFile == null)
-            {
-                throw new FileNotFoundException("Memo file not found");
-            }
-
-            raf = new RandomAccessFile(memoFile, "rw");
+            throw new FileNotFoundException("Cannot find memo file");
         }
     }
 
@@ -104,8 +111,8 @@ class Memo
      *
      * @throws java.io.IOException if the file cannot be closed
      */
-    public void close()
-               throws IOException
+    void close()
+        throws IOException
     {
         if (raf == null)
         {
@@ -116,12 +123,12 @@ class Memo
     }
 
     /**
-    * Closes and deletes the underlying memo file.
-    *
-    * @throws java.io.IOException if the file cannot be closed.
-    */
-    public void delete()
-                throws IOException
+     * Closes and deletes the underlying memo file.
+     *
+     * @throws java.io.IOException if the file cannot be closed.
+     */
+    void delete()
+         throws IOException
     {
         close();
         memoFile.delete();
@@ -130,23 +137,24 @@ class Memo
     /**
      * Reads a string of characters from memo file.
      *
-     * @param aIndex blocknumber  where the
+     * @param aBlockIndex blocknumber  where the
      *          string of characters starts
      *
      */
-    public String readMemo(int aIndex)
-                    throws IOException
+    String readMemo(final int aBlockIndex)
+             throws IOException
     {
-        long offset = aIndex * MEMO_BLOCK_LENGTH;
+        final StringBuilder sb = new StringBuilder();
         int c = 0;
-        StringBuilder sb = new StringBuilder();
+        raf.seek(aBlockIndex * LENGTH_MEMO_BLOCK);
 
-        raf.seek(offset);
-
-        while ((c = raf.read()) != 0x1a)
+        while ((c = raf.read()) != MARKER_END)
         {
-            if (c == 0x8d)
+            if ((byte) c == MARKER_SOFT_RETURN)
             {
+                /**
+                 * Ignore soft returns and the linefeed that succeeds them.
+                 */
                 raf.read();
 
                 continue;
@@ -161,90 +169,67 @@ class Memo
     /**
      * Writes a string of characters to memo file.
      */
-    public int writeMemo(String aMemo)
-                  throws IOException
+    int writeMemo(final String aMemoText)
+           throws IOException
     {
-        raf.seek(nextAvailableBlock * MEMO_BLOCK_LENGTH);
+        final int nrBytesToWrite = aMemoText.length() + 2;
+        final int nrBlocksToWrite = nrBytesToWrite / LENGTH_MEMO_BLOCK + 1;
+        final int nrSpacesToPadLastBlock = nrBytesToWrite % LENGTH_MEMO_BLOCK;
+        final int blockIndex = nextAvailableBlock;
 
-        /* Count the number of bytes to write. Memo fields are always written in
-         * full blocks of 512 bytes. The end of the field is marked with two
-         * 0x1a value bytes.
+        /*
+         * Write the string and end of file markers.
          */
-        int nrBlocks = ((aMemo.length() + 2) / MEMO_BLOCK_LENGTH) + 1;
+        raf.seek(blockIndex * LENGTH_MEMO_BLOCK);
+        raf.writeBytes(aMemoText); // Note: cuts off higher bytes, so assumes ASCII string
+        raf.writeByte(MARKER_END);
+        raf.writeByte(MARKER_END);
 
-        if (((aMemo.length() + 2) % MEMO_BLOCK_LENGTH) == 0)
+        /*
+         * Pad the last block with zeros.
+         */
+        for (int i = 0; i < nrSpacesToPadLastBlock; ++i)
         {
-            nrBlocks--;
+            raf.writeByte(0x00);
         }
 
-        writeString(aMemo, nrBlocks * MEMO_BLOCK_LENGTH);
+        /*
+         * Updated next available block to write.
+         */
+        raf.seek(OFFSET_NEXT_AVAILABLE_BLOCK_INDEX);
+        raf.writeInt(Util.changeEndianness(nextAvailableBlock += nrBlocksToWrite));
 
-        // update the number-of-next-available-block
-        int indexToWrittenMemo = nextAvailableBlock;
-        nextAvailableBlock += nrBlocks;
-        raf.seek(0);
-        raf.writeInt(Util.changeEndianness(nextAvailableBlock));
-
-        return indexToWrittenMemo;
+        return blockIndex;
     }
 
     /*
-    * Writes a header for a memo file.
-    */
+     * Writes a header for a new memo file.
+     */
     private void writeMemoHeader()
                           throws IOException
     {
-        // number of next available block intialized to zero
+        /*
+         * Number of next available block intialized to zero.
+         */
         raf.writeInt(0);
 
-        // fill the bytes up to version-field with 00h
-        for (int i = 4; i < OFFSET_VERSION; i++)
+        /*
+         * Fill the bytes up to version-field with zeros.
+         */
+        for (int i = LENGTH_NEXT_AVAILABLE_BLOCK_INDEX; i < OFFSET_VERSION; i++)
         {
             raf.writeByte(0x00);
         }
 
-        // write the version of the DBF-file
-        // for DBaseIII always '03h'?
-        raf.writeByte(version);
+        /*
+         * Write the version of the DBF-file.  Seems always to be 0x03?
+         */
+        raf.writeByte(0x03);
 
-        // rest of the header is filled with 00h
-        for (int i = OFFSET_VERSION; i < MEMO_BLOCK_LENGTH; i++)
-        {
-            raf.writeByte(0x00);
-        }
-    }
-
-    /*
-    * Writes a string of characters to a memo file.
-    * The string is terminated with two value 0x1a bytes
-    */
-    private void writeString(String s, int aLength)
-                      throws IOException
-    {
-        char[] charArray = new char[aLength + 1];
-        int lengthString = s.length();
-        int i = 0;
-
-        charArray = s.toCharArray();
-
-        if (aLength <= 0)
-        {
-            aLength = lengthString;
-        }
-
-        // write the contents of the input string
-        for (i = 0; (i < lengthString) && (i < (aLength - 2)); i++)
-        {
-            raf.writeByte(charArray[i]);
-        }
-
-        // write field terminators
-        raf.writeByte(0x1a);
-        raf.writeByte(0x1a);
-        i += 2;
-
-        // fill the rest of the block with 0x0h
-        for (; i < aLength; i++)
+        /*
+         * Rest of the header is filled with zeros
+         */
+        for (int i = OFFSET_VERSION; i < LENGTH_MEMO_BLOCK; i++)
         {
             raf.writeByte(0x00);
         }

@@ -23,6 +23,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.Format;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -44,9 +48,21 @@ public class Table
 {
     private static final int LENGTH_RECORD_DATE = 8;
     private static final int LENGTH_MEMO_FIELD = 10;
-    private static final int RECORD_DELETED = 0x2A;
-    private static final int EOF_MARKER = 0x1A;
-    private static final int RECORD_VALID = 0x20;
+    private static final int MARKER_RECORD_DELETED = 0x2A;
+    private static final int MARKER_EOF = 0x1A;
+    private static final int MARKER_RECORD_VALID = 0x20;
+    private static final DecimalFormat decimalParser = new DecimalFormat();
+    private static final Format dateFormat = new SimpleDateFormat("yyyyMMdd");
+
+    static
+    {
+        decimalParser.setParseBigDecimal(true);
+
+        /*
+         * Set Locale to US so that decimal point (not comma) is always expected.
+         */
+        decimalParser.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+    }
 
     private class RecordIterator
         implements Iterator<Record>
@@ -103,14 +119,17 @@ public class Table
 
     /**
      * Creates a new Table object.  A <tt>java.io.File</tt> object representing the .DBF file
-     * must be provided.  If the file does not exist it is created when {@link #open() } is called.
+     * must be provided.  To read from or write to the table it must first be opened.
      *
      * @param aTableFile a <tt>java.io.File</tt> object representing the .DBF file that
      *      stores this table's data.
      *
-     * @see #open(boolean)
+     * @see #open(nl.knaw.dans.common.dbflib.IfNonExistent)
+     *
+     * @throws IllegalArgumentException if <tt>aTableFiel</tt> is <tt>null</tt>
      */
     public Table(final File aTableFile)
+          throws IllegalArgumentException
     {
         if (aTableFile == null)
         {
@@ -121,97 +140,107 @@ public class Table
     }
 
     /**
-     * Creates a new Table object.
+     * Creates a new Table object.  In order to read from or write to the table it
+     * must first be opened.
+     * <p>
+     * <b>Note:</b> if the .DBF file already exists <tt>aFields</tt> will be overwritten by the values
+     * in the existing file when opened.  To replace an existing table, first delete it and then create and
+     * open a new <tt>Table</tt> object.
      *
-     * @param aTableFile DOCUMENT ME!
-     * @param version DOCUMENT ME!
-     * @param aFields DOCUMENT ME!
+     * @param aTableFile the .DBF file that contains the table data
+     * @param version the dBase version to support
+     * @param aFields the fields to create if this is a new table
+     *
+     * @see #open(nl.knaw.dans.common.dbflib.IfNonExistent)
+     *
+     * @throws IllegalArgumentException if <tt>aTableFiel</tt> is <tt>null</tt>
      */
-    public Table(final File aTableFile, int aVersion, final List<Field> aFields)
+    public Table(final File aTableFile, final Version aVersion, final List<Field> aFields)
+          throws IllegalArgumentException
     {
         this(aTableFile);
         header.setVersion(aVersion);
+        header.setHasMemo(hasMemo(aFields));
         header.setFields(aFields);
+    }
+
+    private static boolean hasMemo(final List<Field> aFields)
+    {
+        for (final Field f : aFields)
+        {
+            if (f.getType() == Type.MEMO)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * Opens the table for reading and writing.  Equivalent to
-     * {@link Table#open(boolean) Table.open(false)}
+     * {@link Table#open(nl.knaw.dans.common.dbflib.IfNonExistent)  Table.open(IfNonExistent.ERROR)}
      *
-     * @throws IOException if the table file does not exist
+     * @throws IOException if the table file does not exist or could not be opened
      */
     public void open()
               throws IOException, CorruptedTableException
     {
-        open(false);
+        open(IfNonExistent.ERROR);
     }
 
     /**
      * Opens the table for reading and writing.
      *
-     * @param aCreate create the table file if it does not exist
+     * @param aIfNonExistent what to do if the table file does not exist yet
      *
-     * @throws java.io.IOException if the table file does not exist and <tt>aCreate</tt> is <tt>false</tt>
+     * @throws java.io.IOException if the table does not exist or cannot be opened
      */
-    public void open(final boolean aCreate)
+    public void open(final IfNonExistent aIfNonExistent)
               throws IOException, CorruptedTableException
     {
-        if (aCreate)
-        {
-            if (tableFile.exists())
-            {
-                throw new IOException("Output file " + tableFile + " already exists");
-            }
-
-            raFile = new RandomAccessFile(tableFile, "rw");
-            header.writeAll(raFile);
-        }
-        else if (tableFile.exists())
+        if (tableFile.exists())
         {
             raFile = new RandomAccessFile(tableFile, "rw");
             header.readAll(raFile);
         }
-        else
+        else if (aIfNonExistent.isCreate())
+        {
+            raFile = new RandomAccessFile(tableFile, "rw");
+            header.writeAll(raFile);
+        }
+        else if (aIfNonExistent.isError())
         {
             throw new FileNotFoundException("Input file " + tableFile + " not found");
         }
     }
 
     /**
-     * Closes this table for reading and writing.  If a memo file
-     * was opened, it is also closed.
+     * Closes this table for reading and writing.
      *
-     * @throws java.io.IOException if the file cannot be closed
+     * @throws java.io.IOException if the table file or an associated file cannot be closed
      */
     public void close()
                throws IOException
     {
         try
         {
-            if (raFile == null)
+            if (raFile != null)
             {
-                return;
-            }
-
-            raFile.close();
-
-            if (memo != null)
-            {
-                memo.close();
+                raFile.close();
             }
         }
         finally
         {
             raFile = null;
-            memo = null;
+            ensureMemoClosed();
         }
     }
 
     /**
-     * Closes and deletes the underlying table file.  If a memo file
-     * was opened, it is also closed and deleted.
+     * Closes and deletes the underlying table file and associated files.
      *
-     * @throws java.io.IOException if the table file cannot be closed.
+     * @throws java.io.IOException if the table file or an associated file cannot be closed.
      */
     public void delete()
                 throws IOException
@@ -227,7 +256,7 @@ public class Table
 
     /**
      * Returns the last updated date of the table.  Note that the hours, minutes,
-     * seconds and milliseconds fields are always set to zero.  Also the date time
+     * seconds and milliseconds fields are always set to zero.  Also, the date time
      * is not normalized to UTC.
      *
      * @return the last modified date of the table
@@ -267,8 +296,9 @@ public class Table
     /**
      * Returns a <tt>Record</tt> iterator.
      *
-     *
      * @return a <tt>Record</tt> iterator
+     *
+     * @see Record
      */
     public Iterator<Record> recordIterator()
     {
@@ -280,82 +310,82 @@ public class Table
      *
      * @param aRecord the record to add.
      *
-     * @throws IOException if the underlying file threw an I/O exception
+     * @throws IOException if the record could not be written to the database file
+     *
+     * @see Record
      */
     public void addRecord(final Record aRecord)
                    throws IOException, CorruptedTableException
     {
         checkOpen();
 
-        String name = null;
-
         raFile.seek(header.getLength() + (header.getRecordCount() * header.getRecordLength()));
+        raFile.writeByte(MARKER_RECORD_VALID);
 
-        // write record deleted tag
-        raFile.writeByte(RECORD_VALID);
-
-        // write record contents
         for (Field field : header.getFields())
         {
-            name = field.getName().trim();
+            final Object value = aRecord.getValue(field.getName());
+            final int length = field.getLength();
+            final int decimalCount = field.getDecimalCount();
 
             switch (field.getType())
             {
                 case NUMBER:
-                    writeDouble((Double) aRecord.getValue(name),
-                                field.getLength(),
-                                field.getDecimalCount());
+                    writeDouble((Double) value, length, decimalCount);
 
                     break;
 
                 case FLOAT:
-                    writeFloat((Double) aRecord.getValue(name),
-                               field.getLength(),
-                               field.getDecimalCount());
+                    writeFloat((Double) value, length, decimalCount);
 
                     break;
 
                 case CHARACTER:
-                    Util.writeString(raFile,
-                                     (String) aRecord.getValue(name),
-                                     field.getLength());
+                    Util.writeString(raFile, (String) value, length);
 
                     break;
 
                 case LOGICAL:
-                    writeBoolean((Boolean) aRecord.getValue(name));
+                    writeBoolean((Boolean) value);
 
                     break;
 
                 case DATE:
 
-                    if (aRecord.getValue(name) != null)
+                    if (value == null)
                     {
-                        writeRecordDate((Date) aRecord.getValue(name));
+                        writeSpaces(LENGTH_RECORD_DATE);
                     }
                     else
                     {
-                        writeSpaces(LENGTH_RECORD_DATE);
+                        writeRecordDate((Date) value);
                     }
 
                     break;
 
                 case MEMO:
-                    writeMemo((String) aRecord.getValue(name));
+                    writeMemo((String) value);
 
                     break;
 
                 default:
-                    System.out.println("Unknown field type encountered\n");
 
-                    break;
+                    /*
+                     * This should not be possible.
+                     */
+                    throw new Error("Error: not all enumerated constants in Type are handled.  Contact library developers.");
             }
         }
 
-        // rewrite EOF byte
-        raFile.writeByte(0x1a);
+        raFile.writeByte(MARKER_EOF);
+        writeRecordCount(header.getRecordCount() + 1);
+    }
+
+    private void writeRecordCount(final int aRecordCount)
+                           throws IOException
+    {
         raFile.seek(DbfHeader.OFFSET_RECORD_COUNT);
-        header.setRecordCount(header.getRecordCount() + 1);
+        header.setRecordCount(aRecordCount);
         header.writeRecordCount(raFile);
     }
 
@@ -380,6 +410,19 @@ public class Table
         return Double.parseDouble(s);
     }
 
+    private Number readBigDecimal(final int aLength)
+                           throws IOException, ParseException
+    {
+        String s = Util.readString(raFile, aLength);
+
+        if (s.trim().isEmpty())
+        {
+            return null;
+        }
+
+        return decimalParser.parse(s);
+    }
+
     private Double readFloat(final int aLength)
                       throws IOException
     {
@@ -402,11 +445,10 @@ public class Table
     private Date readRecordDate()
                          throws IOException
     {
-        String yearString = Util.readString(raFile, 4);
-        String monthString = Util.readString(raFile, 2);
-        String dayString = Util.readString(raFile, 2);
-
-        Calendar cal = Calendar.getInstance();
+        final String yearString = Util.readString(raFile, 4);
+        final String monthString = Util.readString(raFile, 2);
+        final String dayString = Util.readString(raFile, 2);
+        final Calendar cal = Calendar.getInstance();
 
         if (yearString.trim().isEmpty())
         {
@@ -414,9 +456,9 @@ public class Table
         }
         else
         {
-            int year = Integer.parseInt(yearString);
-            int month = Integer.parseInt(monthString) - 1;
-            int day = Integer.parseInt(dayString);
+            final int year = Integer.parseInt(yearString);
+            final int month = Integer.parseInt(monthString) - 1;
+            final int day = Integer.parseInt(dayString);
 
             cal.set(Calendar.YEAR, year);
             cal.set(Calendar.MONTH, month);
@@ -430,15 +472,12 @@ public class Table
         return cal.getTime();
     }
 
-    private String readMemo(int fieldLength)
+    private String readMemo(final int aFieldLength)
                      throws IOException, CorruptedTableException
     {
-        if (memo == null)
-        {
-            openMemo();
-        }
+        ensureMemoOpened(IfNonExistent.ERROR);
 
-        String sIndex = Util.readString(raFile, fieldLength);
+        String sIndex = Util.readString(raFile, aFieldLength);
 
         if (sIndex.trim().isEmpty())
         {
@@ -448,47 +487,55 @@ public class Table
         return memo.readMemo(Integer.parseInt(sIndex.trim()));
     }
 
-    /**
-     * Opens a memo file with the same name as the table file.
-     * Equivalent to {@link Table#openMemo(boolean) Table.openMemo(false)}
-     *
-     * @throws CorruptedTableException if the table file does not exist
-     */
-    private void openMemo()
-                   throws CorruptedTableException, IOException
+    private void ensureMemoOpened(final IfNonExistent aIfNonExistent)
+                           throws CorruptedTableException, IOException
     {
-        openMemo(false);
+        if (memo != null)
+        {
+            return;
+        }
+
+        openMemo(aIfNonExistent);
     }
 
-    /**
-     * Opens a memo file with the same name as the table file.  When 'aCreate' parameter = false,
-     * the memo file is looked up in the same directory where the table file is, and the search is
-     * case insensitive.   @throws CorruptedTableException if the table file does not exist.
-     * If the file is found, instance of a memo object is created.
-     */
-    private void openMemo(boolean aCreate)
+    private void ensureMemoClosed()
+                           throws IOException
+    {
+        if (memo != null)
+        {
+            try
+            {
+                memo.close();
+            }
+            finally
+            {
+                memo = null;
+            }
+        }
+    }
+
+    private void openMemo(final IfNonExistent aIfNonExistent)
                    throws CorruptedTableException, IOException
     {
-        File dbtFile = null;
+        File dbtFile = Util.getDbtFile(tableFile);
 
-        if (aCreate)
+        if (dbtFile == null)
         {
-            String file = tableFile.getPath();
-            dbtFile = new File(file.substring(0, file.length() - 3) + "dbt");
-        }
-        else
-        {
-            dbtFile = Util.getDbtFile(tableFile);
-
-            if (dbtFile == null)
+            if (aIfNonExistent.isError())
             {
                 throw new CorruptedTableException("Could not find .DBT file or multiple matches for .DBT file");
             }
+            else if (aIfNonExistent.isCreate())
+            {
+                final String tableFilePath = tableFile.getPath();
+                dbtFile = new File(tableFilePath.substring(0, tableFilePath.length() - ".dbf".length()) + ".dbt");
+            }
         }
 
-        memo = new Memo(dbtFile);
-        memo.open(aCreate,
-                  header.getVersion());
+        memo =
+            new Memo(dbtFile,
+                     header.getVersion());
+        memo.open(aIfNonExistent);
     }
 
     private Record readRecord(final int aIndex)
@@ -498,12 +545,12 @@ public class Table
 
         byte firstByteOfRecord = raFile.readByte();
 
-        while (firstByteOfRecord == RECORD_DELETED)
+        while (firstByteOfRecord == MARKER_RECORD_DELETED)
         {
             raFile.skipBytes(header.getRecordLength() - 1);
         }
 
-        if (firstByteOfRecord == EOF_MARKER)
+        if (firstByteOfRecord == MARKER_EOF)
         {
             return null;
         }
@@ -623,28 +670,23 @@ public class Table
             return;
         }
 
-        String recordDate;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        recordDate = sdf.format(aRecordDate);
-        Util.writeString(raFile, recordDate, LENGTH_RECORD_DATE);
+        Util.writeString(raFile,
+                         dateFormat.format(aRecordDate),
+                         LENGTH_RECORD_DATE);
     }
 
     private void writeMemo(final String aMemo)
                     throws IOException, CorruptedTableException
     {
-        if ((aMemo == null) || aMemo.isEmpty())
+        if (aMemo == null || aMemo.isEmpty())
         {
             writeSpaces(LENGTH_MEMO_FIELD);
         }
         else
         {
-            if (memo == null)
-            {
-                openMemo(true);
-            }
+            ensureMemoOpened(IfNonExistent.CREATE);
 
             int index = memo.writeMemo(aMemo);
-
             writeDouble(Double.valueOf(index),
                         LENGTH_MEMO_FIELD,
                         0);
