@@ -19,6 +19,7 @@
  */
 package nl.knaw.dans.common.dbflib;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -131,5 +132,17 @@ public class Record
     public Boolean getBooleanValue(final String aFieldName)
     {
         return (Boolean) getValue(aFieldName);
+    }
+
+    /**
+     * Returns the specified value as a <tt>java.util.Date</tt> object.
+     *
+     * @param aFieldName the name of the field with date data
+     *
+     * @return a <tt>java.util.Date</tt> object
+     */
+    public Date getDateValue(final String aFieldName)
+    {
+        return (Date) getValue(aFieldName);
     }
 }
