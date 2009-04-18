@@ -239,7 +239,7 @@ public class TestRoundTrip
         }
     }
 
-/**
+    /**
      * DOCUMENT ME!
      *
      * @throws IOException DOCUMENT ME!
@@ -249,53 +249,19 @@ public class TestRoundTrip
     public void writing()
                  throws IOException, CorruptedTableException
     {
-        File carsFile = new File("src/test/resources/dbase3plus/cars/cars.dbf");
-        File outputDir = UnitTestUtil.recreateDirectory("target/TestWriting/cars");
+        final Ranges ignoredRangesDbf = new Ranges();
+        ignoredRangesDbf.addRange(0x01, 0x03); // modified
+        ignoredRangesDbf.addRange(0x2c, 0x2f); // field description "address in memory"
+        ignoredRangesDbf.addRange(0x4c, 0x4f); // idem
+        ignoredRangesDbf.addRange(0x6c, 0x6f); // idem
+        ignoredRangesDbf.addRange(0x8c, 0x8f); // idem
+        ignoredRangesDbf.addRange(0xac, 0xaf); // idem
+        ignoredRangesDbf.addRange(0xcc, 0xcf); // idem
 
-        File carsFileCopy = new File(outputDir, "newCars.dbf");
-        Table carsCopy = null;
-        Table cars = null;
+        final Ranges ignoredRangesDbt = new Ranges();
+        ignoredRangesDbt.addRange(0x04, 0x1ff); // reserved/garbage
+        ignoredRangesDbt.addRange(0x432, 0x5ff); // garbage beyond dbase eof bytes
 
-        try
-        {
-            cars = new Table(carsFile);
-            cars.open();
-
-            List<Field> fields = cars.getFields();
-            carsCopy = new Table(carsFileCopy, Version.DBASE_3, fields);
-            carsCopy.open(IfNonExistent.CREATE);
-
-            Iterator<Record> recordIterator = cars.recordIterator();
-
-            while (recordIterator.hasNext())
-            {
-                carsCopy.addRecord(recordIterator.next());
-            }
-        }
-        finally
-        {
-            cars.close();
-            carsCopy.close();
-        }
-
-        List<Pair<Integer, Integer>> ignoredRangesDbf = new ArrayList<Pair<Integer, Integer>>();
-        ignoredRangesDbf.add(new Pair<Integer, Integer>(0x01, 0x03)); // modified
-        ignoredRangesDbf.add(new Pair<Integer, Integer>(0x2c, 0x2f)); // field description "address in memory"
-        ignoredRangesDbf.add(new Pair<Integer, Integer>(0x4c, 0x4f)); // idem
-        ignoredRangesDbf.add(new Pair<Integer, Integer>(0x6c, 0x6f)); // idem
-        ignoredRangesDbf.add(new Pair<Integer, Integer>(0x8c, 0x8f)); // idem
-        ignoredRangesDbf.add(new Pair<Integer, Integer>(0xac, 0xaf)); // idem
-        ignoredRangesDbf.add(new Pair<Integer, Integer>(0xcc, 0xcf)); // idem
-
-        long diffOffset = UnitTestUtil.compare(carsFile, carsFileCopy, ignoredRangesDbf);
-        assertEquals("Files differ at offset " + Integer.toHexString((int) diffOffset), -1, diffOffset);
-
-        List<Pair<Integer, Integer>> ignoredRangesDbt = new ArrayList<Pair<Integer, Integer>>();
-        ignoredRangesDbt.add(new Pair<Integer, Integer>(0x04, 0x1ff)); // reserved/garbage
-        ignoredRangesDbt.add(new Pair<Integer, Integer>(0x432, 0x5ff)); // garbage beyond dbase eof bytes
-        diffOffset =
-            UnitTestUtil.compare(new File("src/test/resources/dbase3plus/cars/cars.dbt"),
-                                 new File(outputDir, "newCars.dbt"),
-                                 ignoredRangesDbt);
+        UnitTestUtil.doCopyAndCompareTest("dbase3plus/cars", "cars", ignoredRangesDbf, ignoredRangesDbt);
     }
 }

@@ -19,40 +19,44 @@
  */
 package nl.knaw.dans.common.dbflib;
 
-class Pair<A, B>
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *
+ * @author Jan van Mansum
+ */
+class Ranges
 {
-    final private A first;
-    final private B second;
-
-    /**
-     * Creates a new Pair object.
-     *
-     * @param aFirst DOCUMENT ME!
-     * @param aSecond DOCUMENT ME!
-     */
-    public Pair(final A aFirst, final B aSecond)
+    private static class Range
     {
-        first = aFirst;
-        second = aSecond;
+        int first;
+        int last;
+
+        Range(final int aFirst, final int aLast)
+        {
+            first = aFirst;
+            last = aLast;
+        }
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public A getFirst()
+    private List<Range> rangesList = new ArrayList<Range>();
+
+    void addRange(final int aFirst, final int aLast)
     {
-        return first;
+        rangesList.add(new Range(aFirst, aLast));
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public B getSecond()
+    boolean inRanges(final long aOffset)
     {
-        return second;
+        for (final Range range : rangesList)
+        {
+            if (aOffset >= range.first && aOffset <= range.last)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -19,6 +19,8 @@
  */
 package nl.knaw.dans.common.dbflib;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -100,7 +102,7 @@ class UnitTestUtil
      *
      * @throws IOException if one of the files could not be read
      */
-    public static long compare(final File aFile1, final File aFile2, final List<Pair<Integer, Integer>> aIgnoredRanges)
+    public static long compare(final File aFile1, final File aFile2, final Ranges aIgnoredRanges)
                         throws IOException
     {
         final FileInputStream fis1 = new FileInputStream(aFile1);
@@ -112,7 +114,7 @@ class UnitTestUtil
             int c1 = fis1.read();
             int c2 = fis2.read();
 
-            while (UnitTestUtil.inRange(offset, aIgnoredRanges) || c1 != -1 && c2 != -1 && c1 == c2)
+            while (aIgnoredRanges.inRanges(offset) || c1 != -1 && c2 != -1 && c1 == c2)
             {
                 ++offset;
 
@@ -132,27 +134,6 @@ class UnitTestUtil
             fis1.close();
             fis2.close();
         }
-    }
-
-    /**
-     * Returns <tt>true</tt> if <tt>aOffset</tt> is within any of the ranges in the <tt>aRanges</tt> list.
-     *
-     * @param aOffset the offset to check
-     * @param aRanges the ranges to check
-     *
-     * @return <tt>true</tt> if in range <tt>false</tt> otherwise
-     */
-    public static boolean inRange(final long aOffset, final List<Pair<Integer, Integer>> aRanges)
-    {
-        for (final Pair<Integer, Integer> range : aRanges)
-        {
-            if (aOffset >= range.getFirst() && aOffset <= range.getSecond())
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -205,5 +186,75 @@ class UnitTestUtil
         dir.mkdirs();
 
         return dir;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param aSubDir DOCUMENT ME!
+     * @param aTableBaseName DOCUMENT ME!
+     * @param aIgnoredRangesDbf DOCUMENT ME!
+     * @param aIgnoredRangesDbt DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws CorruptedTableException DOCUMENT ME!
+     */
+    public static void doCopyAndCompareTest(final String aSubDir, final String aTableBaseName,
+                                            final Ranges aIgnoredRangesDbf, final Ranges aIgnoredRangesDbt)
+                                     throws IOException, CorruptedTableException
+    {
+        final File outputDir = UnitTestUtil.recreateDirectory("target/test-output/" + aSubDir);
+
+        File orgFile = new File("src/test/resources/" + aSubDir + "/" + aTableBaseName + ".dbf");
+
+        if (! orgFile.exists())
+        {
+            orgFile = new File("src/test/resources/" + aSubDir + "/" + aTableBaseName + ".DBF");
+        }
+
+        File copyFile = new File(outputDir, aTableBaseName + ".dbf");
+        Table copyTable = null;
+        Table orgTable = null;
+
+        try
+        {
+            orgTable = new Table(orgFile);
+            orgTable.open();
+
+            List<Field> fields = orgTable.getFields();
+            copyTable = new Table(copyFile, Version.DBASE_3, fields);
+            copyTable.open(IfNonExistent.CREATE);
+
+            Iterator<Record> recordIterator = orgTable.recordIterator();
+
+            while (recordIterator.hasNext())
+            {
+                copyTable.addRecord(recordIterator.next());
+            }
+        }
+        finally
+        {
+            orgTable.close();
+            copyTable.close();
+        }
+
+        long diffOffset = UnitTestUtil.compare(orgFile, copyFile, aIgnoredRangesDbf);
+        assertEquals("DBF files differ at offset 0x" + Integer.toHexString((int) diffOffset), -1, diffOffset);
+
+        if (aIgnoredRangesDbt == null)
+        {
+            return;
+        }
+
+        final File orgDbtFile = Util.getDbtFile(orgFile);
+        final File copyDbtFile = Util.getDbtFile(copyFile);
+
+        if (orgDbtFile == null || copyDbtFile == null)
+        {
+            assertTrue("DBT file expected but not found", false);
+        }
+
+        diffOffset = UnitTestUtil.compare(orgDbtFile, copyDbtFile, aIgnoredRangesDbt);
+        assertEquals("DBT files differ at offset 0x" + Integer.toHexString((int) diffOffset), -1, diffOffset);
     }
 }

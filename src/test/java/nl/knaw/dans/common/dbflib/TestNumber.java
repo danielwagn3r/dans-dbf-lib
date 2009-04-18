@@ -191,4 +191,26 @@ public class TestNumber
             number.close();
         }
     }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws CorruptedTableException DOCUMENT ME!
+     */
+    @Test
+    public void writing_maximal_and_minimal_values()
+                                            throws IOException, CorruptedTableException
+    {
+        Ranges ignoredRanges = new Ranges();
+        ignoredRanges.addRange(0x01, 0x03); // modified date
+        ignoredRanges.addRange(0x23, 0x2a); // ignore garbage after 0 terminator of field name string
+        ignoredRanges.addRange(0x2c, 0x2f); // field description "address in memory"
+        ignoredRanges.addRange(0x4c, 0x4f); // idem
+        ignoredRanges.addRange(0x6c, 0x6f); // idem
+        ignoredRanges.addRange(0x8c, 0x8f); // idem
+        ignoredRanges.addRange(0xac, 0xaf); // idem
+
+        UnitTestUtil.doCopyAndCompareTest("dbase3plus/types", "NUMBER", ignoredRanges, null);
+    }
 }
