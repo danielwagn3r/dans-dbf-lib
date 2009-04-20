@@ -524,6 +524,14 @@ public class Table
         }
     }
 
+    /**
+     * Opens the memo of this table.
+     *
+     * @param aIfNonExistent what to do if the memo file doesn't exist. (Cannot be IGNORE.)
+     * @throws java.io.IOException if the memo file could not be opened
+     * @throws nl.knaw.dans.common.dbflib.CorruptedTableException if the memo file could not be found or multiple
+     *   matches exist, or if it is corrupt
+     */
     private void openMemo(final IfNonExistent aIfNonExistent)
                    throws IOException, CorruptedTableException
     {
@@ -539,6 +547,10 @@ public class Table
             {
                 final String tableFilePath = tableFile.getPath();
                 dbtFile = new File(tableFilePath.substring(0, tableFilePath.length() - ".dbf".length()) + ".dbt");
+            }
+            else
+            {
+                throw new Error("Programming error: cannot ignore non existing memo.");
             }
         }
 

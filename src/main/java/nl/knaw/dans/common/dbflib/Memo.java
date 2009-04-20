@@ -48,7 +48,7 @@ class Memo
      * Markers.
      */
     private static final byte MARKER_SOFT_RETURN = (byte) 0x8d;
-    private static final byte MARKER_END = 0x1a;
+    private static final byte MARKER_MEMO_END = 0x1a;
 
     /*
      * Fields.
@@ -97,8 +97,8 @@ class Memo
         else if (aIfNonExistent.isCreate())
         {
             raf = new RandomAccessFile(memoFile, "rw");
-            writeMemoHeader();
             nextAvailableBlock = 1;
+            writeMemoHeader();
         }
         else if (aIfNonExistent.isError())
         {
@@ -142,14 +142,19 @@ class Memo
      *
      */
     String readMemo(final int aBlockIndex)
-             throws IOException
+             throws IOException, CorruptedTableException
     {
         final StringBuilder sb = new StringBuilder();
         int c = 0;
         raf.seek(aBlockIndex * LENGTH_MEMO_BLOCK);
 
-        while ((c = raf.read()) != MARKER_END)
+        while ((c = raf.read()) != MARKER_MEMO_END)
         {
+            if (c == -1)
+            {
+                throw new CorruptedTableException("Corrupted memo file");
+            }
+
             if ((byte) c == MARKER_SOFT_RETURN)
             {
                 /**
@@ -173,8 +178,17 @@ class Memo
            throws IOException
     {
         final int nrBytesToWrite = aMemoText.length() + 2;
-        final int nrBlocksToWrite = nrBytesToWrite / LENGTH_MEMO_BLOCK + 1;
+        int nrBlocksToWrite = nrBytesToWrite / LENGTH_MEMO_BLOCK + 1;
         final int nrSpacesToPadLastBlock = nrBytesToWrite % LENGTH_MEMO_BLOCK;
+
+        /*
+         * Exact fit; we don't need an extra block.
+         */
+        if (nrSpacesToPadLastBlock == 0)
+        {
+            --nrBlocksToWrite;
+        }
+
         final int blockIndex = nextAvailableBlock;
 
         /*
@@ -182,8 +196,8 @@ class Memo
          */
         raf.seek(blockIndex * LENGTH_MEMO_BLOCK);
         raf.writeBytes(aMemoText); // Note: cuts off higher bytes, so assumes ASCII string
-        raf.writeByte(MARKER_END);
-        raf.writeByte(MARKER_END);
+        raf.writeByte(MARKER_MEMO_END);
+        raf.writeByte(MARKER_MEMO_END);
 
         /*
          * Pad the last block with zeros.
@@ -197,7 +211,8 @@ class Memo
          * Updated next available block to write.
          */
         raf.seek(OFFSET_NEXT_AVAILABLE_BLOCK_INDEX);
-        raf.writeInt(Util.changeEndianness(nextAvailableBlock += nrBlocksToWrite));
+        nextAvailableBlock += nrBlocksToWrite;
+        raf.writeInt(Util.changeEndianness(nextAvailableBlock));
 
         return blockIndex;
     }
@@ -211,7 +226,7 @@ class Memo
         /*
          * Number of next available block intialized to zero.
          */
-        raf.writeInt(0);
+        raf.writeInt(Util.changeEndianness(nextAvailableBlock));
 
         /*
          * Fill the bytes up to version-field with zeros.

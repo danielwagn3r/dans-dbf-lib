@@ -23,7 +23,10 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Represents a record in a table.
+ * Represents a record in a table.  A record is basically maps a <tt>java.lang.String</tt>
+ * key to a value object for a specified row in a table.  The type of the value object depends
+ * on the field type.  To find out which DBF types map to which Java types, see
+ * {@link Type}.
  *
  * @author Jan van Mansum
  * @author Vesa Åkerman
@@ -33,7 +36,8 @@ public class Record
     private final Map<String, Object> valueMap;
 
     /**
-     * Creates a new Record object.
+     * Creates a new Record object.  <tt>aValueMape</tt> specifies the value of each field in
+     * the record.
      *
      * @param aValueMap a mapping if field names to values
      */

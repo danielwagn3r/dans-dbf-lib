@@ -35,11 +35,13 @@ public class Field
     private final String formatString;
 
     /**
-     * Creates a new Field object.
+     * Creates a new Field object.  <tt>aLength</tt> and <tt>aDecimalCount</tt> do not apply to all
+     * field types.
      *
      * @param aName name of the field
      * @param aType the type of the field
      * @param aLength the length of the field
+     * @param aDecimalCount the decimal count of the field.
      */
     public Field(final String aName, final Type aType, final int aLength, final int aDecimalCount)
     {

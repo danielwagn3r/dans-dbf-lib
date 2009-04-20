@@ -313,7 +313,7 @@
                 <variable>false</variable>
             </declaration>
             <modifier>
-                <enable>false</enable>
+                <enable>true</enable>
                 <order>public=true|protected=true|private=true|abstract=true|static=true|final=true|synchronized=true|transient=true|volatile=true|native=true|strictfp=true</order>
             </modifier>
         </sorting>

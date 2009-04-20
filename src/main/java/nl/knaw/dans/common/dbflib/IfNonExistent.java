@@ -38,16 +38,26 @@ public enum IfNonExistent
     /**
      * Signals that the call should be ignored.
      */
-    IGNORE;boolean isCreate()
+    IGNORE;
+    /**
+     * @return if this is the CREATE constant.
+     */
+    boolean isCreate()
     {
         return this == CREATE;
     }
 
+    /**
+     * @return if this is the IGNORE constant.
+     */
     boolean isIgnore()
     {
         return this == IGNORE;
     }
 
+    /**
+     * @return if this is the ERROR constant.
+     */
     boolean isError()
     {
         return this == ERROR;

@@ -28,8 +28,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * Encapsulates the DBF table header.
  *
  * @author Jan van Mansum
+ * @author Vesa Åkerman
  */
 class DbfHeader
 {
