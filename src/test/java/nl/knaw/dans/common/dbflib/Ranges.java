@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Represents a byte range in a file to ignore while comparing it to another file.
  *
  * @author Jan van Mansum
  */

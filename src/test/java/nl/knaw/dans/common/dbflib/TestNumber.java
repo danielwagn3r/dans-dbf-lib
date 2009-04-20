@@ -216,10 +216,11 @@ public class TestNumber
     }
 
     /**
-     * DOCUMENT ME!
+     * Checks that ValueTooLargeException is thrown only when the number provided is too larget
+     * to fit into the field.
      *
-     * @throws IOException DOCUMENT ME!
-     * @throws DbfLibException DOCUMENT ME!
+     * @throws IOException should not happen
+     * @throws DbfLibException should not happen
      */
     @Test
     public void valueTooLargeException()
@@ -241,12 +242,30 @@ public class TestNumber
         {
             try
             {
+                table.addRecord(12345);
+            }
+            catch (ValueTooLargeException vtle)
+            {
+                assertTrue("ValueTooLargeException went off unexpectedly", false);
+            }
+
+            try
+            {
                 table.addRecord(123456);
                 assertFalse("Expected exception ValueTooLargeException not thrown", false);
             }
             catch (ValueTooLargeException vtle)
             {
                 assertTrue(true);
+            }
+
+            try
+            {
+                table.addRecord(0, 12.34);
+            }
+            catch (ValueTooLargeException vtle)
+            {
+                assertTrue("ValueTooLargeException went off unexpectedly", false);
             }
 
             try

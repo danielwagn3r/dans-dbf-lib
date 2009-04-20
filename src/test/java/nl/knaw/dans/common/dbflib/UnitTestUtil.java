@@ -189,15 +189,18 @@ class UnitTestUtil
     }
 
     /**
-     * DOCUMENT ME!
+     * Performs a test in which a DBF is copied by reading it and writing it using the Table class after
+     * which a byte-wise compare of the DBFs and DBTs is done.  Ranges of bytes to be ignored when comparing the
+     * files can be provided.
      *
-     * @param aSubDir DOCUMENT ME!
-     * @param aTableBaseName DOCUMENT ME!
-     * @param aIgnoredRangesDbf DOCUMENT ME!
-     * @param aIgnoredRangesDbt DOCUMENT ME!
+     * @param aSubDir the sub-directory of src/test/resources/ to find the source file and of target/test-output to put the
+     *      copied file
+     * @param aTableBaseName the base name of the table
+     * @param aIgnoredRangesDbf ranges to ignore when comparing the DBFs
+     * @param aIgnoredRangesDbt ranges to ignore when comparing the DBTs
      *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws IOException should not happen
+     * @throws CorruptedTableException should not happen
      */
     public static void doCopyAndCompareTest(final String aSubDir, final String aTableBaseName,
                                             final Ranges aIgnoredRangesDbf, final Ranges aIgnoredRangesDbt)

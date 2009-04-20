@@ -33,8 +33,8 @@ import java.io.File;
 public class TestUtil
 {
     /**
-       * Tests {@link Util#changeEndianness(int) }.
-       */
+     * Tests {@link Util#changeEndianness(int) }.
+     */
     @Test
     public void changeEndianness_integer()
     {
@@ -117,7 +117,7 @@ public class TestUtil
     }
 
     /**
-     * DOCUMENT ME!
+     * Test a simple case for Util.getDbtFile.
      */
     @Test
     public void getDbtFile_simple_case()
@@ -130,7 +130,7 @@ public class TestUtil
     }
 
     /**
-     * DOCUMENT ME!
+     * See test method name.
      */
     @Test
     public void getDbtFile_returns_null_if_dbt_non_existent()
@@ -141,7 +141,7 @@ public class TestUtil
     }
 
     /**
-     * DOCUMENT ME!
+     * See test method name.
      */
     @Test
     public void getDbtFile_returns_null_if_dbf_non_existent()
@@ -151,7 +151,7 @@ public class TestUtil
     }
 
     /**
-     * DOCUMENT ME!
+     * See test method name.
      */
     @Test
     public void getNumberOfDigits()
