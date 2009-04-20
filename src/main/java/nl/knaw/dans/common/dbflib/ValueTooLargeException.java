@@ -21,15 +21,22 @@ package nl.knaw.dans.common.dbflib;
 
 
 /**
- * Thrown to indicate that a table did not comply with the supported versions of the
- * DBF file format.
- *
+ * Thrown when trying to add a record that contains values that are too large for
+ * their designated fields. Note that numbers that are considered too large only if the number of
+ * digits before the decimal point exceeds the number number that fit in the field; too many decimal
+ * digits will simply be rounded.
+ * <p>
+ * Note, too, that dBase III handles NUMBER values internally as floating point values.  It <em>will</em>
+ * display the values as found in the DBF file but if they are too large or contain too many digits dBase
+ * will display an error message or round the value when trying to process it (e.g. if you try to save
+ * the value again in the dBase program).
+
  * @author Jan van Mansum
  */
-public class CorruptedTableException
+public class ValueTooLargeException
     extends DbfLibException
 {
-    CorruptedTableException(final String aMessage)
+    ValueTooLargeException(final String aMessage)
     {
         super(aMessage);
     }

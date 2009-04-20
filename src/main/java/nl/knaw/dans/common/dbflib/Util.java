@@ -216,4 +216,31 @@ class Util
 
         return cal.getTime();
     }
+
+    /**
+     * Returns the number of digits in an integer.
+     *
+     * @param aInteger the integer
+     * @return the number of digits
+     */
+    static int getNumberOfDigits(final int aInteger)
+    {
+        if (aInteger == 0)
+        {
+            return 1;
+        }
+
+        return (int) Math.floor(Math.log10(Math.abs(aInteger))) + 1;
+    }
+
+    /**
+     * Returns the width in positions of the sign of <tt>aInteger</tt>.
+     *
+     * @param aNumber
+     * @return 1 if <tt>aInteger</tt> is negative, 0 otherwise
+     */
+    static int getSignWidth(Number aNumber)
+    {
+        return aNumber.intValue() < 0 ? 1 : 0;
+    }
 }

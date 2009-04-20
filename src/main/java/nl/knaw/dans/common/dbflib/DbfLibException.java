@@ -21,15 +21,14 @@ package nl.knaw.dans.common.dbflib;
 
 
 /**
- * Thrown to indicate that a table did not comply with the supported versions of the
- * DBF file format.
+ * Base class for all DANS DBF Library expections.
  *
  * @author Jan van Mansum
  */
-public class CorruptedTableException
-    extends DbfLibException
+public abstract class DbfLibException
+    extends Exception
 {
-    CorruptedTableException(final String aMessage)
+    protected DbfLibException(final String aMessage)
     {
         super(aMessage);
     }

@@ -297,6 +297,35 @@ public class Table
     }
 
     /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws ValueTooLargeException DOCUMENT ME!
+     * @throws RecordTooLargeException DOCUMENT ME!
+     */
+    public void addRecord(final Object... aFieldValue)
+                   throws IOException, CorruptedTableException, ValueTooLargeException, RecordTooLargeException
+    {
+        if (aFieldValue.length > header.getFields().size())
+        {
+            throw new RecordTooLargeException("Trying to add " + aFieldValue.length + " fields while there are only "
+                                              + header.getFields().size() + " defined in the table file");
+        }
+
+        final Map<String, Object> map = new HashMap<String, Object>();
+        final Iterator<Field> fieldIterator = header.getFields().iterator();
+
+        for (final Object fieldValue : aFieldValue)
+        {
+            map.put(fieldIterator.next().getName(),
+                    fieldValue);
+        }
+
+        addRecord(new Record(map));
+    }
+
+    /**
      * Adds a record to this table.
      *
      * @param aRecord the record to add.
@@ -307,7 +336,7 @@ public class Table
      * @see Record
      */
     public void addRecord(final Record aRecord)
-                   throws IOException, CorruptedTableException
+                   throws IOException, CorruptedTableException, ValueTooLargeException
     {
         checkOpen();
 
@@ -325,7 +354,8 @@ public class Table
                 case FLOAT:
                     writeNumber((Number) value,
                                 length,
-                                field.getFormatString());
+                                field.getFormatString(),
+                                field.getDecimalCount());
 
                     break;
 
@@ -636,9 +666,12 @@ public class Table
         }
     }
 
-    private void writeNumber(final Number aValue, final int aLength, final String aFormatString)
-                      throws IOException
+    private void writeNumber(final Number aValue, final int aLength, final String aFormatString, final int aDecimalCount)
+                      throws IOException, ValueTooLargeException
     {
+        /*
+         * If null, just write spaces.
+         */
         if (aValue == null)
         {
             writeSpaces(aLength);
@@ -646,6 +679,19 @@ public class Table
             return;
         }
 
+        /*
+         * If too large to fit, throw exception.
+         */
+        int nrPositionsForDecimals = aDecimalCount == 0 ? 0 : aDecimalCount + 1;
+
+        if (Util.getSignWidth(aValue) + Util.getNumberOfDigits(aValue.intValue()) > aLength - nrPositionsForDecimals)
+        {
+            throw new ValueTooLargeException("Number does not fit in field: " + aValue);
+        }
+
+        /*
+         * Otherwise, write the value.
+         */
         Util.writeString(raFile,
                          String.format(Locale.US, aFormatString, aValue),
                          aLength);
@@ -698,9 +744,18 @@ public class Table
             ensureMemoOpened(IfNonExistent.CREATE);
 
             int index = memo.writeMemo(aMemo);
-            writeNumber(Integer.valueOf(index),
-                        LENGTH_MEMO_FIELD,
-                        "%" + LENGTH_MEMO_FIELD + "d");
+
+            try
+            {
+                writeNumber(Integer.valueOf(index),
+                            LENGTH_MEMO_FIELD,
+                            "%" + LENGTH_MEMO_FIELD + "d",
+                            0);
+            }
+            catch (final ValueTooLargeException vtle)
+            {
+                throw new IOException("Too many blocks in memo file", vtle);
+            }
         }
     }
 }

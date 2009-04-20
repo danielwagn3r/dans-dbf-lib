@@ -149,4 +149,32 @@ public class TestUtil
         File dbtFile = Util.getDbtFile(new File("src/test/resources/util/get_dbt_file3/x.DBF"));
         assertNull("Found non-existing .DBT", dbtFile);
     }
+
+    /**
+     * DOCUMENT ME!
+     */
+    @Test
+    public void getNumberOfDigits()
+    {
+        assertEquals(1,
+                     Util.getNumberOfDigits(0));
+        assertEquals(1,
+                     Util.getNumberOfDigits(1));
+        assertEquals(1,
+                     Util.getNumberOfDigits(2));
+        assertEquals(1,
+                     Util.getNumberOfDigits(9));
+        assertEquals(2,
+                     Util.getNumberOfDigits(10));
+        assertEquals(2,
+                     Util.getNumberOfDigits(99));
+        assertEquals(3,
+                     Util.getNumberOfDigits(100));
+        assertEquals(6,
+                     Util.getNumberOfDigits(999999));
+        assertEquals(7,
+                     Util.getNumberOfDigits(1000000));
+        assertEquals(10,
+                     Util.getNumberOfDigits(Integer.MAX_VALUE));
+    }
 }

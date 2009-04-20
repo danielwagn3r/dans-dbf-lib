@@ -246,7 +246,7 @@ public class TestRoundTrip
      */
     @Test
     public void writing()
-                 throws IOException, CorruptedTableException
+                 throws IOException, CorruptedTableException, ValueTooLargeException
     {
         final Ranges ignoredRangesDbf = new Ranges();
         ignoredRangesDbf.addRange(0x01, 0x03); // modified

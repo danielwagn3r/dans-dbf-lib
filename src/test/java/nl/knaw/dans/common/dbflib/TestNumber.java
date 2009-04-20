@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,8 +38,8 @@ public class TestNumber
     /**
      * Tests reading fields with the maximum and minimum lengths and decimal count respectively.
      *
-     * @throws IOException if an I/O Exception occurs.
-     * @throws CorruptedTableException if the table is corrupt (which it should not be).
+     * @throws IOException should not happen
+     * @throws CorruptedTableException should not happen
      */
     @Test
     public strictfp void reading_maximal_and_minimal_values()
@@ -193,14 +194,14 @@ public class TestNumber
     }
 
     /**
-     * DOCUMENT ME!
+     * Tests writing the minal/maximal values.
      *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws IOException should not happen
+     * @throws CorruptedTableException should not happen
      */
     @Test
     public void writing_maximal_and_minimal_values()
-                                            throws IOException, CorruptedTableException
+                                            throws IOException, CorruptedTableException, ValueTooLargeException
     {
         Ranges ignoredRanges = new Ranges();
         ignoredRanges.addRange(0x01, 0x03); // modified date
@@ -212,5 +213,55 @@ public class TestNumber
         ignoredRanges.addRange(0xac, 0xaf); // idem
 
         UnitTestUtil.doCopyAndCompareTest("dbase3plus/types", "NUMBER", ignoredRanges, null);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws DbfLibException DOCUMENT ME!
+     */
+    @Test
+    public void valueTooLargeException()
+                                throws IOException, DbfLibException
+    {
+        final File outputDir = new File("target/test-output/TestNumber/valueTooLargeException");
+        outputDir.mkdirs();
+
+        final File tableFile = new File(outputDir, "VALTOOLARGE.DBF");
+        final List<Field> fields = new ArrayList<Field>();
+        fields.add(new Field("INTFIELD", Type.NUMBER, 5, 0));
+        fields.add(new Field("DECFIELD", Type.NUMBER, 5, 2));
+
+        final Table table = new Table(tableFile, Version.DBASE_3, fields);
+
+        table.open(IfNonExistent.CREATE);
+
+        try
+        {
+            try
+            {
+                table.addRecord(123456);
+                assertFalse("Expected exception ValueTooLargeException not thrown", false);
+            }
+            catch (ValueTooLargeException vtle)
+            {
+                assertTrue(true);
+            }
+
+            try
+            {
+                table.addRecord(0, 123.45);
+                assertFalse("Expected exception ValueTooLargeException not thrown", false);
+            }
+            catch (ValueTooLargeException vtle)
+            {
+                assertTrue(true);
+            }
+        }
+        finally
+        {
+            table.close();
+        }
     }
 }

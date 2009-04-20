@@ -27,6 +27,8 @@ import java.util.Map;
  * key to a value object for a specified row in a table.  The type of the value object depends
  * on the field type.  To find out which DBF types map to which Java types, see
  * {@link Type}.
+ * <p>
+ * Values that are too large to fit in their designated fields will cause a {@link ValueTooLargeException}.
  *
  * @author Jan van Mansum
  * @author Vesa Åkerman

@@ -201,7 +201,7 @@ class UnitTestUtil
      */
     public static void doCopyAndCompareTest(final String aSubDir, final String aTableBaseName,
                                             final Ranges aIgnoredRangesDbf, final Ranges aIgnoredRangesDbt)
-                                     throws IOException, CorruptedTableException
+                                     throws IOException, CorruptedTableException, ValueTooLargeException
     {
         final File outputDir = UnitTestUtil.recreateDirectory("target/test-output/" + aSubDir);
 

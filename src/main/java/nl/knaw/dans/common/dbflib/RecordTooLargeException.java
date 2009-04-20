@@ -21,15 +21,14 @@ package nl.knaw.dans.common.dbflib;
 
 
 /**
- * Thrown to indicate that a table did not comply with the supported versions of the
- * DBF file format.
+ * Thrown when trying to add a record with more fields than are defined in the table file.
  *
  * @author Jan van Mansum
  */
-public class CorruptedTableException
+public class RecordTooLargeException
     extends DbfLibException
 {
-    CorruptedTableException(final String aMessage)
+    RecordTooLargeException(final String aMessage)
     {
         super(aMessage);
     }
