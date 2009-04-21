@@ -56,7 +56,7 @@ class Memo
     private final File memoFile;
     private RandomAccessFile raf = null;
     private int nextAvailableBlock = 0;
-    private Version version;
+    private Version version = Version.DBASE_3;
 
     /**
      * Creates a new <tt>Memo</tt> object.
@@ -239,7 +239,7 @@ class Memo
         /*
          * Write the version of the DBF-file.  Seems always to be 0x03?
          */
-        raf.writeByte(0x03);
+        raf.writeByte(version.getVersionByte());
 
         /*
          * Rest of the header is filled with zeros

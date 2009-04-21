@@ -297,12 +297,13 @@ public class Table
     }
 
     /**
-     * DOCUMENT ME!
+     * Constructs and adds a record.  The fields values for the record must be provided
+     * as parameters in the same order that the fields are provided in the field list.
      *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     * @throws ValueTooLargeException DOCUMENT ME!
-     * @throws RecordTooLargeException DOCUMENT ME!
+     * @throws IOException if the record could not be written to the database file
+     * @throws CorruptedTableException if the table was corrupt
+     * @throws ValueTooLargeException if a field value exceeds the length of its corresponding field
+     * @throws RecordTooLargeException if more field values are provided than there are field in this table
      */
     public void addRecord(final Object... aFieldValue)
                    throws IOException, CorruptedTableException, ValueTooLargeException, RecordTooLargeException
@@ -332,6 +333,7 @@ public class Table
      *
      * @throws IOException if the record could not be written to the database file
      * @throws CorruptedTableException if the table was corrupt
+     * @throws ValueTooLargeException if a field value exceeds the length of its corresponding field
      *
      * @see Record
      */
