@@ -105,7 +105,7 @@ public class Record
      * Of course you do need to know whether the value will fit in the chosen type.  Note that
      * comparisons may fail if you do not first convert the values.  For instance if you compare
      * the a <tt>java.math.BigInteger</tt> with a <tt>long</tt> using the <tt>equals</tt> method,
-     * <tt>false</tt> wil be returned even if the values represent the same logical value.
+     * <tt>false</tt> will be returned even if the values represent the same logical value.
      * <p>
      * Example:
      * <pre>

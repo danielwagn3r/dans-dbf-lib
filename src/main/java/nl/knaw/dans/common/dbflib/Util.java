@@ -268,6 +268,7 @@ class Util
      *
      * @param aNumber
      * @return 1 if <tt>aInteger</tt> is negative, 0 otherwise
+     * ALSO '+' POSSIBLE?
      */
     static int getSignWidth(Number aNumber)
     {

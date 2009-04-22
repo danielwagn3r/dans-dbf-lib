@@ -55,7 +55,7 @@ public class Database
     {
         if (aDatabaseDirectory == null || aDatabaseDirectory.isFile())
         {
-            throw new IllegalArgumentException("Database must be a directory");
+            throw new IllegalArgumentException("Database must be a directory ");
         }
 
         if (! aDatabaseDirectory.exists())

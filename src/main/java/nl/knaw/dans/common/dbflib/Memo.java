@@ -48,7 +48,6 @@ class Memo
     /*
      * Markers.
      */
-    private static final byte MARKER_SOFT_RETURN = (byte) 0x8d;
     private static final byte MARKER_MEMO_END = 0x1a;
 
     /*
