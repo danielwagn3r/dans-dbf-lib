@@ -127,54 +127,54 @@ public class TestRoundTrip
             final Record r0 = records.get(0);
 
             assertEquals(1,
-                         r0.getValue("ID"));
+                         r0.getNumberValue("ID"));
             assertEquals("String data 01",
-                         r0.getValue("STRFIELD").toString().trim());
+                         r0.getStringValue("STRFIELD").trim());
             assertEquals(true,
-                         r0.getValue("LOGICFIELD"));
+                         r0.getBooleanValue("LOGICFIELD"));
             assertEquals(Util.createDate(1909, Calendar.MARCH, 18),
-                         r0.getValue("DATEFIELD"));
+                         r0.getDateValue("DATEFIELD"));
             assertEquals(1234.56,
-                         r0.getValue("FLOATFIELD"));
+                         r0.getNumberValue("FLOATFIELD"));
 
             final Record r1 = records.get(1);
 
             assertEquals(2,
-                         r1.getValue("ID"));
+                         r1.getNumberValue("ID"));
             assertEquals("String data 02",
-                         r1.getValue("STRFIELD").toString().trim());
+                         r1.getStringValue("STRFIELD").trim());
             assertEquals(false,
-                         r1.getValue("LOGICFIELD"));
+                         r1.getBooleanValue("LOGICFIELD"));
             assertEquals(Util.createDate(1909, Calendar.MARCH, 20),
-                         r1.getValue("DATEFIELD"));
+                         r1.getDateValue("DATEFIELD"));
             assertEquals(-23.45,
-                         r1.getValue("FLOATFIELD"));
+                         r1.getNumberValue("FLOATFIELD"));
 
             final Record r2 = records.get(2);
 
             assertEquals(3,
-                         r2.getValue("ID"));
+                         r2.getNumberValue("ID"));
             assertEquals("",
-                         r2.getValue("STRFIELD").toString().trim());
+                         r2.getStringValue("STRFIELD").trim());
             assertEquals(null,
-                         r2.getValue("LOGICFIELD"));
+                         r2.getBooleanValue("LOGICFIELD"));
             assertEquals(null,
-                         r2.getValue("DATEFIELD"));
+                         r2.getDateValue("DATEFIELD"));
             assertEquals(null,
-                         r2.getValue("FLOATFIELD"));
+                         r2.getNumberValue("FLOATFIELD"));
 
             final Record r3 = records.get(3);
 
             assertEquals(4,
-                         r3.getValue("ID"));
+                         r3.getNumberValue("ID"));
             assertEquals("Full5678901234567890123456789012345678901234567890",
-                         r3.getValue("STRFIELD").toString().trim());
+                         r3.getStringValue("STRFIELD").trim());
             assertEquals(false,
-                         r3.getValue("LOGICFIELD"));
+                         r3.getBooleanValue("LOGICFIELD"));
             assertEquals(Util.createDate(1909, Calendar.MARCH, 20),
-                         r3.getValue("DATEFIELD"));
+                         r3.getDateValue("DATEFIELD"));
             assertEquals(-0.30,
-                         r3.getValue("FLOATFIELD"));
+                         r3.getNumberValue("FLOATFIELD"));
         }
         finally
         {
@@ -228,9 +228,9 @@ public class TestRoundTrip
             declarationOfIndependence += "that among these are Life, Liberty and the persuit of Happiness.";
 
             assertEquals(1,
-                         r.getValue("ID2"));
+                         r.getNumberValue("ID2"));
             assertEquals(declarationOfIndependence,
-                         r.getValue("MEMOFIELD"));
+                         r.getStringValue("MEMOFIELD"));
         }
         finally
         {

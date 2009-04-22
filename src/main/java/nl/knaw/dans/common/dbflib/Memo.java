@@ -19,6 +19,7 @@
  */
 package nl.knaw.dans.common.dbflib;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -141,10 +142,10 @@ class Memo
      *          string of characters starts
      *
      */
-    String readMemo(final int aBlockIndex)
+    byte[] readMemo(final int aBlockIndex)
              throws IOException, CorruptedTableException
     {
-        final StringBuilder sb = new StringBuilder();
+        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         int c = 0;
         raf.seek(aBlockIndex * LENGTH_MEMO_BLOCK);
 
@@ -155,29 +156,19 @@ class Memo
                 throw new CorruptedTableException("Corrupted memo file");
             }
 
-            if ((byte) c == MARKER_SOFT_RETURN)
-            {
-                /**
-                 * Ignore soft returns and the linefeed that succeeds them.
-                 */
-                raf.read();
-
-                continue;
-            }
-
-            sb.append((char) c);
+            bos.write(c);
         }
 
-        return sb.toString();
+        return bos.toByteArray();
     }
 
     /**
      * Writes a string of characters to memo file.
      */
-    int writeMemo(final String aMemoText)
+    int writeMemo(final byte[] aMemoBytes)
            throws IOException
     {
-        final int nrBytesToWrite = aMemoText.length() + 2;
+        final int nrBytesToWrite = aMemoBytes.length + 2;
         int nrBlocksToWrite = nrBytesToWrite / LENGTH_MEMO_BLOCK + 1;
         final int nrSpacesToPadLastBlock = nrBytesToWrite % LENGTH_MEMO_BLOCK;
 
@@ -195,7 +186,7 @@ class Memo
          * Write the string and end of file markers.
          */
         raf.seek(blockIndex * LENGTH_MEMO_BLOCK);
-        raf.writeBytes(aMemoText); // Note: cuts off higher bytes, so assumes ASCII string
+        raf.write(aMemoBytes); // Note: cuts off higher bytes, so assumes ASCII string
         raf.writeByte(MARKER_MEMO_END);
         raf.writeByte(MARKER_MEMO_END);
 

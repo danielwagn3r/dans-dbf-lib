@@ -55,11 +55,11 @@ public class TestNumber
                                                                              "ID");
 
             final Record r0 = records.get(0);
-            assertNull(r0.getValue("ID"));
-            assertNull(r0.getValue("MININT"));
-            assertNull(r0.getValue("MAXINT"));
-            assertNull(r0.getValue("MAXDEC"));
-            assertNull(r0.getValue("MINDEC"));
+            assertNull(r0.getNumberValue("ID"));
+            assertNull(r0.getNumberValue("MININT"));
+            assertNull(r0.getNumberValue("MAXINT"));
+            assertNull(r0.getNumberValue("MAXDEC"));
+            assertNull(r0.getNumberValue("MINDEC"));
 
             final Record r1 = records.get(1);
             assertEquals(1,

@@ -50,18 +50,19 @@ public enum Type
     /**
      * Logical, or boolean value, mapped to <tt>java.lang.Boolean</tt>.
      */
-    LOGICAL('L'), 
+    LOGICAL('L', 1), 
     /**
      * Date value, mapped to <tt>java.util.Date</tt>.  Note that in xBase the date does <em>not</em> have a
      * time component.  The time related fields of <tt>java.util.Date</tt> are therefore set to 0.
      */
-    DATE('D'), 
+    DATE('D', 8), 
     /**
      * A String value (without length limitations), mapped to <tt>java.lang.String</tt>.
      */
-    MEMO('M');
+    MEMO('M', 10);
     private static final Map<Character, Type> typeMap = new HashMap<Character, Type>();
     private final char code;
+    private final int length;
 
     static
     {
@@ -75,9 +76,15 @@ public enum Type
         }
     }
 
-    Type(char aCode)
+    Type(final char aCode)
+    {
+        this(aCode, -1);
+    }
+
+    Type(final char aCode, final int aLength)
     {
         code = aCode;
+        length = aLength;
     }
 
     char getCode()
@@ -88,5 +95,10 @@ public enum Type
     static Type getTypeByCode(final char aCode)
     {
         return typeMap.get(aCode);
+    }
+
+    int getLength()
+    {
+        return length;
     }
 }

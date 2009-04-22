@@ -168,6 +168,13 @@ class Util
         }
     }
 
+    static void writeStringBytes(final DataOutput aDataOutput, final byte[] aString, final int aLength)
+                          throws IOException
+    {
+        aDataOutput.write(aString);
+        aDataOutput.write(repeat((byte) 0x00, aLength - aString.length));
+    }
+
     static String readString(final DataInput aDataInput, final int aLength)
                       throws IOException
     {
@@ -189,6 +196,29 @@ class Util
         aDataInput.skipBytes(aLength - read);
 
         return new String(bos.toByteArray());
+    }
+
+    static byte[] readStringBytes(final DataInput aDataInput, final int aLength)
+                           throws IOException
+    {
+        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        int c = 0;
+        int read = 1; // at least one byte will be read
+
+        while (((c = aDataInput.readByte()) != 0) && read < aLength)
+        {
+            bos.write(c);
+            ++read;
+        }
+
+        if (c != 0)
+        {
+            bos.write(c);
+        }
+
+        aDataInput.skipBytes(aLength - read);
+
+        return bos.toByteArray();
     }
 
     /**
@@ -242,5 +272,17 @@ class Util
     static int getSignWidth(Number aNumber)
     {
         return aNumber.intValue() < 0 ? 1 : 0;
+    }
+
+    static byte[] repeat(byte aByte, int aTimes)
+    {
+        byte[] result = new byte[aTimes];
+
+        for (int i = 0; i < result.length; ++i)
+        {
+            result[i] = aByte;
+        }
+
+        return result;
     }
 }

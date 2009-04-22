@@ -23,16 +23,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -45,12 +39,9 @@ import java.util.NoSuchElementException;
  */
 public class Table
 {
-    private static final int LENGTH_RECORD_DATE = 8;
-    private static final int LENGTH_MEMO_FIELD = 10;
     private static final int MARKER_RECORD_DELETED = 0x2A;
     private static final int MARKER_EOF = 0x1A;
     private static final int MARKER_RECORD_VALID = 0x20;
-    private static final Format dateFormat = new SimpleDateFormat("yyyyMMdd");
 
     private class RecordIterator
         implements Iterator<Record>
@@ -314,16 +305,42 @@ public class Table
                                               + header.getFields().size() + " defined in the table file");
         }
 
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final Map<String, Value> map = new HashMap<String, Value>();
         final Iterator<Field> fieldIterator = header.getFields().iterator();
 
         for (final Object fieldValue : aFieldValue)
         {
-            map.put(fieldIterator.next().getName(),
-                    fieldValue);
+            final Field field = fieldIterator.next();
+
+            map.put(field.getName(),
+                    createValueObject(field.getType(),
+                                      fieldValue));
         }
 
         addRecord(new Record(map));
+    }
+
+    private Value createValueObject(final Type aFieldType, final Object aValue)
+    {
+        switch (aFieldType)
+        {
+            case NUMBER:
+            case FLOAT:
+                return new NumberValue((Number) aValue);
+
+            case MEMO:
+            case CHARACTER:
+                return new StringValue((String) aValue);
+
+            case LOGICAL:
+                return new BooleanValue((Boolean) aValue);
+
+            case DATE:
+                return new DateValue((Date) aValue);
+
+            default:
+                throw new Error("Not all types handled.");
+        }
     }
 
     /**
@@ -345,61 +362,34 @@ public class Table
         raFile.seek(header.getLength() + (header.getRecordCount() * header.getRecordLength()));
         raFile.writeByte(MARKER_RECORD_VALID);
 
-        for (Field field : header.getFields())
+        for (final Field field : header.getFields())
         {
-            final Object value = aRecord.getValue(field.getName());
-            final int length = field.getLength();
+            byte[] raw = aRecord.getRawValue(field);
 
-            switch (field.getType())
+            if (raw == null)
             {
-                case NUMBER:
-                case FLOAT:
-                    writeNumber((Number) value,
-                                length,
-                                field.getFormatString(),
-                                field.getDecimalCount());
-
-                    break;
-
-                case CHARACTER:
-                    Util.writeString(raFile, (String) value, length);
-
-                    break;
-
-                case LOGICAL:
-                    writeBoolean((Boolean) value);
-
-                    break;
-
-                case DATE:
-
-                    if (value == null)
-                    {
-                        writeSpaces(LENGTH_RECORD_DATE);
-                    }
-                    else
-                    {
-                        writeRecordDate((Date) value);
-                    }
-
-                    break;
-
-                case MEMO:
-                    writeMemo((String) value);
-
-                    break;
-
-                default:
-
-                    /*
-                     * This should not be possible.
-                     */
-                    throw new Error("Error: not all enumerated constants in Type are handled.  Contact library developers.");
+                raw = Util.repeat((byte) ' ',
+                                  field.getLength());
             }
+            else if (field.getType() == Type.MEMO)
+            {
+                int index = writeMemo(raw);
+                raw = String.format("%" + field.getLength() + "d", index).getBytes();
+            }
+
+            raFile.write(raw);
         }
 
         raFile.writeByte(MARKER_EOF);
         writeRecordCount(header.getRecordCount() + 1);
+    }
+
+    private int writeMemo(final byte[] aMemoText)
+                   throws IOException, CorruptedTableException
+    {
+        ensureMemoOpened(IfNonExistent.CREATE);
+
+        return memo.writeMemo(aMemoText);
     }
 
     private void writeRecordCount(final int aRecordCount)
@@ -418,115 +408,17 @@ public class Table
         }
     }
 
-    private Number readNumber(final int aLength, final int aDecimalCount)
-                       throws IOException
-    {
-        String s = Util.readString(raFile, aLength);
-        s = s.trim();
-
-        if (s.isEmpty())
-        {
-            return null;
-        }
-
-        if (aDecimalCount == 0)
-        {
-            /*
-             * Values less than 10 digits long can always be represented in an Integer, because
-             * Integer.MAX_VALUE = 2 147 483 647 ...
-             */
-            if (aLength < 10)
-            {
-                return Integer.parseInt(s);
-            } /*
-            * Longer values MAY need a Long.  To be on the safe side, we always use Long here.
-            * Long can accomodate at least 18 digits.
-            *
-            * Long.MAX_VALUE = 9 223 372 036 854 775 807
-            */
-            else if (aLength < 19)
-            {
-                return Long.parseLong(s);
-            } /*
-            * If all else fails, use a BigInteger.
-            */
-            else
-            {
-                return new BigInteger(s);
-            }
-        }
-
-        /*
-         * Not sure yet what number of digits is safe to parse a value into a double.
-         * 14 seems to be reasonably safe, but this needs to be proved.
-         */
-        if (aLength < 14)
-        {
-            return Double.parseDouble(s);
-        }
-
-        /*
-         * BigDecimal can hold anything.
-         */
-        return new BigDecimal(s);
-    }
-
-    private Boolean readBoolean()
-                         throws IOException
-    {
-        byte c = raFile.readByte();
-
-        if (c == ' ')
-        {
-            return null;
-        }
-
-        return (c == 'Y') || (c == 'y') || (c == 'T') || (c == 't');
-    }
-
-    private Date readRecordDate()
-                         throws IOException
-    {
-        final String yearString = Util.readString(raFile, 4);
-        final String monthString = Util.readString(raFile, 2);
-        final String dayString = Util.readString(raFile, 2);
-        final Calendar cal = Calendar.getInstance();
-
-        if (yearString.trim().isEmpty())
-        {
-            return null;
-        }
-        else
-        {
-            final int year = Integer.parseInt(yearString);
-            final int month = Integer.parseInt(monthString) - 1;
-            final int day = Integer.parseInt(dayString);
-
-            cal.set(Calendar.YEAR, year);
-            cal.set(Calendar.MONTH, month);
-            cal.set(Calendar.DAY_OF_MONTH, day);
-            cal.set(Calendar.HOUR_OF_DAY, 0);
-            cal.set(Calendar.MINUTE, 0);
-            cal.set(Calendar.SECOND, 0);
-            cal.set(Calendar.MILLISECOND, 0);
-        }
-
-        return cal.getTime();
-    }
-
-    private String readMemo(final int aFieldLength)
+    private byte[] readMemo(final String aMemoIndex)
                      throws IOException, CorruptedTableException
     {
         ensureMemoOpened(IfNonExistent.ERROR);
 
-        String sIndex = Util.readString(raFile, aFieldLength);
-
-        if (sIndex.trim().isEmpty())
+        if (aMemoIndex.trim().isEmpty())
         {
-            return "";
+            return null;
         }
 
-        return memo.readMemo(Integer.parseInt(sIndex.trim()));
+        return memo.readMemo(Integer.parseInt(aMemoIndex.trim()));
     }
 
     private void ensureMemoOpened(final IfNonExistent aIfNonExistent)
@@ -609,155 +501,51 @@ public class Table
             return null;
         }
 
-        final Map<String, Object> recordValues = new HashMap<String, Object>();
+        final Map<String, Value> recordValues = new HashMap<String, Value>();
 
         for (final Field field : header.getFields())
         {
+            final byte[] rawData = Util.readStringBytes(raFile,
+                                                        field.getLength());
+
             switch (field.getType())
             {
                 case NUMBER:
                 case FLOAT:
                     recordValues.put(field.getName(),
-                                     readNumber(field.getLength(),
-                                                field.getDecimalCount()));
+                                     new NumberValue(rawData));
 
                     break;
 
                 case CHARACTER:
                     recordValues.put(field.getName(),
-                                     Util.readString(raFile,
-                                                     field.getLength()));
+                                     new StringValue(rawData));
 
                     break;
 
                 case LOGICAL:
                     recordValues.put(field.getName(),
-                                     readBoolean());
+                                     new BooleanValue(rawData));
 
                     break;
 
                 case DATE:
                     recordValues.put(field.getName(),
-                                     readRecordDate());
+                                     new DateValue(rawData));
 
                     break;
 
                 case MEMO:
                     recordValues.put(field.getName(),
-                                     readMemo(field.getLength()));
+                                     new StringValue(readMemo(new String(rawData))));
 
                     break;
 
                 default:
-                    // TODO: Turn this into a proper logging called (using log4j?)
-                    System.out.println("Unknown field type encountered\n");
-
-                    break;
+                    throw new Error("Programming error: not all data types handled.");
             }
         }
 
         return new Record(recordValues);
-    }
-
-    private void writeSpaces(final int aLength)
-                      throws IOException
-    {
-        for (int i = 0; i < aLength; ++i)
-        {
-            raFile.writeByte(' ');
-        }
-    }
-
-    private void writeNumber(final Number aValue, final int aLength, final String aFormatString, final int aDecimalCount)
-                      throws IOException, ValueTooLargeException
-    {
-        /*
-         * If null, just write spaces.
-         */
-        if (aValue == null)
-        {
-            writeSpaces(aLength);
-
-            return;
-        }
-
-        /*
-         * If too large to fit, throw exception.
-         */
-        int nrPositionsForDecimals = aDecimalCount == 0 ? 0 : aDecimalCount + 1;
-
-        if (Util.getSignWidth(aValue) + Util.getNumberOfDigits(aValue.intValue()) > aLength - nrPositionsForDecimals)
-        {
-            throw new ValueTooLargeException("Number does not fit in field: " + aValue);
-        }
-
-        /*
-         * Otherwise, write the value.
-         */
-        Util.writeString(raFile,
-                         String.format(Locale.US, aFormatString, aValue),
-                         aLength);
-    }
-
-    private void writeBoolean(final Boolean aValue)
-                       throws IOException
-    {
-        if (aValue == null)
-        {
-            raFile.writeByte(' ');
-
-            return;
-        }
-
-        if (aValue)
-        {
-            raFile.writeByte('T');
-        }
-        else
-        {
-            raFile.writeByte('F');
-        }
-    }
-
-    private void writeRecordDate(final Date aRecordDate)
-                          throws IOException
-    {
-        if (aRecordDate == null)
-        {
-            writeSpaces(LENGTH_RECORD_DATE);
-
-            return;
-        }
-
-        Util.writeString(raFile,
-                         dateFormat.format(aRecordDate),
-                         LENGTH_RECORD_DATE);
-    }
-
-    private void writeMemo(final String aMemo)
-                    throws IOException, CorruptedTableException
-    {
-        if (aMemo == null || aMemo.isEmpty())
-        {
-            writeSpaces(LENGTH_MEMO_FIELD);
-        }
-        else
-        {
-            ensureMemoOpened(IfNonExistent.CREATE);
-
-            int index = memo.writeMemo(aMemo);
-
-            try
-            {
-                writeNumber(Integer.valueOf(index),
-                            LENGTH_MEMO_FIELD,
-                            "%" + LENGTH_MEMO_FIELD + "d",
-                            0);
-            }
-            catch (final ValueTooLargeException vtle)
-            {
-                throw new IOException("Too many blocks in memo file", vtle);
-            }
-        }
     }
 }

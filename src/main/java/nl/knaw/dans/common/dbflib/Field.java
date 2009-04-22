@@ -47,7 +47,7 @@ public class Field
     {
         name = aName;
         type = aType;
-        length = aLength;
+        length = aType.getLength() == -1 ? aLength : aType.getLength();
         decimalCount = aDecimalCount;
 
         formatString = "%" + length + (decimalCount == 0 ? "d" : "." + decimalCount + "f");

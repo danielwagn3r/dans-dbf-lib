@@ -65,8 +65,8 @@ class UnitTestUtil
             {
                 public int compare(Record r1, Record r2)
                 {
-                    Comparable c1 = (Comparable) r1.getValue(aFieldName);
-                    Comparable c2 = (Comparable) r2.getValue(aFieldName);
+                    Comparable c1 = (Comparable) r1.getTypedValue(aFieldName);
+                    Comparable c2 = (Comparable) r2.getTypedValue(aFieldName);
 
                     if (c1 == null)
                     {

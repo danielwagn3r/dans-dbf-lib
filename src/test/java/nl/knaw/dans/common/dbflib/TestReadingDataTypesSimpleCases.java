@@ -146,22 +146,22 @@ public class TestReadingDataTypesSimpleCases
     public void number()
     {
         assertEquals(null,
-                     r0.getValue("YEAR"));
+                     r0.getNumberValue("YEAR"));
         assertEquals(0,
-                     r1.getValue("YEAR"));
+                     r1.getNumberValue("YEAR"));
         assertEquals(1990,
-                     r2.getValue("YEAR"));
+                     r2.getNumberValue("YEAR"));
         assertEquals(2000,
-                     r3.getValue("YEAR"));
+                     r3.getNumberValue("YEAR"));
 
         assertEquals(null,
-                     r0.getValue("CC"));
+                     r0.getNumberValue("CC"));
         assertEquals(0.0,
-                     r1.getValue("CC"));
+                     r1.getNumberValue("CC"));
         assertEquals(999.999,
-                     r2.getValue("CC"));
+                     r2.getNumberValue("CC"));
         assertEquals(333.444,
-                     r3.getValue("CC"));
+                     r3.getNumberValue("CC"));
     }
 
     /**
@@ -171,13 +171,13 @@ public class TestReadingDataTypesSimpleCases
     public void character()
     {
         assertEquals("PASSAT",
-                     r1.getValue("NAME").toString().trim());
+                     r1.getStringValue("NAME").toString().trim());
         assertEquals("",
-                     r0.getValue("NAME").toString().trim());
+                     r0.getStringValue("NAME").toString().trim());
         assertEquals("JETTA",
-                     r2.getValue("NAME").toString().trim());
+                     r2.getStringValue("NAME").toString().trim());
         assertEquals("POLO",
-                     r3.getValue("NAME").toString().trim());
+                     r3.getStringValue("NAME").toString().trim());
     }
 
     /**
@@ -187,13 +187,13 @@ public class TestReadingDataTypesSimpleCases
     public void logical()
     {
         assertEquals(null,
-                     r0.getValue("SEDAN"));
+                     r0.getBooleanValue("SEDAN"));
         assertEquals(false,
-                     r1.getValue("SEDAN"));
+                     r1.getBooleanValue("SEDAN"));
         assertEquals(true,
-                     r2.getValue("SEDAN"));
+                     r2.getBooleanValue("SEDAN"));
         assertEquals(false,
-                     r3.getValue("SEDAN"));
+                     r3.getBooleanValue("SEDAN"));
     }
 
     /**
@@ -203,13 +203,13 @@ public class TestReadingDataTypesSimpleCases
     public void date()
     {
         assertEquals(null,
-                     r0.getValue("PROD_DATE"));
+                     r0.getDateValue("PROD_DATE"));
         assertEquals(Util.createDate(1977, Calendar.JANUARY, 01),
-                     r1.getValue("PROD_DATE"));
+                     r1.getDateValue("PROD_DATE"));
         assertEquals(Util.createDate(1990, Calendar.FEBRUARY, 12),
-                     r2.getValue("PROD_DATE"));
+                     r2.getDateValue("PROD_DATE"));
         assertEquals(Util.createDate(1901, Calendar.DECEMBER, 03),
-                     r3.getValue("PROD_DATE"));
+                     r3.getDateValue("PROD_DATE"));
     }
 
     /**
@@ -218,13 +218,13 @@ public class TestReadingDataTypesSimpleCases
     @Test
     public void memo()
     {
-        assertEquals("",
-                     r0.getValue("DESCR"));
+        assertEquals(null,
+                     r0.getStringValue("DESCR"));
         assertEquals("THIS IS A DESCRIPTION OF PASSAT",
-                     r1.getValue("DESCR").toString().trim().substring(0, 31));
+                     r1.getStringValue("DESCR").trim().substring(0, 31));
         assertEquals("DESCRIPTION OF VOLKSAWGEN JETTA, YEAR MODEL 1990",
-                     r2.getValue("DESCR").toString().trim());
-        assertEquals("",
-                     r3.getValue("DESCR").toString().trim());
+                     r2.getStringValue("DESCR").trim());
+        assertEquals(null,
+                     r3.getStringValue("DESCR"));
     }
 }

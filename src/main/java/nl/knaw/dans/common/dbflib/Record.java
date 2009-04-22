@@ -35,31 +35,61 @@ import java.util.Map;
  */
 public class Record
 {
-    private final Map<String, Object> valueMap;
+    private final Map<String, Value> valueMap;
 
     /**
-     * Creates a new Record object.  <tt>aValueMape</tt> specifies the value of each field in
-     * the record.
+     * Creates a new Record object.
      *
-     * @param aValueMap a mapping if field names to values
+     * @param aValueMap the mapping from field name to field value
      */
-    public Record(final Map<String, Object> aValueMap)
+    public Record(final Map<String, Value> aValueMap)
     {
         valueMap = aValueMap;
     }
 
     /**
-     * Returns the value of the specified field in the record as a <tt>java.lang.Object</tt>.
-     * The type of the object returned depends on the type of data in the field.  For the mappings
-     * of xBase types to Java types see {@link Type}.
+     * Returns the raw field value.  The raw field value is the bytes as stored
+     * in the DBF file.  If the value is empty <tt>null</tt> or a series of
+     * ASCII spaces may be returned.
      *
-     * @param aFieldName the name of the field for which to retrieve the value
+     * @param aField the field for which to get the raw value
      *
-     * @return a value
+     * @return a byte array
+     *
+     * @throws ValueTooLargeException if the value was too large to be read
      */
-    public Object getValue(final String aFieldName)
+    public byte[] getRawValue(final Field aField)
+                       throws ValueTooLargeException
     {
-        return valueMap.get(aFieldName);
+        final Value v = valueMap.get(aField.getName());
+
+        if (v == null)
+        {
+            return null;
+        }
+
+        return v.getRawValue(aField);
+    }
+
+    /**
+     * Returns the value as a Java object.  The type of Java object returned depends
+     * on the field type in the xBase database.  See {@link Type} for the mapping between
+     * the two.
+     *
+     * @param aFieldName the field for which to get the value
+     *
+     * @return a Java object
+     */
+    public Object getTypedValue(final String aFieldName)
+    {
+        final Value v = valueMap.get(aFieldName);
+
+        if (v == null)
+        {
+            return null;
+        }
+
+        return v.getTypedValue();
     }
 
     /**
@@ -79,7 +109,7 @@ public class Record
      * <p>
      * Example:
      * <pre>
-     *
+     *aFieldName
      * public Record searchSomeNum(final double val)
      * {
      *      //
@@ -113,7 +143,7 @@ public class Record
      */
     public Number getNumberValue(final String aFieldName)
     {
-        return (Number) getValue(aFieldName);
+        return (Number) getTypedValue(aFieldName);
     }
 
     /**
@@ -125,7 +155,7 @@ public class Record
      */
     public String getStringValue(final String aFieldName)
     {
-        return (String) getValue(aFieldName);
+        return (String) getTypedValue(aFieldName);
     }
 
     /**
@@ -137,7 +167,7 @@ public class Record
      */
     public Boolean getBooleanValue(final String aFieldName)
     {
-        return (Boolean) getValue(aFieldName);
+        return (Boolean) getTypedValue(aFieldName);
     }
 
     /**
@@ -149,6 +179,6 @@ public class Record
      */
     public Date getDateValue(final String aFieldName)
     {
-        return (Date) getValue(aFieldName);
+        return (Date) getTypedValue(aFieldName);
     }
 }
