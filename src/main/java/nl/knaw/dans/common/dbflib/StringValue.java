@@ -77,7 +77,14 @@ public class StringValue
         try
         {
             bos.write(stringBytes);
-            bos.write(Util.repeat((byte) 0x00, fieldLength - stringBytes.length));
+
+            /*
+             * A memo has no length, but otherwise fill up to the maximum length with zeros.
+             */
+            if (aField.getType() != Type.MEMO)
+            {
+                bos.write(Util.repeat((byte) 0x00, fieldLength - stringBytes.length));
+            }
         }
         catch (IOException ex)
         {

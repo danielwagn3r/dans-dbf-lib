@@ -35,6 +35,29 @@ public class Field
     private final String formatString;
 
     /**
+     * Creates a new Field object.
+     *
+     * @param aName DOCUMENT ME!
+     * @param aType DOCUMENT ME!
+     */
+    public Field(final String aName, final Type aType)
+    {
+        this(aName, aType, 0, 0);
+    }
+
+    /**
+     * Creates a new Field object.
+     *
+     * @param aName DOCUMENT ME!
+     * @param aType DOCUMENT ME!
+     * @param aLength DOCUMENT ME!
+     */
+    public Field(final String aName, final Type aType, final int aLength)
+    {
+        this(aName, aType, aLength, 0);
+    }
+
+    /**
      * Creates a new Field object.  <tt>aLength</tt> and <tt>aDecimalCount</tt> do not apply to all
      * field types.
      *

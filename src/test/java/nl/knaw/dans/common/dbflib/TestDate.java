@@ -47,8 +47,9 @@ public class TestDate
     public void readDate()
                   throws FileNotFoundException, IOException, CorruptedTableException
     {
-        final Database database = new Database(new File("src/test/resources/dbase3plus/types"));
-        final Table t1 = database.addTable("DATE.DBF");
+        final Database database = new Database(new File("src/test/resources/dbase3plus/types"),
+                                               Version.DBASE_3);
+        final Table t1 = database.getTable("DATE.DBF");
 
         try
         {

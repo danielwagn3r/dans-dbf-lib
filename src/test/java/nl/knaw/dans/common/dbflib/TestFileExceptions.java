@@ -46,9 +46,7 @@ public class TestFileExceptions
     public void nonExistingFile()
                          throws IOException, CorruptedTableException
     {
-        final File databaseDirectory = new File("src/test/resources/dbase3plus/fileExceptions");
-        final Database database = new Database(databaseDirectory);
-        final Table t1 = database.addTable("NONEXIST.DBF");
+        final Table t1 = new Table(new File("NONEXISTENT.DBF"));
 
         try
         {
@@ -76,9 +74,8 @@ public class TestFileExceptions
     public void emptyFile()
                    throws IOException, CorruptedTableException
     {
-        final File databaseDirectory = new File("src/test/resources/dbase3plus/fileExceptions");
-        final Database database = new Database(databaseDirectory);
-        final Table t1 = database.addTable("EMPTY.DBF");
+        final File emptyFile = new File("src/test/resources/dbase3plus/fileExceptions/EMPTY.DBF");
+        final Table t1 = new Table(emptyFile);
 
         try
         {
@@ -106,9 +103,8 @@ public class TestFileExceptions
     public void memoFileMissing()
                          throws IOException, CorruptedTableException
     {
-        final File databaseDirectory = new File("src/test/resources/dbase3plus/fileExceptions");
-        final Database database = new Database(databaseDirectory);
-        final Table t1 = database.addTable("MISSMEMO.DBF");
+        final File missingMemoDbf = new File("src/test/resources/dbase3plus/fileExceptions/MISSMEMO.DBF");
+        final Table t1 = new Table(missingMemoDbf);
 
         try
         {
@@ -137,9 +133,8 @@ public class TestFileExceptions
     public void emptyMemoFile()
                        throws IOException, CorruptedTableException
     {
-        final File databaseDirectory = new File("src/test/resources/dbase3plus/fileExceptions");
-        final Database database = new Database(databaseDirectory);
-        final Table t1 = database.addTable("MEMEMPTY.DBF");
+        final File memEmptyDbf = new File("src/test/resources/dbase3plus/fileExceptions/MEMEMPTY.DBF");
+        final Table t1 = new Table(memEmptyDbf);
 
         try
         {
@@ -168,9 +163,8 @@ public class TestFileExceptions
     public void corruptedMemoFilePointer()
                                   throws IOException, CorruptedTableException
     {
-        final File databaseDirectory = new File("src/test/resources/dbase3plus/fileExceptions");
-        final Database database = new Database(databaseDirectory);
-        final Table t1 = database.addTable("PNTRERR.DBF");
+        final File pntrErrorDbf = new File("src/test/resources/dbase3plus/fileExceptions/PNTRERR.DBF");
+        final Table t1 = new Table(pntrErrorDbf);
 
         try
         {
@@ -202,7 +196,7 @@ public class TestFileExceptions
 
         try
         {
-            new Database(databaseDirectory);
+            new Database(databaseDirectory, Version.DBASE_3);
             assertTrue("Expected IllegalArgumentException did not occur", false);
         }
         catch (IllegalArgumentException e)

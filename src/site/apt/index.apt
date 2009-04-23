@@ -10,3 +10,18 @@ Organisation of Scientific Research (NWO).  It is the initiator of this
 project.  DANS is making this library available under the GNU Public Licence. For
 more information about DANS, see {{{http://www.dans.knaw.nl/en}the DANS website}}.
 This library is used by DANS for the {{{http://mixed.dans.knaw.nl}MIXED Project}}.
+
+News
+
+* 23 April 2009.  Added Usage page
+
+    Every self-respecting library needs its "QuickStart Guide," or "Getting Started,"
+or "Usage" page, so we have added one.  Find out in under five minutes how to use
+DANS DBF Library {{{usage.html}here!}}
+
+* 23 April 2009.  Alpha 05
+
+    "Release early, release often," is was SourceForge tells us.  Maybe we are taking
+that a little bit too literally, but anyway, here is Alpha 05, within 2 weeks.  We have
+changed the API a little bit, after all we are still alpha, so we are allowed to do that.
+Once we go beta (which should be soon) we will keep the API more stable.

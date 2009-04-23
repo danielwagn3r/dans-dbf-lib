@@ -23,7 +23,9 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -259,5 +261,38 @@ class UnitTestUtil
 
         diffOffset = UnitTestUtil.compare(orgDbtFile, copyDbtFile, aIgnoredRangesDbt);
         assertEquals("DBT files differ at offset 0x" + Integer.toHexString((int) diffOffset), -1, diffOffset);
+    }
+
+    static void copyFile(File in, File outDir, String outFileName)
+                  throws IOException
+    {
+        FileChannel inChannel = new FileInputStream(in).getChannel();
+        outDir.mkdirs();
+
+        File outFile = new File(outDir, outFileName);
+        FileChannel outChannel = new FileOutputStream(outFile).getChannel();
+
+        try
+        {
+            inChannel.transferTo(0,
+                                 inChannel.size(),
+                                 outChannel);
+        }
+        catch (IOException e)
+        {
+            throw e;
+        }
+        finally
+        {
+            if (inChannel != null)
+            {
+                inChannel.close();
+            }
+
+            if (outChannel != null)
+            {
+                outChannel.close();
+            }
+        }
     }
 }

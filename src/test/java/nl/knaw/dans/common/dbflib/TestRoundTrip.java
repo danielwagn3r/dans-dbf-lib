@@ -57,7 +57,8 @@ public class TestRoundTrip
     public void reading()
                  throws FileNotFoundException, IOException, CorruptedTableException
     {
-        final Database database = new Database(new File("src/test/resources/dbase3plus/rndtrip"));
+        final Database database = new Database(new File("src/test/resources/dbase3plus/rndtrip"),
+                                               Version.DBASE_3);
         final Set<String> tableNames = database.getTableNames();
 
         assertEquals(2,
@@ -181,7 +182,7 @@ public class TestRoundTrip
             t1.close();
         }
 
-        final Table t2 = database.addTable("TABLE2.DBF");
+        final Table t2 = database.getTable("TABLE2.DBF");
 
         try
         {

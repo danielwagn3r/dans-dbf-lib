@@ -49,8 +49,8 @@ public class TestMemo
                   throws FileNotFoundException, IOException, CorruptedTableException
     {
         final File databaseDirectory = new File("src/test/resources/dbase3plus/types");
-        final Database database = new Database(databaseDirectory);
-        final Table t1 = database.addTable("MEMOTEST.DBF");
+        final Database database = new Database(databaseDirectory, Version.DBASE_3);
+        final Table t1 = database.getTable("MEMOTEST.DBF");
         final File memoFile = new File(databaseDirectory, "MEMOTEST.DBT");
 
         try

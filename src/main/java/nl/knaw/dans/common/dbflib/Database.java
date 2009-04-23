@@ -22,6 +22,7 @@ package nl.knaw.dans.common.dbflib;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,6 +40,7 @@ public class Database
 {
     private final File databaseDirectory;
     private final Map<String, Table> tableMap = new HashMap<String, Table>();
+    private final Version version;
 
     /**
      * Creates a new Database object.  A file representing the database directory
@@ -46,12 +48,17 @@ public class Database
      * file represents a regular file and not a directory, throws an <tt>IllegalArgumentException</tt>.
      * <p>
      * All tables that exist in the database directory are added as <tt>Table</tt> objects and can be
-     * retrieved by {@link #getTable(java.lang.String) }
-     *
+     * retrieved by {@link #getTable(java.lang.String) }.
+     * </p><p>
+     * The parameter <tt>aVersion</tt> does not trigger any validation on an existing database but is
+     * merely used to specify the version of newly added tables.  It is therefore the responsibilty
+     * of the caller to ensure that the correct version is specified.
+     * </p>
      * @param aDatabaseDirectory a <tt>java.io.File</tt> object pointing to the directory containing
      *   the database
+     * @param aVersion the version of xBase to use for new tables
      */
-    public Database(final File aDatabaseDirectory)
+    public Database(final File aDatabaseDirectory, final Version aVersion)
     {
         if (aDatabaseDirectory == null || aDatabaseDirectory.isFile())
         {
@@ -64,6 +71,7 @@ public class Database
         }
 
         databaseDirectory = aDatabaseDirectory;
+        version = aVersion;
 
         final String[] fileNames = aDatabaseDirectory.list();
 
@@ -110,7 +118,22 @@ public class Database
      *
      * @return a <tt>Table</tt> object
      */
-    public Table addTable(final String aName)
+    public Table addTable(final String aName, final List<Field> aFields)
+    {
+        Table table = tableMap.get(aName);
+
+        if (table == null)
+        {
+            table = new Table(new File(databaseDirectory, aName),
+                              version,
+                              aFields);
+            tableMap.put(aName, table);
+        }
+
+        return table;
+    }
+
+    private void addTable(final String aName)
     {
         Table table = tableMap.get(aName);
 
@@ -119,8 +142,6 @@ public class Database
             table = new Table(new File(databaseDirectory, aName));
             tableMap.put(aName, table);
         }
-
-        return table;
     }
 
     /**
