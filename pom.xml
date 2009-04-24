@@ -4,8 +4,8 @@
     <groupId>nl.knaw.dans.common</groupId>
     <artifactId>dans-dbf-lib</artifactId>
     <name>DANS DBF Library</name>
-    <!--version>1.0.0-alpha-05</version-->
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-alpha-06</version>
+    <!--version>1.0.0-SNAPSHOT</version-->
     <url>http://dans-dbf-lib.sourceforge.net/</url>
     <inceptionYear>2009</inceptionYear>
     <organization>
@@ -15,7 +15,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>    
+    </properties>
 
     <developers>
         <developer>
@@ -138,6 +138,31 @@
                         <goals>
                             <goal>attached</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <id>copy-example-source</id>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/site</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/src/examples/dump-table/src/main/java/nl/knaw/dans/common/dbflib/example/</directory>
+                                    <includes>
+                                        <include>DumpTable.java</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

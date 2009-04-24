@@ -13,6 +13,11 @@ This library is used by DANS for the {{{http://mixed.dans.knaw.nl}MIXED Project}
 
 News
 
+* 24 April 2009.  Alpha 06
+
+    DBFs with missing end of file byte could not be read properly.  Fixed that.  Also
+updated the web-site with one example.
+
 * 23 April 2009.  Added Usage page
 
     Every self-respecting library needs its "QuickStart Guide," or "Getting Started,"
