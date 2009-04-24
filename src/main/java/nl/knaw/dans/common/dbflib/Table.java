@@ -53,7 +53,7 @@ public class Table
         {
             checkOpen();
 
-            if (lastReadRecord == null)
+            if (lastReadRecord == null && recordCounter < header.getRecordCount())
             {
                 try
                 {
