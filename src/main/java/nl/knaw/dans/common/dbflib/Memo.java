@@ -38,6 +38,7 @@ class Memo
      */
     private static final int OFFSET_NEXT_AVAILABLE_BLOCK_INDEX = 0;
     private static final int OFFSET_VERSION = 16;
+    private static final int OFFSET_MEMO_DATA = 8;
 
     /*
      * Lengths.
@@ -56,7 +57,7 @@ class Memo
     private final File memoFile;
     private RandomAccessFile raf = null;
     private int nextAvailableBlock = 0;
-    private Version version = Version.DBASE_3;
+    private Version version;
 
     /**
      * Creates a new <tt>Memo</tt> object.
@@ -147,6 +148,11 @@ class Memo
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         int c = 0;
         raf.seek(aBlockIndex * LENGTH_MEMO_BLOCK);
+
+        if (version == Version.DBASE_4)
+        {
+            raf.skipBytes(OFFSET_MEMO_DATA);
+        }
 
         while ((c = raf.read()) != MARKER_MEMO_END)
         {

@@ -21,8 +21,6 @@ package nl.knaw.dans.common.dbflib;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,25 +31,15 @@ import java.util.Iterator;
  *
  * @author Vesa Åkerman
  */
-public class TestMemo
+public class GenericTestMemo
 {
-    private static final int LENGTH_MEMO_BLOCK = 512;
-
     /**
-     * DOCUMENT ME!
-     *
-     * @throws FileNotFoundException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     */
-    @Test
-    public void readMemo()
-                  throws FileNotFoundException, IOException, CorruptedTableException
+    * tests reading memo fields
+    */
+    public static void readMemo(String aVersionDirectory)
+                         throws FileNotFoundException, IOException, CorruptedTableException
     {
-        final File databaseDirectory = new File("src/test/resources/dbase3plus/types");
-        final Database database = new Database(databaseDirectory, Version.DBASE_3);
-        final Table t1 = database.getTable("MEMOTEST.DBF");
-        final File memoFile = new File(databaseDirectory, "MEMOTEST.DBT");
+        final Table t1 = new Table(new File("src/test/resources/" + aVersionDirectory + "/types/MEMOTEST.DBF"));
 
         try
         {
@@ -75,8 +63,6 @@ public class TestMemo
 
             assertEquals("1234567890",
                          r.getStringValue("MEMO").substring(0, 10));
-
-            assertEquals(8, memoFile.length() / LENGTH_MEMO_BLOCK);
         }
         finally
         {
@@ -84,15 +70,11 @@ public class TestMemo
         }
     }
 
-/**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     */
-    @Test
-    public void writeMemo()
-                   throws IOException, CorruptedTableException, ValueTooLargeException
+    /**
+    * tests writing memo fields
+    */
+    public static void writeMemo(String aVersionDirectory)
+                          throws IOException, CorruptedTableException, ValueTooLargeException
     {
         final Ranges ignoredRangesDbf = new Ranges();
         ignoredRangesDbf.addRange(0x01, 0x03); // modified
@@ -102,6 +84,6 @@ public class TestMemo
         final Ranges ignoredRangesDbt = new Ranges();
         ignoredRangesDbt.addRange(0x04, 0x1ff); // reserved/garbage
 
-        UnitTestUtil.doCopyAndCompareTest("dbase3plus/types", "MEMOTEST", ignoredRangesDbf, ignoredRangesDbt);
+        UnitTestUtil.doCopyAndCompareTest(aVersionDirectory + "/types", "MEMOTEST", ignoredRangesDbf, ignoredRangesDbt);
     }
 }

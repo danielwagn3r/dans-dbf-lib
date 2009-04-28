@@ -65,6 +65,10 @@ public enum Version
         {
             return DBASE_3;
         }
+        else if (versionNr == DBASE_4.getVersionByte())
+        {
+            return DBASE_4;
+        }
 
         return null;
     }

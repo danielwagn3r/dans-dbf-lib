@@ -208,7 +208,7 @@ class UnitTestUtil
                                             final Ranges aIgnoredRangesDbf, final Ranges aIgnoredRangesDbt)
                                      throws IOException, CorruptedTableException, ValueTooLargeException
     {
-        final File outputDir = UnitTestUtil.recreateDirectory("target/test-output/" + aSubDir);
+        final File outputDir = UnitTestUtil.recreateDirectory("target/test-output/" + aSubDir + "/" + aTableBaseName);
 
         File orgFile = new File("src/test/resources/" + aSubDir + "/" + aTableBaseName + ".dbf");
 

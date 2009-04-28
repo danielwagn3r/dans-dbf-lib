@@ -24,6 +24,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -244,7 +245,7 @@ class DbfHeader
     void readVersion(final DataInput aDataInput)
               throws IOException
     {
-        version = Version.getVersion(aDataInput.readByte());
+        version = Version.getVersion((byte) (aDataInput.readByte() & 0x03));
     }
 
     void readRecordCount(final DataInput aDataInput)
@@ -291,7 +292,7 @@ class DbfHeader
 
     List<Field> getFields()
     {
-        return fields;
+        return Collections.unmodifiableList(new ArrayList<Field>(fields));
     }
 
     Version getVersion()

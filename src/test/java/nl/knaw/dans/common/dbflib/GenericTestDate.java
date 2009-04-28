@@ -21,35 +21,28 @@ package nl.knaw.dans.common.dbflib;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Iterator;
 
 /**
- * Tests reading and writing memo fields
+ * Tests reading date fields
  *
  * @author Vesa Åkerman
  */
-public class TestDate
+public class GenericTestDate
 {
     /**
      * tests correctness of date fields
      *
-     * @throws FileNotFoundException DOCUMENT ME!
      * @throws IOException DOCUMENT ME!
      * @throws CorruptedTableException DOCUMENT ME!
      */
-    @Test
-    public void readDate()
-                  throws FileNotFoundException, IOException, CorruptedTableException
+    public static void readDate(String aVersionDirectory)
+                         throws IOException, CorruptedTableException
     {
-        final Database database = new Database(new File("src/test/resources/dbase3plus/types"),
-                                               Version.DBASE_3);
-        final Table t1 = database.getTable("DATE.DBF");
+        final Table t1 = new Table(new File("src/test/resources/" + aVersionDirectory + "/types/DATE.DBF"));
 
         try
         {

@@ -30,6 +30,8 @@ import java.io.IOException;
 public class StringValue
     extends Value
 {
+    static final int MAX_CHARFIELD_LENGTH_DBASE = 253;
+
     /**
      * Creates a new StringValue object.
      *
@@ -73,6 +75,11 @@ public class StringValue
         final int fieldLength = aField.getLength();
         final byte[] stringBytes = ((String) typed).getBytes();
         final ByteArrayOutputStream bos = new ByteArrayOutputStream(fieldLength);
+
+        if (stringBytes.length > fieldLength && aField.getType() != Type.MEMO)
+        {
+            throw new ValueTooLargeException("Character string exceeds the allowed length for this character field ");
+        }
 
         try
         {

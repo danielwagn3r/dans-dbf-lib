@@ -53,7 +53,7 @@ public class NumberValue
     {
         final String stringValue = new String(raw).trim();
 
-        if (stringValue.isEmpty())
+        if (stringValue.isEmpty() || stringValue.equals("."))
         {
             return null;
         }

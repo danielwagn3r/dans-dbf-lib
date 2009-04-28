@@ -21,8 +21,6 @@ package nl.knaw.dans.common.dbflib;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +31,7 @@ import java.util.List;
  *
  * @author Jan van Mansum
  */
-public class TestNumber
+public class GenericTestNumber
 {
     /**
      * Tests reading fields with the maximum and minimum lengths and decimal count respectively.
@@ -41,11 +39,10 @@ public class TestNumber
      * @throws IOException should not happen
      * @throws CorruptedTableException should not happen
      */
-    @Test
-    public strictfp void reading_maximal_and_minimal_values()
-                                                     throws IOException, CorruptedTableException
+    public static strictfp void reading_maximal_and_minimal_values(String aVersionDirectory)
+        throws IOException, CorruptedTableException
     {
-        final Table number = new Table(new File("src/test/resources/dbase3plus/types/NUMBER.DBF"));
+        final Table number = new Table(new File("src/test/resources/" + aVersionDirectory + "/types/NUMBER.DBF"));
 
         try
         {
@@ -199,12 +196,12 @@ public class TestNumber
      * @throws IOException should not happen
      * @throws CorruptedTableException should not happen
      */
-    @Test
-    public void writing_maximal_and_minimal_values()
-                                            throws IOException, CorruptedTableException, ValueTooLargeException
+    public static void writing_maximal_and_minimal_values(String aVersionDirectory)
+                                                   throws IOException, CorruptedTableException, ValueTooLargeException
     {
         Ranges ignoredRanges = new Ranges();
         ignoredRanges.addRange(0x01, 0x03); // modified date
+        ignoredRanges.addRange(0x1e, 0x1f); // reserved
         ignoredRanges.addRange(0x23, 0x2a); // ignore garbage after 0 terminator of field name string
         ignoredRanges.addRange(0x2c, 0x2f); // field description "address in memory"
         ignoredRanges.addRange(0x4c, 0x4f); // idem
@@ -212,7 +209,7 @@ public class TestNumber
         ignoredRanges.addRange(0x8c, 0x8f); // idem
         ignoredRanges.addRange(0xac, 0xaf); // idem
 
-        UnitTestUtil.doCopyAndCompareTest("dbase3plus/types", "NUMBER", ignoredRanges, null);
+        UnitTestUtil.doCopyAndCompareTest(aVersionDirectory + "/types", "NUMBER", ignoredRanges, null);
     }
 
     /**
@@ -222,11 +219,10 @@ public class TestNumber
      * @throws IOException should not happen
      * @throws DbfLibException should not happen
      */
-    @Test
-    public void valueTooLargeException()
-                                throws IOException, DbfLibException
+    public static void valueTooLargeException(String aVersionDirectory)
+                                       throws IOException, DbfLibException
     {
-        final File outputDir = new File("target/test-output/TestNumber/valueTooLargeException");
+        final File outputDir = new File("target/test-output/" + aVersionDirectory + "/types/NUMBER");
         outputDir.mkdirs();
 
         final File tableFile = new File(outputDir, "VALTOOLARGE.DBF");
