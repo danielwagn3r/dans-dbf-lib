@@ -31,7 +31,37 @@ import java.io.IOException;
  */
 public class TestdBaseIII
 {
+    static final Version version = Version.DBASE_3;
     static final String versionDirectory = "dbase3plus";
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws CorruptedTableException DOCUMENT ME!V
+     */
+    @Test
+    public void testReadRoundTrip()
+                           throws IOException, CorruptedTableException
+    {
+        GenericTestRoundTrip genericTestRoundTrip = new GenericTestRoundTrip(version, versionDirectory);
+        genericTestRoundTrip.reading();
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws ValueTooLargeException DOCUMENT ME!
+     */
+    @Test
+    public void testWriteRoundTrip()
+                            throws IOException, CorruptedTableException, ValueTooLargeException
+    {
+        GenericTestRoundTrip genericTestRoundTrip = new GenericTestRoundTrip(version, versionDirectory);
+        genericTestRoundTrip.writing();
+    }
 
     /**
      * DOCUMENT ME!
@@ -43,7 +73,8 @@ public class TestdBaseIII
     public void testReadBoolean()
                          throws IOException, CorruptedTableException
     {
-        GenericTestBoolean.readBoolean(versionDirectory);
+        GenericTestBoolean genericTestBoolean = new GenericTestBoolean(version, versionDirectory);
+        genericTestBoolean.readBoolean();
     }
 
     /**
@@ -58,7 +89,8 @@ public class TestdBaseIII
     public void testWriteBoolean()
                           throws IOException, CorruptedTableException, ValueTooLargeException, RecordTooLargeException
     {
-        GenericTestBoolean.writeBoolean(versionDirectory);
+        GenericTestBoolean genericTestBoolean = new GenericTestBoolean(version, versionDirectory);
+        genericTestBoolean.writeBoolean();
     }
 
     /**
@@ -71,7 +103,8 @@ public class TestdBaseIII
     public void testReadCharacter()
                            throws IOException, CorruptedTableException
     {
-        GenericTestCharacter.readCharacter(versionDirectory);
+        GenericTestCharacter genericTestCharacter = new GenericTestCharacter(version, versionDirectory);
+        genericTestCharacter.readCharacter();
     }
 
     /**
@@ -89,7 +122,8 @@ public class TestdBaseIII
                                    ValueTooLargeException,
                                    RecordTooLargeException
     {
-        GenericTestCharacter.writeCharacter(versionDirectory);
+        GenericTestCharacter genericTestCharacter = new GenericTestCharacter(version, versionDirectory);
+        genericTestCharacter.writeCharacter();
     }
 
     /**
@@ -107,7 +141,8 @@ public class TestdBaseIII
                                       ValueTooLargeException,
                                       RecordTooLargeException
     {
-        GenericTestCharacter.writeTooLongField(versionDirectory);
+        GenericTestCharacter genericTestCharacter = new GenericTestCharacter(version, versionDirectory);
+        genericTestCharacter.writeTooLongField();
     }
 
     /**
@@ -120,7 +155,22 @@ public class TestdBaseIII
     public void testReadDate()
                       throws IOException, CorruptedTableException
     {
-        GenericTestDate.readDate(versionDirectory);
+        GenericTestDate genericTestDate = new GenericTestDate(version, versionDirectory);
+        genericTestDate.readDate();
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws CorruptedTableException DOCUMENT ME!
+     */
+    @Test
+    public void testWriteDate()
+                       throws IOException, CorruptedTableException
+    {
+        GenericTestDate genericTestDate = new GenericTestDate(version, versionDirectory);
+        genericTestDate.writeDate();
     }
 
     /**
@@ -134,7 +184,8 @@ public class TestdBaseIII
     public void testReadMemo()
                       throws IOException, FileNotFoundException, CorruptedTableException
     {
-        GenericTestMemo.readMemo(versionDirectory);
+        GenericTestMemo genericTestMemo = new GenericTestMemo(version, versionDirectory);
+        genericTestMemo.readMemo();
     }
 
     /**
@@ -148,7 +199,8 @@ public class TestdBaseIII
     public void testWriteMemo()
                        throws IOException, CorruptedTableException, ValueTooLargeException
     {
-        GenericTestMemo.writeMemo(versionDirectory);
+        GenericTestMemo genericTestMemo = new GenericTestMemo(version, versionDirectory);
+        genericTestMemo.writeMemo();
     }
 
     /**
@@ -170,7 +222,8 @@ public class TestdBaseIII
                                ValueTooLargeException,
                                ValueTooLargeException
     {
-        GenericTestNumber.reading_maximal_and_minimal_values(versionDirectory);
+        GenericTestNumber genericTestNumber = new GenericTestNumber(version, versionDirectory);
+        genericTestNumber.reading_maximal_and_minimal_values();
     }
 
     /**
@@ -185,7 +238,8 @@ public class TestdBaseIII
     public void testWriteNumber()
                          throws IOException, FileNotFoundException, CorruptedTableException, ValueTooLargeException
     {
-        GenericTestNumber.writing_maximal_and_minimal_values(versionDirectory);
+        GenericTestNumber genericTestNumber = new GenericTestNumber(version, versionDirectory);
+        genericTestNumber.writing_maximal_and_minimal_values();
     }
 
     /**
@@ -198,6 +252,7 @@ public class TestdBaseIII
     public void testValueTooLargeException()
                                     throws IOException, DbfLibException
     {
-        GenericTestNumber.valueTooLargeException(versionDirectory);
+        GenericTestNumber genericTestNumber = new GenericTestNumber(version, versionDirectory);
+        genericTestNumber.valueTooLargeException();
     }
 }

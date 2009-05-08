@@ -33,17 +33,23 @@ import java.util.List;
  * @author Vesa Åkerman
  */
 public class GenericTestCharacter
+    extends GenericTest
 {
+    GenericTestCharacter(Version aVersion, String aVersionDirectory)
+    {
+        super(aVersion, aVersionDirectory);
+    }
+
     /**
      * tests reading of character fields
      *
      * @throws IOException DOCUMENT ME!
      * @throws CorruptedTableException DOCUMENT ME!
      */
-    public static void readCharacter(String aVersionDirectory)
-                              throws IOException, CorruptedTableException
+    void readCharacter()
+                throws IOException, CorruptedTableException
     {
-        final Table t1 = new Table(new File("src/test/resources/" + aVersionDirectory + "/types/CHARACTE.DBF"));
+        final Table t1 = new Table(new File("src/test/resources/" + versionDirectory + "/types/CHARACTE.DBF"));
 
         try
         {
@@ -86,13 +92,10 @@ public class GenericTestCharacter
      * @throws IOException DOCUMENT ME!
      * @throws CorruptedTableException DOCUMENT ME!
      */
-    public static void writeCharacter(String aVersionDirectory)
-                               throws IOException,
-                                      CorruptedTableException,
-                                      ValueTooLargeException,
-                                      RecordTooLargeException
+    void writeCharacter()
+                 throws IOException, CorruptedTableException, ValueTooLargeException, RecordTooLargeException
     {
-        final File outputDir = new File("target/test-output/" + aVersionDirectory + "/types/CHARACTER");
+        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/CHARACTER");
         outputDir.mkdirs();
 
         final File tableFile = new File(outputDir, "WRITECHAR.DBF");
@@ -100,7 +103,7 @@ public class GenericTestCharacter
         fields.add(new Field("CHAR1", Type.CHARACTER, 20, 0));
         fields.add(new Field("CHAR2", Type.CHARACTER, 253, 0));
 
-        final Table table = new Table(tableFile, Version.DBASE_3, fields);
+        final Table table = new Table(tableFile, version, fields);
 
         try
         {
@@ -184,20 +187,17 @@ public class GenericTestCharacter
      * @throws IOException DOCUMENT ME!
      * @throws CorruptedTableException DOCUMENT ME!
      */
-    public static void writeTooLongField(String aVersionDirectory)
-                                  throws IOException,
-                                         CorruptedTableException,
-                                         ValueTooLargeException,
-                                         RecordTooLargeException
+    void writeTooLongField()
+                    throws IOException, CorruptedTableException, ValueTooLargeException, RecordTooLargeException
     {
-        final File outputDir = new File("target/test-output/" + aVersionDirectory + "/types/CHARACTER");
+        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/CHARACTER");
         outputDir.mkdirs();
 
         final File tableFile = new File(outputDir, "FIELDTOOLONG.DBF");
         final List<Field> fields = new ArrayList<Field>();
         fields.add(new Field("CHAR", Type.CHARACTER, 512, 0));
 
-        final Table table = new Table(tableFile, Version.DBASE_3, fields);
+        final Table table = new Table(tableFile, version, fields);
 
         try
         {

@@ -40,8 +40,14 @@ import java.util.Set;
  * @author Jan van Mansum
  * @author Vesa Åkerman
  */
-public class TestRoundTrip
+public class GenericTestRoundTrip
+    extends GenericTest
 {
+    GenericTestRoundTrip(Version aVersion, String aVersionDirectory)
+    {
+        super(aVersion, aVersionDirectory);
+    }
+
     /**
      * A short roundtrip of the library.  Covers:
      * <ul>
@@ -53,12 +59,11 @@ public class TestRoundTrip
      * <li>Adding a record to one table (TODO)</li>
      * </ul>
      */
-    @Test
-    public void reading()
-                 throws FileNotFoundException, IOException, CorruptedTableException
+    void reading()
+          throws FileNotFoundException, IOException, CorruptedTableException
     {
-        final Database database = new Database(new File("src/test/resources/dbase3plus/rndtrip"),
-                                               Version.DBASE_3);
+        final Database database =
+            new Database(new File("src/test/resources/" + versionDirectory + "/rndtrip"), version);
         final Set<String> tableNames = database.getTableNames();
 
         assertEquals(2,
@@ -245,23 +250,43 @@ public class TestRoundTrip
      * @throws IOException DOCUMENT ME!
      * @throws CorruptedTableException DOCUMENT ME!
      */
-    @Test
-    public void writing()
-                 throws IOException, CorruptedTableException, ValueTooLargeException
+    void writing()
+          throws IOException, CorruptedTableException, ValueTooLargeException
     {
         final Ranges ignoredRangesDbf = new Ranges();
         ignoredRangesDbf.addRange(0x01, 0x03); // modified
+        ignoredRangesDbf.addRange(0x1d, 0x1d); // language driver
+        ignoredRangesDbf.addRange(0x1e, 0x1f); // reserved
         ignoredRangesDbf.addRange(0x2c, 0x2f); // field description "address in memory"
         ignoredRangesDbf.addRange(0x4c, 0x4f); // idem
         ignoredRangesDbf.addRange(0x6c, 0x6f); // idem
         ignoredRangesDbf.addRange(0x8c, 0x8f); // idem
         ignoredRangesDbf.addRange(0xac, 0xaf); // idem
         ignoredRangesDbf.addRange(0xcc, 0xcf); // idem
+        ignoredRangesDbf.addRange(0x34, 0x34); // work area id
+        ignoredRangesDbf.addRange(0x34, 0x54); // work area id
+        ignoredRangesDbf.addRange(0x34, 0x74); // work area id
+        ignoredRangesDbf.addRange(0x34, 0x94); // work area id
+        ignoredRangesDbf.addRange(0x34, 0xb4); // work area id
+        ignoredRangesDbf.addRange(0x34, 0xd4); // work area id
 
         final Ranges ignoredRangesDbt = new Ranges();
-        ignoredRangesDbt.addRange(0x04, 0x1ff); // reserved/garbage
-        ignoredRangesDbt.addRange(0x432, 0x5ff); // garbage beyond dbase eof bytes
 
-        UnitTestUtil.doCopyAndCompareTest("dbase3plus/cars", "cars", ignoredRangesDbf, ignoredRangesDbt);
+        if (version == Version.DBASE_3)
+        {
+            ignoredRangesDbt.addRange(0x04, 0x1ff); // reserved/garbage
+            ignoredRangesDbt.addRange(0x432, 0x5ff); // garbage beyond dbase eof bytes
+        }
+        else if (version == Version.DBASE_4)
+        {
+            ignoredRangesDbt.addRange(0x438, 0x5ff); // garbage at the end of the block
+        }
+        else if (version == Version.DBASE_5)
+        {
+            ignoredRangesDbt.addRange(0x16, 0x1ff); // reserved/garbage
+        }
+
+        UnitTestUtil.doCopyAndCompareTest(versionDirectory + "/cars", "cars", version, ignoredRangesDbf,
+                                          ignoredRangesDbt);
     }
 }

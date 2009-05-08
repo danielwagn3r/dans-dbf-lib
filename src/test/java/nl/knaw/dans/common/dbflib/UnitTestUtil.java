@@ -204,7 +204,7 @@ class UnitTestUtil
      * @throws IOException should not happen
      * @throws CorruptedTableException should not happen
      */
-    public static void doCopyAndCompareTest(final String aSubDir, final String aTableBaseName,
+    public static void doCopyAndCompareTest(final String aSubDir, final String aTableBaseName, Version aVersion,
                                             final Ranges aIgnoredRangesDbf, final Ranges aIgnoredRangesDbt)
                                      throws IOException, CorruptedTableException, ValueTooLargeException
     {
@@ -227,7 +227,7 @@ class UnitTestUtil
             orgTable.open();
 
             List<Field> fields = orgTable.getFields();
-            copyTable = new Table(copyFile, Version.DBASE_3, fields);
+            copyTable = new Table(copyFile, aVersion, fields);
             copyTable.open(IfNonExistent.CREATE);
 
             Iterator<Record> recordIterator = orgTable.recordIterator();

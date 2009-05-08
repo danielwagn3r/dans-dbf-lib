@@ -33,17 +33,23 @@ import java.util.List;
  * @author Vesa Åkerman
  */
 public class GenericTestBoolean
+    extends GenericTest
 {
+    GenericTestBoolean(Version aVersion, String aVersionDirectory)
+    {
+        super(aVersion, aVersionDirectory);
+    }
+
     /**
      * tests reading of boolean fields
      *
      * @throws IOException DOCUMENT ME!
      * @throws CorruptedTableException DOCUMENT ME!
      */
-    public static void readBoolean(String aVersionDirectory)
-                            throws IOException, CorruptedTableException
+    void readBoolean()
+              throws IOException, CorruptedTableException
     {
-        final Table table = new Table(new File("src/test/resources/" + aVersionDirectory + "/types/BOOLEAN.DBF"));
+        final Table table = new Table(new File("src/test/resources/" + versionDirectory + "/types/BOOLEAN.DBF"));
 
         try
         {
@@ -71,20 +77,17 @@ public class GenericTestBoolean
     * @throws IOException DOCUMENT ME!
     * @throws CorruptedTableException DOCUMENT ME!
     */
-    public static void writeBoolean(String aVersionDirectory)
-                             throws IOException,
-                                    CorruptedTableException,
-                                    ValueTooLargeException,
-                                    RecordTooLargeException
+    void writeBoolean()
+               throws IOException, CorruptedTableException, ValueTooLargeException, RecordTooLargeException
     {
-        final File outputDir = new File("target/test-output/" + aVersionDirectory + "/types/BOOLEAN");
+        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/BOOLEAN");
         outputDir.mkdirs();
 
         final File tableFile = new File(outputDir, "WRITEBOOLEAN.DBF");
         final List<Field> fields = new ArrayList<Field>();
-        fields.add(new Field("BOOLEAN", Type.LOGICAL, 1, 0));
+        fields.add(new Field("BOOLEAN", Type.LOGICAL, 1));
 
-        final Table table = new Table(tableFile, Version.DBASE_3, fields);
+        final Table table = new Table(tableFile, version, fields);
 
         try
         {

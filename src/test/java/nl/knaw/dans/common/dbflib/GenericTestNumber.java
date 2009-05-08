@@ -32,17 +32,23 @@ import java.util.List;
  * @author Jan van Mansum
  */
 public class GenericTestNumber
+    extends GenericTest
 {
+    GenericTestNumber(Version aVersion, String aVersionDirectory)
+    {
+        super(aVersion, aVersionDirectory);
+    }
+
     /**
      * Tests reading fields with the maximum and minimum lengths and decimal count respectively.
      *
      * @throws IOException should not happen
      * @throws CorruptedTableException should not happen
      */
-    public static strictfp void reading_maximal_and_minimal_values(String aVersionDirectory)
-        throws IOException, CorruptedTableException
+    strictfp void reading_maximal_and_minimal_values()
+                                              throws IOException, CorruptedTableException
     {
-        final Table number = new Table(new File("src/test/resources/" + aVersionDirectory + "/types/NUMBER.DBF"));
+        final Table number = new Table(new File("src/test/resources/" + versionDirectory + "/types/NUMBER.DBF"));
 
         try
         {
@@ -196,11 +202,12 @@ public class GenericTestNumber
      * @throws IOException should not happen
      * @throws CorruptedTableException should not happen
      */
-    public static void writing_maximal_and_minimal_values(String aVersionDirectory)
-                                                   throws IOException, CorruptedTableException, ValueTooLargeException
+    void writing_maximal_and_minimal_values()
+                                     throws IOException, CorruptedTableException, ValueTooLargeException
     {
         Ranges ignoredRanges = new Ranges();
         ignoredRanges.addRange(0x01, 0x03); // modified date
+        ignoredRanges.addRange(0x1d, 0x1d); // language driver
         ignoredRanges.addRange(0x1e, 0x1f); // reserved
         ignoredRanges.addRange(0x23, 0x2a); // ignore garbage after 0 terminator of field name string
         ignoredRanges.addRange(0x2c, 0x2f); // field description "address in memory"
@@ -209,7 +216,7 @@ public class GenericTestNumber
         ignoredRanges.addRange(0x8c, 0x8f); // idem
         ignoredRanges.addRange(0xac, 0xaf); // idem
 
-        UnitTestUtil.doCopyAndCompareTest(aVersionDirectory + "/types", "NUMBER", ignoredRanges, null);
+        UnitTestUtil.doCopyAndCompareTest(versionDirectory + "/types", "NUMBER", version, ignoredRanges, null);
     }
 
     /**
@@ -219,10 +226,10 @@ public class GenericTestNumber
      * @throws IOException should not happen
      * @throws DbfLibException should not happen
      */
-    public static void valueTooLargeException(String aVersionDirectory)
-                                       throws IOException, DbfLibException
+    void valueTooLargeException()
+                         throws IOException, DbfLibException
     {
-        final File outputDir = new File("target/test-output/" + aVersionDirectory + "/types/NUMBER");
+        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/NUMBER");
         outputDir.mkdirs();
 
         final File tableFile = new File(outputDir, "VALTOOLARGE.DBF");
@@ -230,7 +237,7 @@ public class GenericTestNumber
         fields.add(new Field("INTFIELD", Type.NUMBER, 5, 0));
         fields.add(new Field("DECFIELD", Type.NUMBER, 5, 2));
 
-        final Table table = new Table(tableFile, Version.DBASE_3, fields);
+        final Table table = new Table(tableFile, version, fields);
 
         table.open(IfNonExistent.CREATE);
 

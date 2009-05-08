@@ -23,8 +23,10 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Tests reading date fields
@@ -32,17 +34,23 @@ import java.util.Iterator;
  * @author Vesa Åkerman
  */
 public class GenericTestDate
+    extends GenericTest
 {
+    GenericTestDate(Version aVersion, String aVersionDirectory)
+    {
+        super(aVersion, aVersionDirectory);
+    }
+
     /**
      * tests correctness of date fields
      *
      * @throws IOException DOCUMENT ME!
      * @throws CorruptedTableException DOCUMENT ME!
      */
-    public static void readDate(String aVersionDirectory)
-                         throws IOException, CorruptedTableException
+    void readDate()
+           throws IOException, CorruptedTableException
     {
-        final Table t1 = new Table(new File("src/test/resources/" + aVersionDirectory + "/types/DATE.DBF"));
+        final Table t1 = new Table(new File("src/test/resources/" + versionDirectory + "/types/DATE.DBF"));
 
         try
         {
@@ -65,6 +73,79 @@ public class GenericTestDate
         finally
         {
             t1.close();
+        }
+    }
+
+    /**
+    * tests writing of date fields
+    *
+    * @throws IOException DOCUMENT ME!
+    * @throws CorruptedTableException DOCUMENT ME!
+    */
+    void writeDate()
+            throws IOException, CorruptedTableException
+    {
+        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/DATE");
+        outputDir.mkdirs();
+
+        final File tableFile = new File(outputDir, "WRITEDATE.DBF");
+        final List<Field> fields = new ArrayList<Field>();
+        fields.add(new Field("DATE", Type.DATE, 8));
+
+        final Table table = new Table(tableFile, version, fields);
+
+        try
+        {
+            table.open(IfNonExistent.CREATE);
+
+            try
+            {
+                table.addRecord(Util.createDate(1909, Calendar.MARCH, 18));
+            }
+            catch (Exception e)
+            {
+                assertFalse("Unexpected Exception", true);
+            }
+
+            try
+            {
+                table.addRecord(Util.createDate(1970, Calendar.JANUARY, 1));
+            }
+            catch (Exception e)
+            {
+                assertFalse("Unexpected Exception", true);
+            }
+
+            try
+            {
+                table.addRecord(Util.createDate(1990, Calendar.OCTOBER, 31));
+            }
+            catch (Exception e)
+            {
+                assertFalse("Unexpected Exception", true);
+            }
+
+            try
+            {
+                table.addRecord(Util.createDate(2030, Calendar.JUNE, 15));
+            }
+            catch (Exception e)
+            {
+                assertFalse("Unexpected Exception", true);
+            }
+
+            try
+            {
+                table.addRecord(Util.createDate(2222, Calendar.DECEMBER, 20));
+            }
+            catch (Exception e)
+            {
+                assertFalse("Unexpected Exception", true);
+            }
+        }
+        finally
+        {
+            table.close();
         }
     }
 }

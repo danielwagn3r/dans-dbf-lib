@@ -25,14 +25,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
-* tests reading and writing dBaseIV files
+* tests reading and writing dBaseV files
  *
  * @author Vesa Åkerman
  */
-public class TestdBaseIV
+public class TestdBaseV
 {
-    static final Version version = Version.DBASE_4;
-    static final String versionDirectory = "dbase4";
+    static final Version version = Version.DBASE_5;
+    static final String versionDirectory = "dbase5";
 
     /**
      * DOCUMENT ME!
@@ -257,11 +257,11 @@ public class TestdBaseIV
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     */
+    * DOCUMENT ME!
+    *
+    * @throws IOException DOCUMENT ME!
+    * @throws CorruptedTableException DOCUMENT ME!
+    */
     @Test
     public void testReadFloat()
                        throws IOException, CorruptedTableException

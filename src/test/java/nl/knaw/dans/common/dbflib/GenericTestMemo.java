@@ -32,14 +32,20 @@ import java.util.Iterator;
  * @author Vesa Åkerman
  */
 public class GenericTestMemo
+    extends GenericTest
 {
+    GenericTestMemo(Version aVersion, String aVersionDirectory)
+    {
+        super(aVersion, aVersionDirectory);
+    }
+
     /**
     * tests reading memo fields
     */
-    public static void readMemo(String aVersionDirectory)
-                         throws FileNotFoundException, IOException, CorruptedTableException
+    void readMemo()
+           throws FileNotFoundException, IOException, CorruptedTableException
     {
-        final Table t1 = new Table(new File("src/test/resources/" + aVersionDirectory + "/types/MEMOTEST.DBF"));
+        final Table t1 = new Table(new File("src/test/resources/" + versionDirectory + "/types/MEMOTEST.DBF"));
 
         try
         {
@@ -73,17 +79,35 @@ public class GenericTestMemo
     /**
     * tests writing memo fields
     */
-    public static void writeMemo(String aVersionDirectory)
-                          throws IOException, CorruptedTableException, ValueTooLargeException
+    void writeMemo()
+            throws IOException, CorruptedTableException, ValueTooLargeException
     {
         final Ranges ignoredRangesDbf = new Ranges();
         ignoredRangesDbf.addRange(0x01, 0x03); // modified
+        ignoredRangesDbf.addRange(0x1d, 0x1d); // language driver
+        ignoredRangesDbf.addRange(0x1e, 0x1f); // ???
         ignoredRangesDbf.addRange(0x2c, 0x2f); // field description "address in memory"
+        ignoredRangesDbf.addRange(0x34, 0x34); // work area id
         ignoredRangesDbf.addRange(0x4c, 0x4f); // field description "address in memory"
+        ignoredRangesDbf.addRange(0x54, 0x54); // work area id
 
         final Ranges ignoredRangesDbt = new Ranges();
-        ignoredRangesDbt.addRange(0x04, 0x1ff); // reserved/garbage
 
-        UnitTestUtil.doCopyAndCompareTest(aVersionDirectory + "/types", "MEMOTEST", ignoredRangesDbf, ignoredRangesDbt);
+        if (version == Version.DBASE_3)
+        {
+            ignoredRangesDbt.addRange(0x04, 0x1ff); // reserved/garbage
+        }
+        else if (version == Version.DBASE_4)
+        {
+            ignoredRangesDbt.addRange(0xcbf, 0xdff); // end of the block garbage
+            ignoredRangesDbt.addRange(0x1005, 0x11ff); // end of the block garbage
+        }
+        else if (version == Version.DBASE_5)
+        {
+            ignoredRangesDbt.addRange(0x16, 0x1ff); // reserved/garbage
+        }
+
+        UnitTestUtil.doCopyAndCompareTest(versionDirectory + "/types", "MEMOTEST", version, ignoredRangesDbf,
+                                          ignoredRangesDbt);
     }
 }

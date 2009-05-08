@@ -245,7 +245,7 @@ class DbfHeader
     void readVersion(final DataInput aDataInput)
               throws IOException
     {
-        version = Version.getVersion((byte) (aDataInput.readByte() & 0x03));
+        version = Version.getVersion(aDataInput.readUnsignedByte());
     }
 
     void readRecordCount(final DataInput aDataInput)
@@ -433,7 +433,7 @@ class DbfHeader
     void writeVersion(final DataOutput aDataOutput)
                throws IOException
     {
-        aDataOutput.writeByte(version.getVersionByte() | (hasMemo ? MEMO_FLAG : 0x00));
+        aDataOutput.writeByte(Version.getVersionByte(version, hasMemo));
     }
 
     void writeZeros(final DataOutput aDataOutput, int n)

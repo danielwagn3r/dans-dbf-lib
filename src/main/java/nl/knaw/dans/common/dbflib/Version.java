@@ -29,47 +29,87 @@ package nl.knaw.dans.common.dbflib;
  */
 public enum Version
 {
-    /**
-     * Not supported yet.
-     */
-    DBASE_2((byte) 0x02),
-    /**
-     * dBase III(+) version of the .DBF format.
-     */
-    DBASE_3((byte) 0x03), 
-    /**
-     * Not supported yet.
-     */
-    DBASE_4((byte) 0x04), 
-    /**
-     * Not supported yet.
-     */
-    DBASE_5((byte) 0x05);
-    private final byte versionByte;
+    DBASE_3(0, 0x1a1a, 2),
+    DBASE_4(8, 0x00, 0),
+    DBASE_5(8, 0x00, 0);
 
-    private Version(final byte aVersionByte)
+    final int memoDataOffset;
+    final int memoFieldEndMarker;
+    final int memoFieldEndMarkerLength;
+
+    Version(int aMemoDataOffset, int aMemoFieldEndMarker, int aMemoFieldEndMarkerLength)
     {
-        versionByte = aVersionByte;
+        memoDataOffset = aMemoDataOffset;
+        memoFieldEndMarker = aMemoFieldEndMarker;
+        memoFieldEndMarkerLength = aMemoFieldEndMarkerLength;
     }
 
-    byte getVersionByte()
+    int getMemoDataOffset()
     {
-        return versionByte;
+        return memoDataOffset;
     }
 
-    static Version getVersion(final byte aVersionByte)
+    int getMemoFieldEndMarker()
     {
-        byte versionNr = (byte) (aVersionByte & 0x0F);
+        return memoFieldEndMarker;
+    }
 
-        if (versionNr == DBASE_3.getVersionByte())
+    int getMemoFieldEndMarkerLength()
+    {
+        return memoFieldEndMarkerLength;
+    }
+
+    static int getVersionByte(Version aVersion, boolean aHasMemo)
+    {
+        if (aVersion == DBASE_3)
         {
-            return DBASE_3;
+            if (aHasMemo)
+            {
+                return 0x83;
+            }
+            else
+            {
+                return 0x03;
+            }
         }
-        else if (versionNr == DBASE_4.getVersionByte())
+        else if (aVersion == DBASE_4 || aVersion == DBASE_5)
         {
-            return DBASE_4;
+            if (aHasMemo)
+            {
+                return 0x8B;
+            }
+            else
+            {
+                return 0x03;
+            }
         }
 
-        return null;
+        return 0;
+    }
+
+    /*
+     * The commented 'case' options found in documentation, but not yet
+     * come across in using the library
+     */
+    static Version getVersion(final int aVersionByte)
+    {
+        switch (aVersionByte)
+        {
+            case 0x03:
+            case 0x83:
+                return DBASE_3;
+
+//            case 0x04:
+//            case 0x7B:
+            case 0x8B:
+
+//            case 0x8E:
+                return DBASE_4;
+
+//            case 0x05:
+//                return DBASE_5;
+            default:
+                return null;
+        }
     }
 }

@@ -37,14 +37,16 @@ class Memo
      * Offsets.
      */
     private static final int OFFSET_NEXT_AVAILABLE_BLOCK_INDEX = 0;
+    private static final int OFFSET_FILE_NAME = 8;
     private static final int OFFSET_VERSION = 16;
-    private static final int OFFSET_MEMO_DATA = 8;
+    private static final int OFFSET_BLOCK_SIZE = 20;
 
     /*
      * Lengths.
      */
     private static final int LENGTH_MEMO_BLOCK = 512;
     private static final int LENGTH_NEXT_AVAILABLE_BLOCK_INDEX = 4;
+    private static final int LENGTH_FILE_NAME = 8;
 
     /*
      * Markers.
@@ -147,21 +149,42 @@ class Memo
     {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         int c = 0;
+
         raf.seek(aBlockIndex * LENGTH_MEMO_BLOCK);
 
         if (version == Version.DBASE_4)
         {
-            raf.skipBytes(OFFSET_MEMO_DATA);
-        }
+            /* at the beginning of each memo there is a header of 8 bytes.
+             * 4 first bytes: FFFF0800h
+             * 4 last bytes: offset to the end of memo (length of data + 8)
+             */
+            raf.skipBytes(4);
 
-        while ((c = raf.read()) != MARKER_MEMO_END)
-        {
-            if (c == -1)
+            int memoLength = Util.changeEndianness(raf.readInt()) - version.getMemoDataOffset();
+
+            for (int i = 0; i < memoLength; i++)
             {
-                throw new CorruptedTableException("Corrupted memo file");
-            }
+                c = raf.read();
 
-            bos.write(c);
+                if (c == -1)
+                {
+                    throw new CorruptedTableException("Corrupted memo file, EOF exception");
+                }
+
+                bos.write(c);
+            }
+        }
+        else
+        {
+            while ((c = raf.read()) != MARKER_MEMO_END)
+            {
+                if (c == -1)
+                {
+                    throw new CorruptedTableException("Corrupted memo file, EOF exception");
+                }
+
+                bos.write(c);
+            }
         }
 
         return bos.toByteArray();
@@ -173,15 +196,17 @@ class Memo
     int writeMemo(final byte[] aMemoBytes)
            throws IOException
     {
-        final int nrBytesToWrite = aMemoBytes.length + 2;
+        final int nrBytesToWrite =
+            aMemoBytes.length + version.getMemoFieldEndMarkerLength() + version.getMemoDataOffset();
         int nrBlocksToWrite = nrBytesToWrite / LENGTH_MEMO_BLOCK + 1;
-        final int nrSpacesToPadLastBlock = nrBytesToWrite % LENGTH_MEMO_BLOCK;
+        int nrSpacesToPadLastBlock = LENGTH_MEMO_BLOCK - nrBytesToWrite % LENGTH_MEMO_BLOCK;
 
         /*
          * Exact fit; we don't need an extra block.
          */
-        if (nrSpacesToPadLastBlock == 0)
+        if (nrSpacesToPadLastBlock == LENGTH_MEMO_BLOCK)
         {
+            nrSpacesToPadLastBlock = -LENGTH_MEMO_BLOCK;
             --nrBlocksToWrite;
         }
 
@@ -191,9 +216,19 @@ class Memo
          * Write the string and end of file markers.
          */
         raf.seek(blockIndex * LENGTH_MEMO_BLOCK);
+
+        if (version == Version.DBASE_4 || version == Version.DBASE_5)
+        {
+            raf.writeInt(0xffff0800);
+            raf.writeInt(Util.changeEndianness(aMemoBytes.length + version.getMemoDataOffset()));
+        }
+
         raf.write(aMemoBytes); // Note: cuts off higher bytes, so assumes ASCII string
-        raf.writeByte(MARKER_MEMO_END);
-        raf.writeByte(MARKER_MEMO_END);
+
+        if (version.getMemoFieldEndMarkerLength() != 0)
+        {
+            raf.writeShort(version.getMemoFieldEndMarker());
+        }
 
         /*
          * Pad the last block with zeros.
@@ -224,25 +259,54 @@ class Memo
          */
         raf.writeInt(Util.changeEndianness(nextAvailableBlock));
 
-        /*
-         * Fill the bytes up to version-field with zeros.
-         */
-        for (int i = LENGTH_NEXT_AVAILABLE_BLOCK_INDEX; i < OFFSET_VERSION; i++)
+        if (version == Version.DBASE_3)
         {
-            raf.writeByte(0x00);
+            /*
+             * Rest of the header is filled with zeros
+             */
+            for (int i = OFFSET_VERSION; i < LENGTH_MEMO_BLOCK; i++)
+            {
+                raf.writeByte(0x00);
+            }
         }
-
-        /*
-         * Write the version of the DBF-file.  Seems always to be 0x03?
-         */
-        raf.writeByte(version.getVersionByte());
-
-        /*
-         * Rest of the header is filled with zeros
-         */
-        for (int i = OFFSET_VERSION; i < LENGTH_MEMO_BLOCK; i++)
+        else
         {
+            /*
+             * Fill the bytes up to file name with zeros.
+             */
+            for (int i = LENGTH_NEXT_AVAILABLE_BLOCK_INDEX; i < OFFSET_FILE_NAME; i++)
+            {
+                raf.writeByte(0x00);
+            }
+
+            /*
+             * Write the file name
+             */
+            Util.writeString(raf,
+                             Util.stripExtension(memoFile.getName()).toUpperCase(),
+                             LENGTH_FILE_NAME);
+
+            /*
+             * Meaning of the following bytes not clear.  These values in all .dbt files
+             * that we have seen have the following values
+             */
             raf.writeByte(0x00);
+            raf.writeByte(0x00);
+            raf.writeByte(0x02);
+            raf.writeByte(0x01);
+
+            /*
+             * Write the block size
+             */
+            raf.writeShort(Util.changeEndianness((short) LENGTH_MEMO_BLOCK));
+
+            /*
+             * Rest of the header is filled with zeros
+             */
+            for (int i = OFFSET_BLOCK_SIZE + 2; i < LENGTH_MEMO_BLOCK; i++)
+            {
+                raf.writeByte(0x00);
+            }
         }
     }
 }

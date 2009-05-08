@@ -374,7 +374,15 @@ public class Table
             else if (field.getType() == Type.MEMO)
             {
                 int index = writeMemo(raw);
-                raw = String.format("%" + field.getLength() + "d", index).getBytes();
+
+                if (header.getVersion() == Version.DBASE_3)
+                {
+                    raw = String.format("%" + field.getLength() + "d", index).getBytes();
+                }
+                else
+                {
+                    raw = String.format("%0" + field.getLength() + "d", index).getBytes();
+                }
             }
 
             raFile.write(raw);
