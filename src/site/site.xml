@@ -21,7 +21,7 @@
 
         <menu name="Sourceforge Project" >
             <item name="Overview/Download" href="https://sourceforge.net/projects/dans-dbf-lib/" />
-            <item name="Forums" href="https://sourceforge.net/forum/?group_id=258772" />
+            <item name="Mailing List" href="./mail-lists.html" />
             <item name="Issue Tracking" href="https://sourceforge.net/tracker/?group_id=258772" />
         </menu>
 

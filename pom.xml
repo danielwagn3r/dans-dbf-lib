@@ -13,6 +13,16 @@
         <url>http://www.dans.knaw.nl/en</url>
     </organization>
 
+    <mailingLists>
+        <mailingList>
+            <archive>https://sourceforge.net/mailarchive/forum.php?forum_name=dans-dbf-lib-users</archive>
+            <name>dans-dbf-lib-users</name>
+            <post>dans-dbf-lib-users@lists.sourceforge.net</post>
+            <subscribe>https://lists.sourceforge.net/lists/listinfo/dans-dbf-lib-users</subscribe>
+            <unsubscribe>https://lists.sourceforge.net/lists/listinfo/dans-dbf-lib-users</unsubscribe>
+        </mailingList>
+    </mailingLists>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
