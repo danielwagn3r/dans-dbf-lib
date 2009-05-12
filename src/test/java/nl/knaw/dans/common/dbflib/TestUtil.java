@@ -24,6 +24,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.io.File;
+import java.math.BigInteger;
 
 /**
  * Tests the utility functions in the <tt>Util</tt> class.
@@ -174,7 +175,25 @@ public class TestUtil
                      Util.getNumberOfDigits(999999));
         assertEquals(7,
                      Util.getNumberOfDigits(1000000));
+        assertEquals(7,
+                     Util.getNumberOfDigits(-1000000));
         assertEquals(10,
                      Util.getNumberOfDigits(Integer.MAX_VALUE));
+
+        assertEquals(1,
+                     Util.getNumberOfDigits(0L));
+        assertEquals(15,
+                     Util.getNumberOfDigits(123456789012345L));
+        assertEquals(15,
+                     Util.getNumberOfDigits(-123456789012345L));
+        assertEquals(19,
+                     Util.getNumberOfDigits(Long.MAX_VALUE));
+
+        assertEquals(15,
+                     Util.getNumberOfDigits(new BigInteger("123456789012345")));
+        assertEquals(15,
+                     Util.getNumberOfDigits(new BigInteger("-123456789012345")));
+        assertEquals(30,
+                     Util.getNumberOfDigits(new BigInteger("123456789012345678901234567890")));
     }
 }

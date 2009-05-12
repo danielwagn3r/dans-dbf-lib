@@ -25,11 +25,14 @@ import java.io.DataOutput;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
 
 class Util
 {
+    static final int NR_OF_DIGITS_IN_YEAR = 4;
+
     private Util()
     {
         // Disallow instantiation.
@@ -236,6 +239,11 @@ class Util
     {
         final Calendar cal = Calendar.getInstance();
 
+        if (Integer.toString(year).length() > NR_OF_DIGITS_IN_YEAR)
+        {
+            throw new IllegalArgumentException("Year more than" + NR_OF_DIGITS_IN_YEAR + " digits long");
+        }
+
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, day);
@@ -261,6 +269,33 @@ class Util
         }
 
         return (int) Math.floor(Math.log10(Math.abs(aInteger))) + 1;
+    }
+
+    /**
+     * Returns the number of digits in a long integer.
+     *
+     * @param aLong the long integer
+     * @return the number of digits
+     */
+    static int getNumberOfDigits(final long aLong)
+    {
+        if (aLong == 0)
+        {
+            return 1;
+        }
+
+        return (int) Math.floor(Math.log10(Math.abs(aLong))) + 1;
+    }
+
+    /**
+     * Returns the number of digits in a BigInteger.
+     *
+     * @param aBigInteger the long integer
+     * @return the number of digits
+     */
+    static int getNumberOfDigits(final BigInteger aBigInteger)
+    {
+        return aBigInteger.abs().toString().length();
     }
 
     /**

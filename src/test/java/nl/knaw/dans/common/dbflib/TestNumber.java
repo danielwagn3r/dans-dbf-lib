@@ -21,6 +21,12 @@ package nl.knaw.dans.common.dbflib;
 
 import static org.junit.Assert.*;
 
+import org.junit.Test;
+
+import org.junit.runner.RunWith;
+
+import org.junit.runners.Parameterized;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,10 +37,17 @@ import java.util.List;
  *
  * @author Jan van Mansum
  */
-public class GenericTestNumber
-    extends GenericTest
+@RunWith(Parameterized.class)
+public class TestNumber
+    extends BaseTestingCase
 {
-    GenericTestNumber(Version aVersion, String aVersionDirectory)
+    /**
+     * Creates a new TestNumber object.
+     *
+     * @param aVersion DOCUMENT ME!
+     * @param aVersionDirectory DOCUMENT ME!
+     */
+    public TestNumber(Version aVersion, String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
@@ -45,8 +58,9 @@ public class GenericTestNumber
      * @throws IOException should not happen
      * @throws CorruptedTableException should not happen
      */
-    strictfp void reading_maximal_and_minimal_values()
-                                              throws IOException, CorruptedTableException
+    @Test
+    public strictfp void reading_maximal_and_minimal_values()
+                                                     throws IOException, CorruptedTableException
     {
         final Table number = new Table(new File("src/test/resources/" + versionDirectory + "/types/NUMBER.DBF"));
 
@@ -202,8 +216,9 @@ public class GenericTestNumber
      * @throws IOException should not happen
      * @throws CorruptedTableException should not happen
      */
-    void writing_maximal_and_minimal_values()
-                                     throws IOException, CorruptedTableException, ValueTooLargeException
+    @Test
+    public void writing_maximal_and_minimal_values()
+                                            throws IOException, CorruptedTableException, ValueTooLargeException
     {
         Ranges ignoredRanges = new Ranges();
         ignoredRanges.addRange(0x01, 0x03); // modified date
@@ -220,19 +235,21 @@ public class GenericTestNumber
     }
 
     /**
-     * Checks that ValueTooLargeException is thrown only when the number provided is too larget
-     * to fit into the field.
+     * DOCUMENT ME!
      *
-     * @throws IOException should not happen
-     * @throws DbfLibException should not happen
+     * @throws IOException DOCUMENT ME!
+     * @throws DbfLibException DOCUMENT ME!
      */
-    void valueTooLargeException()
-                         throws IOException, DbfLibException
+    @Test
+    public void writeNumber()
+                     throws IOException, DbfLibException
     {
         final File outputDir = new File("target/test-output/" + versionDirectory + "/types/NUMBER");
         outputDir.mkdirs();
 
         final File tableFile = new File(outputDir, "VALTOOLARGE.DBF");
+        UnitTestUtil.remove(tableFile);
+
         final List<Field> fields = new ArrayList<Field>();
         fields.add(new Field("INTFIELD", Type.NUMBER, 5, 0));
         fields.add(new Field("DECFIELD", Type.NUMBER, 5, 2));
@@ -243,43 +260,12 @@ public class GenericTestNumber
 
         try
         {
-            try
-            {
-                table.addRecord(12345);
-            }
-            catch (ValueTooLargeException vtle)
-            {
-                assertTrue("ValueTooLargeException went off unexpectedly", false);
-            }
-
-            try
-            {
-                table.addRecord(123456);
-                assertFalse("Expected exception ValueTooLargeException not thrown", false);
-            }
-            catch (ValueTooLargeException vtle)
-            {
-                assertTrue(true);
-            }
-
-            try
-            {
-                table.addRecord(0, 12.34);
-            }
-            catch (ValueTooLargeException vtle)
-            {
-                assertTrue("ValueTooLargeException went off unexpectedly", false);
-            }
-
-            try
-            {
-                table.addRecord(0, 123.45);
-                assertFalse("Expected exception ValueTooLargeException not thrown", false);
-            }
-            catch (ValueTooLargeException vtle)
-            {
-                assertTrue(true);
-            }
+            table.addRecord(12345);
+            table.addRecord(0, 12.34);
+        }
+        catch (Exception e)
+        {
+            assertFalse("Unexpected exception: " + e.toString(), true);
         }
         finally
         {

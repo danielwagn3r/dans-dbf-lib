@@ -21,6 +21,12 @@ package nl.knaw.dans.common.dbflib;
 
 import static org.junit.Assert.*;
 
+import org.junit.Test;
+
+import org.junit.runner.RunWith;
+
+import org.junit.runners.Parameterized;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,10 +39,17 @@ import java.util.List;
  *
  * @author Vesa Åkerman
  */
-public class GenericTestDate
-    extends GenericTest
+@RunWith(Parameterized.class)
+public class TestDate
+    extends BaseTestingCase
 {
-    GenericTestDate(Version aVersion, String aVersionDirectory)
+    /**
+     * Creates a new TestDate object.
+     *
+     * @param aVersion DOCUMENT ME!
+     * @param aVersionDirectory DOCUMENT ME!
+     */
+    public TestDate(Version aVersion, String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
@@ -47,8 +60,9 @@ public class GenericTestDate
      * @throws IOException DOCUMENT ME!
      * @throws CorruptedTableException DOCUMENT ME!
      */
-    void readDate()
-           throws IOException, CorruptedTableException
+    @Test
+    public void readDate()
+                  throws IOException, CorruptedTableException
     {
         final Table t1 = new Table(new File("src/test/resources/" + versionDirectory + "/types/DATE.DBF"));
 
@@ -82,13 +96,16 @@ public class GenericTestDate
     * @throws IOException DOCUMENT ME!
     * @throws CorruptedTableException DOCUMENT ME!
     */
-    void writeDate()
-            throws IOException, CorruptedTableException
+    @Test
+    public void writeDate()
+                   throws IOException, CorruptedTableException, ValueTooLargeException
     {
         final File outputDir = new File("target/test-output/" + versionDirectory + "/types/DATE");
         outputDir.mkdirs();
 
         final File tableFile = new File(outputDir, "WRITEDATE.DBF");
+        UnitTestUtil.remove(tableFile);
+
         final List<Field> fields = new ArrayList<Field>();
         fields.add(new Field("DATE", Type.DATE, 8));
 
@@ -98,50 +115,15 @@ public class GenericTestDate
         {
             table.open(IfNonExistent.CREATE);
 
-            try
-            {
-                table.addRecord(Util.createDate(1909, Calendar.MARCH, 18));
-            }
-            catch (Exception e)
-            {
-                assertFalse("Unexpected Exception", true);
-            }
-
-            try
-            {
-                table.addRecord(Util.createDate(1970, Calendar.JANUARY, 1));
-            }
-            catch (Exception e)
-            {
-                assertFalse("Unexpected Exception", true);
-            }
-
-            try
-            {
-                table.addRecord(Util.createDate(1990, Calendar.OCTOBER, 31));
-            }
-            catch (Exception e)
-            {
-                assertFalse("Unexpected Exception", true);
-            }
-
-            try
-            {
-                table.addRecord(Util.createDate(2030, Calendar.JUNE, 15));
-            }
-            catch (Exception e)
-            {
-                assertFalse("Unexpected Exception", true);
-            }
-
-            try
-            {
-                table.addRecord(Util.createDate(2222, Calendar.DECEMBER, 20));
-            }
-            catch (Exception e)
-            {
-                assertFalse("Unexpected Exception", true);
-            }
+            table.addRecord(Util.createDate(1909, Calendar.MARCH, 18));
+            table.addRecord(Util.createDate(1970, Calendar.JANUARY, 1));
+            table.addRecord(Util.createDate(1990, Calendar.OCTOBER, 31));
+            table.addRecord(Util.createDate(2030, Calendar.JUNE, 15));
+            table.addRecord(Util.createDate(2222, Calendar.DECEMBER, 20));
+        }
+        catch (Exception e)
+        {
+            assertFalse("Unexpected Exception: " + e.toString(), true);
         }
         finally
         {

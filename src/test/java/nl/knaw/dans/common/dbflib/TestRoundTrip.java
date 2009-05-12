@@ -23,6 +23,10 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
+
+import org.junit.runners.Parameterized;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,10 +44,17 @@ import java.util.Set;
  * @author Jan van Mansum
  * @author Vesa Åkerman
  */
-public class GenericTestRoundTrip
-    extends GenericTest
+@RunWith(Parameterized.class)
+public class TestRoundTrip
+    extends BaseTestingCase
 {
-    GenericTestRoundTrip(Version aVersion, String aVersionDirectory)
+    /**
+     * Creates a new TestRoundTrip object.
+     *
+     * @param aVersion DOCUMENT ME!
+     * @param aVersionDirectory DOCUMENT ME!
+     */
+    public TestRoundTrip(Version aVersion, String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
@@ -59,8 +70,9 @@ public class GenericTestRoundTrip
      * <li>Adding a record to one table (TODO)</li>
      * </ul>
      */
-    void reading()
-          throws FileNotFoundException, IOException, CorruptedTableException
+    @Test
+    public void reading()
+                 throws FileNotFoundException, IOException, CorruptedTableException
     {
         final Database database =
             new Database(new File("src/test/resources/" + versionDirectory + "/rndtrip"), version);
@@ -250,8 +262,9 @@ public class GenericTestRoundTrip
      * @throws IOException DOCUMENT ME!
      * @throws CorruptedTableException DOCUMENT ME!
      */
-    void writing()
-          throws IOException, CorruptedTableException, ValueTooLargeException
+    @Test
+    public void writing()
+                 throws IOException, CorruptedTableException, ValueTooLargeException
     {
         final Ranges ignoredRangesDbf = new Ranges();
         ignoredRangesDbf.addRange(0x01, 0x03); // modified

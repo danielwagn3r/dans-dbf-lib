@@ -21,11 +21,19 @@ package nl.knaw.dans.common.dbflib;
 
 import static org.junit.Assert.*;
 
+import org.junit.Test;
+
+import org.junit.runner.RunWith;
+
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,12 +42,37 @@ import java.util.List;
  *
  * @author Vesa Åkerman
  */
-public class GenericTestFloat
-    extends GenericTest
+@RunWith(Parameterized.class)
+public class TestFloat
+    extends BaseTestingCase
 {
-    GenericTestFloat(Version aVersion, String aVersionDirectory)
+    /**
+     * Creates a new TestFloat object.
+     *
+     * @param aVersion DOCUMENT ME!
+     * @param aVersionDirectory DOCUMENT ME!
+     */
+    public TestFloat(Version aVersion, String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return DOCUMENT ME!
+     */
+    @Parameters
+    public static Collection<Object[]> data()
+    {
+        final Object[][] testParameters =
+            new Object[][]
+            {
+                { Version.DBASE_4, "dbase4" },
+                { Version.DBASE_5, "dbase5" }
+            };
+
+        return Arrays.asList(testParameters);
     }
 
     /**
@@ -48,8 +81,9 @@ public class GenericTestFloat
      * @throws IOException DOCUMENT ME!
      * @throws CorruptedTableException DOCUMENT ME!
      */
-    void readFloat()
-            throws IOException, CorruptedTableException
+    @Test
+    public void readFloat()
+                   throws IOException, CorruptedTableException
     {
         final Table t1 = new Table(new File("src/test/resources/" + versionDirectory + "/types/FLOAT.DBF"));
 
@@ -114,13 +148,16 @@ public class GenericTestFloat
     * @throws IOException DOCUMENT ME!
     * @throws CorruptedTableException DOCUMENT ME!
     */
-    void writeFloat()
-             throws IOException, CorruptedTableException, RecordTooLargeException
+    @Test
+    public void writeFloat()
+                    throws IOException, CorruptedTableException, RecordTooLargeException
     {
         final File outputDir = new File("target/test-output/" + versionDirectory + "/types/FLOAT");
         outputDir.mkdirs();
 
         final File tableFile = new File(outputDir, "WRITEFLOAT.DBF");
+        UnitTestUtil.remove(tableFile);
+
         final List<Field> fields = new ArrayList<Field>();
         fields.add(new Field("FLOAT_1", Type.FLOAT, 20, 0));
         fields.add(new Field("FLOAT_2", Type.NUMBER, 20, 1));
@@ -132,46 +169,15 @@ public class GenericTestFloat
         {
             table.open(IfNonExistent.CREATE);
 
-            try
-            {
-                table.addRecord(0, 0.0, 0.0);
-            }
-            catch (Exception e)
-            {
-                assertFalse("Unexpected Exception 1", true);
-            }
-
-            try
-            {
-                table.addRecord(1234567890, 1234567890.1, 1.123456789);
-            }
-            catch (Exception e)
-            {
-                assertFalse("Unexpected Exception 2", true);
-            }
-
-            try
-            {
-                table.addRecord(new BigInteger("10000000000000000000"),
-                                10000000000000000.0,
-                                0.00000000000000001);
-            }
-            catch (Exception e)
-            {
-                assertFalse("Unexpected Exception 3", true);
-            }
-
-//            try
-//            {
-//                table.addRecord(new BigInteger("99999999999999999999999999"),
-//                                0.0,
-//                                0.0);
-//                assertFalse("Expected exception ValueTooLargeException not thrown", false);
-//            }
-//            catch (ValueTooLargeException vtle)
-//            {
-//                assertTrue(true);
-//            }
+            table.addRecord(0, 0.0, 0.0);
+            table.addRecord(1234567890, 1234567890.1, 1.123456789);
+            table.addRecord(new BigInteger("10000000000000000000"),
+                            10000000000000000.0,
+                            0.00000000000000001);
+        }
+        catch (Exception e)
+        {
+            assertFalse("Unexpected Exception: " + e.toString(), true);
         }
         finally
         {

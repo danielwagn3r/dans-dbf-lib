@@ -21,6 +21,12 @@ package nl.knaw.dans.common.dbflib;
 
 import static org.junit.Assert.*;
 
+import org.junit.Test;
+
+import org.junit.runner.RunWith;
+
+import org.junit.runners.Parameterized;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,10 +37,17 @@ import java.util.Iterator;
  *
  * @author Vesa Åkerman
  */
-public class GenericTestMemo
-    extends GenericTest
+@RunWith(Parameterized.class)
+public class TestMemo
+    extends BaseTestingCase
 {
-    GenericTestMemo(Version aVersion, String aVersionDirectory)
+    /**
+     * Creates a new TestMemo object.
+     *
+     * @param aVersion DOCUMENT ME!
+     * @param aVersionDirectory DOCUMENT ME!
+     */
+    public TestMemo(Version aVersion, String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
@@ -42,8 +55,9 @@ public class GenericTestMemo
     /**
     * tests reading memo fields
     */
-    void readMemo()
-           throws FileNotFoundException, IOException, CorruptedTableException
+    @Test
+    public void readMemo()
+                  throws FileNotFoundException, IOException, CorruptedTableException
     {
         final Table t1 = new Table(new File("src/test/resources/" + versionDirectory + "/types/MEMOTEST.DBF"));
 
@@ -79,8 +93,9 @@ public class GenericTestMemo
     /**
     * tests writing memo fields
     */
-    void writeMemo()
-            throws IOException, CorruptedTableException, ValueTooLargeException
+    @Test
+    public void writeMemo()
+                   throws IOException, CorruptedTableException, ValueTooLargeException
     {
         final Ranges ignoredRangesDbf = new Ranges();
         ignoredRangesDbf.addRange(0x01, 0x03); // modified

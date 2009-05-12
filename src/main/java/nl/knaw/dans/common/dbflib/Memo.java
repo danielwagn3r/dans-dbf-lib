@@ -152,39 +152,48 @@ class Memo
 
         raf.seek(aBlockIndex * LENGTH_MEMO_BLOCK);
 
-        if (version == Version.DBASE_4)
+        switch (version)
         {
-            /* at the beginning of each memo there is a header of 8 bytes.
-             * 4 first bytes: FFFF0800h
-             * 4 last bytes: offset to the end of memo (length of data + 8)
-             */
-            raf.skipBytes(4);
+            case DBASE_3:
 
-            int memoLength = Util.changeEndianness(raf.readInt()) - version.getMemoDataOffset();
-
-            for (int i = 0; i < memoLength; i++)
-            {
-                c = raf.read();
-
-                if (c == -1)
+                while ((c = raf.read()) != MARKER_MEMO_END)
                 {
-                    throw new CorruptedTableException("Corrupted memo file, EOF exception");
+                    if (c == -1)
+                    {
+                        throw new CorruptedTableException("Corrupted memo file, EOF exception");
+                    }
+
+                    bos.write(c);
                 }
 
-                bos.write(c);
-            }
-        }
-        else
-        {
-            while ((c = raf.read()) != MARKER_MEMO_END)
-            {
-                if (c == -1)
+                break;
+
+            case DBASE_4:
+            case DBASE_5:
+                /* at the beginning of each memo there is a header of 8 bytes.
+                 * 4 first bytes: FFFF0800h
+                 * 4 last bytes: offset to the end of memo (length of data + 8)
+                 */
+                raf.skipBytes(4);
+
+                int memoLength = Util.changeEndianness(raf.readInt()) - version.getMemoDataOffset();
+
+                for (int i = 0; i < memoLength; i++)
                 {
-                    throw new CorruptedTableException("Corrupted memo file, EOF exception");
+                    c = raf.read();
+
+                    if (c == -1)
+                    {
+                        throw new CorruptedTableException("Corrupted memo file, EOF exception");
+                    }
+
+                    bos.write(c);
                 }
 
-                bos.write(c);
-            }
+                break;
+
+            default:
+                throw new IllegalArgumentException("Unsupported version " + version.toString());
         }
 
         return bos.toByteArray();
@@ -259,54 +268,41 @@ class Memo
          */
         raf.writeInt(Util.changeEndianness(nextAvailableBlock));
 
-        if (version == Version.DBASE_3)
+        /*
+         * Fill the bytes up to file name with zeros.
+         */
+        for (int i = LENGTH_NEXT_AVAILABLE_BLOCK_INDEX; i < OFFSET_FILE_NAME; i++)
         {
-            /*
-             * Rest of the header is filled with zeros
-             */
-            for (int i = OFFSET_VERSION; i < LENGTH_MEMO_BLOCK; i++)
-            {
-                raf.writeByte(0x00);
-            }
+            raf.writeByte(0x00);
         }
-        else
+
+        /*
+         * Write the file name. In dBaseIV and V.
+         */
+        Util.writeString(raf,
+                         Util.stripExtension(memoFile.getName()).toUpperCase(),
+                         LENGTH_FILE_NAME);
+
+        /*
+         * Meaning of the following bytes not clear.  These values in all .dbt files
+         * that we have seen have the following values.  In dBaseIV and V.
+         */
+        raf.writeByte(0x00);
+        raf.writeByte(0x00);
+        raf.writeByte(0x02);
+        raf.writeByte(0x01);
+
+        /*
+         * Write the block size.  In dBaseIV and V.
+         */
+        raf.writeShort(Util.changeEndianness((short) LENGTH_MEMO_BLOCK));
+
+        /*
+         * Rest of the header is filled with zeros
+         */
+        for (int i = OFFSET_BLOCK_SIZE + 2; i < LENGTH_MEMO_BLOCK; i++)
         {
-            /*
-             * Fill the bytes up to file name with zeros.
-             */
-            for (int i = LENGTH_NEXT_AVAILABLE_BLOCK_INDEX; i < OFFSET_FILE_NAME; i++)
-            {
-                raf.writeByte(0x00);
-            }
-
-            /*
-             * Write the file name
-             */
-            Util.writeString(raf,
-                             Util.stripExtension(memoFile.getName()).toUpperCase(),
-                             LENGTH_FILE_NAME);
-
-            /*
-             * Meaning of the following bytes not clear.  These values in all .dbt files
-             * that we have seen have the following values
-             */
             raf.writeByte(0x00);
-            raf.writeByte(0x00);
-            raf.writeByte(0x02);
-            raf.writeByte(0x01);
-
-            /*
-             * Write the block size
-             */
-            raf.writeShort(Util.changeEndianness((short) LENGTH_MEMO_BLOCK));
-
-            /*
-             * Rest of the header is filled with zeros
-             */
-            for (int i = OFFSET_BLOCK_SIZE + 2; i < LENGTH_MEMO_BLOCK; i++)
-            {
-                raf.writeByte(0x00);
-            }
         }
     }
 }
