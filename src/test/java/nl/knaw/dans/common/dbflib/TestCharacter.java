@@ -43,19 +43,19 @@ public class TestCharacter
     /**
      * Creates a new TestCharacter object.
      *
-     * @param aVersion DOCUMENT ME!
-     * @param aVersionDirectory DOCUMENT ME!
+     * @param aVersion test parameter
+     * @param aVersionDirectory test parameter
      */
-    public TestCharacter(Version aVersion, String aVersionDirectory)
+    public TestCharacter(final Version aVersion, final String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
 
     /**
-     * tests reading of character fields
+     * Tests reading of character fields.
      *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
      */
     @Test
     public void readCharacter()

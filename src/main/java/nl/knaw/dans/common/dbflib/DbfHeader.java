@@ -91,7 +91,6 @@ class DbfHeader
      * Special bytes.
      */
     private static final byte FIELD_DESCRIPTOR_ARRAY_TERMINATOR = 0x0D;
-    private static final byte MEMO_FLAG = (byte) 0x80;
 
     /*
      * Fields.
@@ -320,33 +319,31 @@ class DbfHeader
     void writeFieldDescriptor(final DataOutput aDataOutput, Field aField)
                        throws IOException
     {
-        // name of the field, terminated with 00h
-        // (in LENGTH_FIELD_NAME the terminating 00h byte is already taken in account)
+        /*
+         * Name of the field, terminated with 00h.
+         * (in LENGTH_FIELD_NAME the terminating 00h byte is already taken in account)
+         */
         Util.writeString(aDataOutput,
                          aField.getName(),
                          LENGTH_FIELD_NAME - 1);
         aDataOutput.writeByte(0x00);
-
-        // field type
         aDataOutput.writeByte(aField.getType().getCode());
 
-        // field data address.  Used only with FoxPro. In other cases fill with 00h
+        /*
+         * Field data address.  Used only with FoxPro. In other cases fill with 00h
+         */
         aDataOutput.writeInt(0x00);
 
-        // field length
         aDataOutput.writeByte(aField.getLength());
-
-        // field decimal count
         aDataOutput.writeByte(aField.getDecimalCount());
-
-        // the next two bytes are set to 0x00
         aDataOutput.writeByte(0x00);
         aDataOutput.writeByte(0x00);
 
-        // work area ID
+        /*
+         * Work area ID
+         */
         aDataOutput.writeByte(0x01);
 
-        // rest of the field description block is filled with 00h
         for (int i = 0; i < (LENGTH_FIELD_DESCRIPTOR - OFFSET_WORK_AREA_ID - 1); i++)
         {
             aDataOutput.writeByte(0x00);

@@ -1,3 +1,22 @@
+/*
+ *  Copyright 2009
+ *  Data Archiving and Networked Services (DANS), Netherlands.
+ *
+ *  This file is part of DANS DBF Library.
+ *
+ *  DANS DBF Library is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  DANS DBF Library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package nl.knaw.dans.common.dbflib;
 
 import static org.junit.Assert.*;
@@ -15,7 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Tests reading and writing boolean fields
+ * Tests reading and writing boolean fields.
  *
  * @author Vesa Åkerman
  */
@@ -24,12 +43,12 @@ public class TestBoolean
     extends BaseTestcase
 {
     /**
-     * Creates a new TestBooolean object.
+     * Creates a new TestBoolean object.
      *
      * @param aVersion DOCUMENT ME!
      * @param aVersionDirectory DOCUMENT ME!
      */
-    public TestBoolean(Version aVersion, String aVersionDirectory)
+    public TestBoolean(final Version aVersion, final String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
@@ -37,8 +56,8 @@ public class TestBoolean
     /**
      * tests reading of boolean fields
      *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
      */
     @Test
     public void readBoolean()
@@ -67,9 +86,9 @@ public class TestBoolean
     }
 
     /**
-    * tests writing of boolean fields
+    * Tests writing of boolean fields.
     *
-    * @throws IOException DOCUMENT ME!
+    * @throws IOException not expected
     * @throws CorruptedTableException DOCUMENT ME!
     */
     @Test

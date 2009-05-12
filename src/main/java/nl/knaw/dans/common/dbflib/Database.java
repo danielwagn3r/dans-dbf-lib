@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Represents a xBase database.  An xBase database is a directory containing table
+ * Represents an xBase database.  An xBase database is a directory containing table
  * files (.DBF files) and supporting files like memo (.DBT) or index (.NDX) files.
  * This class allows you to work with the database without having to open the
  * lower level files directly.  However, it is still possible to open individual tables
@@ -48,7 +48,7 @@ public class Database
      * file represents a regular file and not a directory, throws an <tt>IllegalArgumentException</tt>.
      * <p>
      * All tables that exist in the database directory are added as <tt>Table</tt> objects and can be
-     * retrieved by {@link #getTable(java.lang.String) }.
+     * retrieved with {@link #getTable(java.lang.String) }.
      * </p><p>
      * The parameter <tt>aVersion</tt> does not trigger any validation on an existing database but is
      * merely used to specify the version of newly added tables.  It is therefore the responsibilty
@@ -95,7 +95,7 @@ public class Database
     }
 
     /**
-     * Returns the <tt>Table</tt> object with the specified name of <tt>null</tt>
+     * Returns the <tt>Table</tt> object with the specified name or <tt>null</tt>
      * if it has not been added yet.
      *
      * @param aName the name of the table, including extension

@@ -1,8 +1,26 @@
+/*
+ *  Copyright 2009
+ *  Data Archiving and Networked Services (DANS), Netherlands.
+ *
+ *  This file is part of DANS DBF Library.
+ *
+ *  DANS DBF Library is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  DANS DBF Library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package nl.knaw.dans.common.dbflib;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import org.junit.runner.RunWith;
@@ -29,20 +47,20 @@ public class TestFloatExceptions
     private Table table;
 
     /**
-     * Creates a new TestCharacterExceptions object.
+     * Creates a new TestFloatExceptions object.
      *
-     * @param aVersion DOCUMENT ME!
-     * @param aVersionDirectory DOCUMENT ME!
+     * @param aVersion test parameter
+     * @param aVersionDirectory test parameter
      */
-    public TestFloatExceptions(Version aVersion, String aVersionDirectory)
+    public TestFloatExceptions(final Version aVersion, final String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
 
     /**
-     * DOCUMENT ME!
+     * {@inheritDoc}
      *
-     * @return DOCUMENT ME!
+     * No dBase III+, because it has no FLOAT type.
      */
     @Parameters
     public static Collection<Object[]> data()
@@ -58,10 +76,10 @@ public class TestFloatExceptions
     }
 
     /**
-     * DOCUMENT ME!
+     * Sets up the testing environment.
      *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
      */
     @Before
     public void setUp()
@@ -83,9 +101,9 @@ public class TestFloatExceptions
     }
 
     /**
-     * DOCUMENT ME!
+     * Cleans up the test environment.
      *
-     * @throws IOException DOCUMENT ME!
+     * @throws IOException not expected
      */
     @After
     public void tearDown()
@@ -95,12 +113,12 @@ public class TestFloatExceptions
     }
 
     /**
-     * DOCUMENT ME!
+     * Tests that adding a value that is too big triggers a <tt>ValueTooLargeException</tt>.
      *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     * @throws ValueTooLargeException DOCUMENT ME!
-     * @throws RecordTooLargeException DOCUMENT ME!
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
+     * @throws ValueTooLargeException expected!
+     * @throws RecordTooLargeException not expected
      */
     @Test(expected = ValueTooLargeException.class)
     public void tooBigIntegerValue()

@@ -38,7 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Tests reading date fields
+ * Tests reading FLOAT fields.
  *
  * @author Vesa Åkerman
  */
@@ -49,18 +49,18 @@ public class TestFloat
     /**
      * Creates a new TestFloat object.
      *
-     * @param aVersion DOCUMENT ME!
-     * @param aVersionDirectory DOCUMENT ME!
+     * @param aVersion test parameter
+     * @param aVersionDirectory test parameter
      */
-    public TestFloat(Version aVersion, String aVersionDirectory)
+    public TestFloat(final Version aVersion, final String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
 
     /**
-     * DOCUMENT ME!
+     * {@inheritDoc}
      *
-     * @return DOCUMENT ME!
+     * No dBase III+, because it has no FLOAT type.
      */
     @Parameters
     public static Collection<Object[]> data()
@@ -76,10 +76,10 @@ public class TestFloat
     }
 
     /**
-     * tests correctness of date fields
+     * Tests reading of DATE fields.
      *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
      */
     @Test
     public void readFloat()
@@ -143,14 +143,14 @@ public class TestFloat
     }
 
     /**
-    * tests writing of date fields
+    * Tests writing of DATE fields.
     *
     * @throws IOException DOCUMENT ME!
     * @throws CorruptedTableException DOCUMENT ME!
     */
     @Test
     public void writeFloat()
-                    throws IOException, CorruptedTableException, RecordTooLargeException
+                    throws IOException, CorruptedTableException, RecordTooLargeException, ValueTooLargeException
     {
         final File outputDir = new File("target/test-output/" + versionDirectory + "/types/FLOAT");
         outputDir.mkdirs();
@@ -174,10 +174,6 @@ public class TestFloat
             table.addRecord(new BigInteger("10000000000000000000"),
                             10000000000000000.0,
                             0.00000000000000001);
-        }
-        catch (Exception e)
-        {
-            assertFalse("Unexpected Exception: " + e.toString(), true);
         }
         finally
         {

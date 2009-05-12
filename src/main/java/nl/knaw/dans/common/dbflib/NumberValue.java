@@ -132,7 +132,7 @@ public class NumberValue
         }
         catch (IOException ex)
         {
-            throw new Error("Programming error: writing to ByteOutputStream should never cause and IOException", ex);
+            assert false : "Programming error: writing to ByteOutputStream should never cause and IOException";
         }
 
         return bos.toByteArray();

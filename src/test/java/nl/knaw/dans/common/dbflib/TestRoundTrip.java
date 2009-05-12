@@ -51,10 +51,10 @@ public class TestRoundTrip
     /**
      * Creates a new TestRoundTrip object.
      *
-     * @param aVersion DOCUMENT ME!
-     * @param aVersionDirectory DOCUMENT ME!
+     * @param aVersion test parameter
+     * @param aVersionDirectory test parameter
      */
-    public TestRoundTrip(Version aVersion, String aVersionDirectory)
+    public TestRoundTrip(final Version aVersion, final String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
@@ -66,8 +66,7 @@ public class TestRoundTrip
      * <li>Retrieving the table names</li>
      * <li>Checking last modified date</li>
      * <li>Retrieving fields of one table</li>
-     * <li>Retrieving records of one table (TODO)</li>
-     * <li>Adding a record to one table (TODO)</li>
+     * <li>Retrieving records of one table</li>
      * </ul>
      */
     @Test
@@ -257,10 +256,10 @@ public class TestRoundTrip
     }
 
     /**
-     * DOCUMENT ME!
+     * Tests writing to a table.
      *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
      */
     @Test
     public void writing()

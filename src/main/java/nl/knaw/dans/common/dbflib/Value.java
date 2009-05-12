@@ -31,13 +31,27 @@ public abstract class Value
     protected byte[] raw;
     protected Object typed;
 
-    Value(final byte[] aRawValue)
+    /**
+     * Constructs a <tt>Value</tt> object with the specified raw value.  The subclass
+     * must take care of converting the raw value to a Java object by implementing
+     * {@link #doGetTypedValue() }.
+     *
+     * @param aRawValue the bytes that constitute the raw value
+     */
+    protected Value(final byte[] aRawValue)
     {
         raw = aRawValue;
         typed = null;
     }
 
-    Value(final Object aTypedValue)
+    /**
+     * Constructs a <tt>Value</tt> object with the specified typed value, i.e.
+     * Java object.  The subclass must take care of converting the
+     * typed value to a byte array by implementing {@link #doGetRawValue(nl.knaw.dans.common.dbflib.Field) }.
+     *
+     * @param aTypedValue the value as a Java object
+     */
+    protected Value(final Object aTypedValue)
     {
         raw = null;
         typed = aTypedValue;
@@ -64,8 +78,23 @@ public abstract class Value
         return raw;
     }
 
+    /**
+     * Converts the raw bytes to a Java object.  The class of Java object to
+     * create is determined by the subclass of <tt>Value</tt>.
+     *
+     * @return the value as a Java object
+     */
     protected abstract Object doGetTypedValue();
 
+    /**
+     * Converts the typed value to a byte array, according to the field specifications
+     * provided.
+     *
+     * @param aField the field specifications
+     * @return a byte array containing the raw value
+     * @throws nl.knaw.dans.common.dbflib.ValueTooLargeException if the value is too
+     *   large for the field
+     */
     protected abstract byte[] doGetRawValue(Field aField)
                                      throws ValueTooLargeException;
 }

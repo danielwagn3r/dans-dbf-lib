@@ -29,7 +29,7 @@ package nl.knaw.dans.common.dbflib;
  * Note, too, that dBase III handles NUMBER values internally as floating point values.  It <em>will</em>
  * display the values as found in the DBF file but if they are too large or contain too many digits dBase
  * will display an error message or round the value when trying to process it (e.g. if you try to save
- * the value again in the dBase program).
+ * the value again in the dBase program).  The same is true for dBase IV and V and FLOAT values.
 
  * @author Jan van Mansum
  */

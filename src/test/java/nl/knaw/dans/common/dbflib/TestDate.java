@@ -35,7 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Tests reading date fields
+ * Tests reading date fields.
  *
  * @author Vesa Åkerman
  */
@@ -46,19 +46,19 @@ public class TestDate
     /**
      * Creates a new TestDate object.
      *
-     * @param aVersion DOCUMENT ME!
-     * @param aVersionDirectory DOCUMENT ME!
+     * @param aVersion test parameter
+     * @param aVersionDirectory test parameter
      */
-    public TestDate(Version aVersion, String aVersionDirectory)
+    public TestDate(final Version aVersion, final String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
 
     /**
-     * tests correctness of date fields
+     * Tests reading DATE fields.
      *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
      */
     @Test
     public void readDate()
@@ -91,14 +91,16 @@ public class TestDate
     }
 
     /**
-    * tests writing of date fields
-    *
-    * @throws IOException DOCUMENT ME!
-    * @throws CorruptedTableException DOCUMENT ME!
-    */
+     * Tests writing DATE values.
+     *
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
+     * @throws ValueTooLargeException not expected
+     * @throws RecordTooLargeException not expected
+     */
     @Test
     public void writeDate()
-                   throws IOException, CorruptedTableException, ValueTooLargeException
+                   throws IOException, CorruptedTableException, ValueTooLargeException, RecordTooLargeException
     {
         final File outputDir = new File("target/test-output/" + versionDirectory + "/types/DATE");
         outputDir.mkdirs();
@@ -120,10 +122,6 @@ public class TestDate
             table.addRecord(Util.createDate(1990, Calendar.OCTOBER, 31));
             table.addRecord(Util.createDate(2030, Calendar.JUNE, 15));
             table.addRecord(Util.createDate(2222, Calendar.DECEMBER, 20));
-        }
-        catch (Exception e)
-        {
-            assertFalse("Unexpected Exception: " + e.toString(), true);
         }
         finally
         {

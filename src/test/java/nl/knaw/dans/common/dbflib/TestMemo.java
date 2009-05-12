@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 /**
- * Tests reading and writing memo fields
+ * Tests reading and writing memo fields.
  *
  * @author Vesa Åkerman
  */
@@ -44,16 +44,16 @@ public class TestMemo
     /**
      * Creates a new TestMemo object.
      *
-     * @param aVersion DOCUMENT ME!
-     * @param aVersionDirectory DOCUMENT ME!
+     * @param aVersion test parameter
+     * @param aVersionDirectory test parameter
      */
-    public TestMemo(Version aVersion, String aVersionDirectory)
+    public TestMemo(final Version aVersion, final String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
 
     /**
-    * tests reading memo fields
+    * Tests reading memo fields.
     */
     @Test
     public void readMemo()
@@ -91,7 +91,7 @@ public class TestMemo
     }
 
     /**
-    * tests writing memo fields
+    * Tests writing memo fields.
     */
     @Test
     public void writeMemo()

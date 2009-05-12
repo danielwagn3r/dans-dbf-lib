@@ -38,7 +38,6 @@ class Memo
      */
     private static final int OFFSET_NEXT_AVAILABLE_BLOCK_INDEX = 0;
     private static final int OFFSET_FILE_NAME = 8;
-    private static final int OFFSET_VERSION = 16;
     private static final int OFFSET_BLOCK_SIZE = 20;
 
     /*
@@ -78,16 +77,6 @@ class Memo
 
         memoFile = aMemoFile;
         version = aVersion;
-    }
-
-    /**
-     *
-     * @throws java.io.IOException
-     */
-    void open()
-       throws IOException
-    {
-        open(IfNonExistent.ERROR);
     }
 
     void open(final IfNonExistent aIfNonExistent)
@@ -193,7 +182,7 @@ class Memo
                 break;
 
             default:
-                throw new IllegalArgumentException("Unsupported version " + version.toString());
+                assert false : "Programming error, did not handle version " + version.toString();
         }
 
         return bos.toByteArray();

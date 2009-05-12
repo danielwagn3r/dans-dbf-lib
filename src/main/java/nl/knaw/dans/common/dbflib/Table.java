@@ -339,7 +339,9 @@ public class Table
                 return new DateValue((Date) aValue);
 
             default:
-                throw new Error("Not all types handled.");
+                assert false : "Not all types handled.";
+
+                return null;
         }
     }
 
@@ -482,7 +484,7 @@ public class Table
             }
             else
             {
-                throw new Error("Programming error: cannot ignore non existing memo.");
+                assert false : "Programming error: cannot ignore non existing memo.";
             }
         }
 
@@ -550,7 +552,9 @@ public class Table
                     break;
 
                 default:
-                    throw new Error("Programming error: not all data types handled.");
+                    assert false : "Programming error: not all data types handled.";
+
+                    return null;
             }
         }
 

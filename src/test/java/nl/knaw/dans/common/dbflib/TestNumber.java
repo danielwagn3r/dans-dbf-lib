@@ -44,10 +44,10 @@ public class TestNumber
     /**
      * Creates a new TestNumber object.
      *
-     * @param aVersion DOCUMENT ME!
-     * @param aVersionDirectory DOCUMENT ME!
+     * @param aVersion test parameter
+     * @param aVersionDirectory test parameter
      */
-    public TestNumber(Version aVersion, String aVersionDirectory)
+    public TestNumber(final Version aVersion, final String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
@@ -55,8 +55,8 @@ public class TestNumber
     /**
      * Tests reading fields with the maximum and minimum lengths and decimal count respectively.
      *
-     * @throws IOException should not happen
-     * @throws CorruptedTableException should not happen
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
      */
     @Test
     public strictfp void reading_maximal_and_minimal_values()
@@ -234,6 +234,7 @@ public class TestNumber
         UnitTestUtil.doCopyAndCompareTest(versionDirectory + "/types", "NUMBER", version, ignoredRanges, null);
     }
 
+    // TODO: Purpose of this test?
     /**
      * DOCUMENT ME!
      *
@@ -262,10 +263,6 @@ public class TestNumber
         {
             table.addRecord(12345);
             table.addRecord(0, 12.34);
-        }
-        catch (Exception e)
-        {
-            assertFalse("Unexpected exception: " + e.toString(), true);
         }
         finally
         {

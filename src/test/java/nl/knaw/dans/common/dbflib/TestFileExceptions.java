@@ -29,179 +29,144 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
- * Tests reading and writing memo fields
+ * Tests reading and writing memo fields.
  *
  * @author Vesa Åkerman
+ * @author Jan van Mansum
  */
 public class TestFileExceptions
 {
     /**
-     * DOCUMENT ME!
+     * Tests that <tt>java.io.FileNotFoundException</tt> is thrown when opening a non-existent
+     * table.
      *
-     * @throws FileNotFoundException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws IOException expected
+     * @throws CorruptedTableException not expected
      */
-    @Test
+    @Test(expected = FileNotFoundException.class)
     public void nonExistingFile()
                          throws IOException, CorruptedTableException
     {
-        final Table t1 = new Table(new File("NONEXISTENT.DBF"));
+        final Table table = new Table(new File("NONEXISTENT.DBF"));
 
         try
         {
-            t1.open(IfNonExistent.ERROR);
-            assertTrue("Expected FileNotFoundException did not occur", false);
-        }
-        catch (FileNotFoundException e)
-        {
-            assertTrue(true);
+            table.open(IfNonExistent.ERROR);
         }
         finally
         {
-            t1.close();
+            table.close();
         }
     }
 
+    // TODO: Would it not be more appropriate to throw a CorruptedTableException?
     /**
-     * DOCUMENT ME!
+     * Tests that an <tt>java.io.EOFException</tt> occurs when opening an empty DBF.
      *
-     * @throws FileNotFoundException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws IOException expected
+     * @throws CorruptedTableException not expected
      */
-    @Test
+    @Test(expected = EOFException.class)
     public void emptyFile()
                    throws IOException, CorruptedTableException
     {
         final File emptyFile = new File("src/test/resources/dbase3plus/fileExceptions/EMPTY.DBF");
-        final Table t1 = new Table(emptyFile);
+        final Table table = new Table(emptyFile);
 
         try
         {
-            t1.open(IfNonExistent.ERROR);
-            assertTrue("Expected EOFException did not occur", false);
-        }
-        catch (EOFException e)
-        {
-            assertTrue(true);
+            table.open(IfNonExistent.ERROR);
         }
         finally
         {
-            t1.close();
+            table.close();
         }
     }
 
+    // TODO: Would it not be more appropriate to open the memo on table.open and throw a
+    // CorruptedTableException right there if the DBT is not found?
     /**
-     * DOCUMENT ME!
+     * Tests that a <tt>RuntimeException</tt> is thrown when the DBT of a DBF file
+     * is missing.
      *
-     * @throws FileNotFoundException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
      */
-    @Test
+    @Test(expected = RuntimeException.class)
     public void memoFileMissing()
                          throws IOException, CorruptedTableException
     {
         final File missingMemoDbf = new File("src/test/resources/dbase3plus/fileExceptions/MISSMEMO.DBF");
-        final Table t1 = new Table(missingMemoDbf);
+        final Table table = new Table(missingMemoDbf);
 
         try
         {
-            t1.open(IfNonExistent.ERROR);
-            t1.recordIterator().next();
-            assertTrue("Expected RuntimeException did not occur", false);
-        }
-        catch (RuntimeException e)
-        {
-            assertTrue(true);
+            table.open(IfNonExistent.ERROR);
+            table.recordIterator().next();
         }
         finally
         {
-            t1.close();
+            table.close();
         }
     }
 
     /**
-     * DOCUMENT ME!
+     * Tests that an exception is thrown if the DBT with a DBF is empty.
      *
-     * @throws FileNotFoundException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
      */
-    @Test
+    @Test(expected = RuntimeException.class)
     public void emptyMemoFile()
                        throws IOException, CorruptedTableException
     {
         final File memEmptyDbf = new File("src/test/resources/dbase3plus/fileExceptions/MEMEMPTY.DBF");
-        final Table t1 = new Table(memEmptyDbf);
+        final Table table = new Table(memEmptyDbf);
 
         try
         {
-            t1.open(IfNonExistent.ERROR);
-            t1.recordIterator().next();
-            assertTrue("Expected RuntimeException did not occur", false);
-        }
-        catch (RuntimeException e)
-        {
-            assertTrue(true);
+            table.open(IfNonExistent.ERROR);
+            table.recordIterator().next();
         }
         finally
         {
-            t1.close();
+            table.close();
         }
     }
 
     /**
-     * DOCUMENT ME!
+     * Tests that an exception is thrown if a memo index points to an invalid location
+     * in the DBT.
      *
-     * @throws FileNotFoundException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
      */
-    @Test
+    @Test(expected = RuntimeException.class)
     public void corruptedMemoFilePointer()
                                   throws IOException, CorruptedTableException
     {
         final File pntrErrorDbf = new File("src/test/resources/dbase3plus/fileExceptions/PNTRERR.DBF");
-        final Table t1 = new Table(pntrErrorDbf);
+        final Table table = new Table(pntrErrorDbf);
 
         try
         {
-            t1.open(IfNonExistent.ERROR);
-            t1.recordIterator().next();
-            assertTrue("Expected RuntimeException did not occur", false);
-        }
-        catch (RuntimeException e)
-        {
-            assertTrue(true);
+            table.open(IfNonExistent.ERROR);
+            table.recordIterator().next();
         }
         finally
         {
-            t1.close();
+            table.close();
         }
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @throws FileNotFoundException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * Tests that an <tt>IllegalArgumentException</tt> is thrown if the database directory is
+     * actually a file.
      */
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void directoryIsFile()
     {
         final File databaseDirectory = new File("src/test/resources/dbase3plus/fileExceptions/bogusDirectory");
-
-        try
-        {
-            new Database(databaseDirectory, Version.DBASE_3);
-            assertTrue("Expected IllegalArgumentException did not occur", false);
-        }
-        catch (IllegalArgumentException e)
-        {
-            assertTrue(true);
-        }
+        new Database(databaseDirectory, Version.DBASE_3);
     }
 }

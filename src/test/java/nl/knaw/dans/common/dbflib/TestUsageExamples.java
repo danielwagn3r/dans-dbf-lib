@@ -56,11 +56,7 @@ public class TestUsageExamples
     private static final String fileNameDbt = "MYTABLE.DBT";
 
     /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     * @throws ValueTooLargeException DOCUMENT ME!
+     * Tests that the code used in the Usage page runs without throwing exceptions.
      */
     @Test
     public void test()

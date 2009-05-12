@@ -13,6 +13,13 @@ This library is used by DANS for the {{{http://mixed.dans.knaw.nl}MIXED Project}
 
 News
 
+* 12 May 2009.  Beta 01!
+
+    Today we released the first beta version of DANS DBF Library.  That means we feel
+fairly confident that it can actually be used in a project.  Beta 01 includes support
+for dBase III+, IV and V.
+
+
 * 24 April 2009.  Alpha 06
 
     DBFs with missing end of file byte could not be read properly.  Fixed that.  Also

@@ -33,9 +33,9 @@ public enum Version
     DBASE_4(8, 0x00, 0),
     DBASE_5(8, 0x00, 0);
 
-    final int memoDataOffset;
-    final int memoFieldEndMarker;
-    final int memoFieldEndMarkerLength;
+    private final int memoDataOffset;
+    private final int memoFieldEndMarker;
+    private final int memoFieldEndMarkerLength;
 
     Version(int aMemoDataOffset, int aMemoFieldEndMarker, int aMemoFieldEndMarkerLength)
     {

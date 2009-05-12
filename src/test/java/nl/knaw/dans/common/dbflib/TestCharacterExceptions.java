@@ -1,3 +1,22 @@
+/*
+ *  Copyright 2009
+ *  Data Archiving and Networked Services (DANS), Netherlands.
+ *
+ *  This file is part of DANS DBF Library.
+ *
+ *  DANS DBF Library is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  DANS DBF Library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package nl.knaw.dans.common.dbflib;
 
 import org.junit.After;
@@ -14,8 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Tests that exceptions are thrown as expected when dealing with CHARACTER fields.
  *
  * @author Vesa Åkerman
+ * @author Jan van Mansum
  */
 @RunWith(Parameterized.class)
 public class TestCharacterExceptions
@@ -26,19 +47,19 @@ public class TestCharacterExceptions
     /**
      * Creates a new TestCharacterExceptions object.
      *
-     * @param aVersion DOCUMENT ME!
-     * @param aVersionDirectory DOCUMENT ME!
+     * @param aVersion test parameter
+     * @param aVersionDirectory test parameter
      */
-    public TestCharacterExceptions(Version aVersion, String aVersionDirectory)
+    public TestCharacterExceptions(final Version aVersion, final String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
 
     /**
-     * DOCUMENT ME!
+     * Sets up environment for test.
      *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
      */
     @Before
     public void setUp()
@@ -59,9 +80,9 @@ public class TestCharacterExceptions
     }
 
     /**
-     * DOCUMENT ME!
+     * Cleans up test environment.
      *
-     * @throws IOException DOCUMENT ME!
+     * @throws IOException not expected
      */
     @After
     public void tearDown()
@@ -71,12 +92,10 @@ public class TestCharacterExceptions
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     * @throws ValueTooLargeException DOCUMENT ME!
-     * @throws RecordTooLargeException DOCUMENT ME!
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
+     * @throws ValueTooLargeException not expected
+     * @throws RecordTooLargeException not expected
      */
     @Test
     public void fitsComfortably()
@@ -86,12 +105,12 @@ public class TestCharacterExceptions
     }
 
     /**
-     * DOCUMENT ME!
+     * not expected
      *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     * @throws ValueTooLargeException DOCUMENT ME!
-     * @throws RecordTooLargeException DOCUMENT ME!
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
+     * @throws ValueTooLargeException not expected
+     * @throws RecordTooLargeException not expected
      */
     @Test
     public void fitsExactly()
@@ -104,12 +123,12 @@ public class TestCharacterExceptions
     }
 
     /**
-     * DOCUMENT ME!
+     * not expected
      *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     * @throws ValueTooLargeException DOCUMENT ME!
-     * @throws RecordTooLargeException DOCUMENT ME!
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
+     * @throws ValueTooLargeException expected!
+     * @throws RecordTooLargeException not expected
      */
     @Test(expected = ValueTooLargeException.class)
     public void firstFieldDoesNotFit()
@@ -122,8 +141,6 @@ public class TestCharacterExceptions
     }
 
     /**
-     * DOCUMENT ME!
-     *
      * @throws IOException DOCUMENT ME!
      * @throws CorruptedTableException DOCUMENT ME!
      * @throws ValueTooLargeException DOCUMENT ME!

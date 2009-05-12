@@ -97,7 +97,7 @@ class Util
     {
         int pointIndex = aFileName.lastIndexOf('.');
 
-        if ((pointIndex == -1) || (pointIndex == 0) || (pointIndex == (aFileName.length() - 1)))
+        if (pointIndex == -1 || pointIndex == 0 || pointIndex == aFileName.length() - 1)
         {
             return aFileName;
         }
@@ -144,12 +144,12 @@ class Util
 
     /**
      * Writes a <tt>java.lang.String</tt> to a <tt>java.io.DataOutput</tt>.  The String is
-     * truncate if it exceeds <tt>aMaxLength</tt>.  If it is shorter, the remaining bytes
+     * truncated if it exceeds <tt>aLength</tt>.  If it is shorter, the remaining bytes
      * are filled with null characters.
      *
      * @param aDataOutput the <tt>java.io.DataOutput</tt> to write to
      * @param aString the String to write
-     * @param aMaxLength the maximum length of the string
+     * @param aLength the maximum length of the string
      * @throws java.io.IOException
      */
     static void writeString(final DataOutput aDataOutput, final String aString, final int aLength)
@@ -170,13 +170,6 @@ class Util
         {
             aDataOutput.writeByte(0x00);
         }
-    }
-
-    static void writeStringBytes(final DataOutput aDataOutput, final byte[] aString, final int aLength)
-                          throws IOException
-    {
-        aDataOutput.write(aString);
-        aDataOutput.write(repeat((byte) 0x00, aLength - aString.length));
     }
 
     static String readString(final DataInput aDataInput, final int aLength)

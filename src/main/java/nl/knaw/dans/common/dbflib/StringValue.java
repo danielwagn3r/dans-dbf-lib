@@ -54,12 +54,9 @@ public class StringValue
 
         for (int i = 0; i < raw.length; ++i)
         {
-            if (raw[i] == (byte) 0x8d)
+            if (raw[i] == (byte) 0x8d && raw[++i] == (byte) 0x0a)
             {
-                if (raw[++i] == (byte) 0x0a)
-                {
-                    continue;
-                }
+                continue;
             }
 
             bos.write(raw[i]);
@@ -95,7 +92,7 @@ public class StringValue
         }
         catch (IOException ex)
         {
-            throw new Error("Writing to ByteArrayOutputStream should not cause an IOException", ex);
+            assert false : "Writing to ByteArrayOutputStream should not cause an IOException";
         }
 
         return bos.toByteArray();

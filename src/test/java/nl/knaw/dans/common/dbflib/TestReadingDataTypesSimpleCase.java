@@ -50,10 +50,10 @@ public class TestReadingDataTypesSimpleCase
     private Record r3 = null;
 
     /**
-     * Executed before every test.
+     * Sets up the test environment.
      *
-     * @throws IOException
-     * @throws CorruptedTableException
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
      */
     @Before
     public void setUp()
@@ -72,9 +72,9 @@ public class TestReadingDataTypesSimpleCase
     }
 
     /**
-     * Executed after every test.
+     * Cleans up the test environment.
      *
-     * @throws IOException
+     * @throws IOException not expected
      */
     @After
     public void tearDown()

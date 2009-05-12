@@ -35,22 +35,24 @@ public class Field
     private final String formatString;
 
     /**
-     * Creates a new Field object.
+     * Creates a new Field object.  If the specified type has a fixed size and
+     * decimal count, they are used. otherwise size is initialized to 1 and decimal
+     * count to 0.
      *
-     * @param aName DOCUMENT ME!
-     * @param aType DOCUMENT ME!
+     * @param aName the name of the field
+     * @param aType the type of the field
      */
     public Field(final String aName, final Type aType)
     {
-        this(aName, aType, 0, 0);
+        this(aName, aType, 1, 0);
     }
 
     /**
-     * Creates a new Field object.
+     * Creates a new Field object.  Decimal count is initialized to 0.
      *
-     * @param aName DOCUMENT ME!
-     * @param aType DOCUMENT ME!
-     * @param aLength DOCUMENT ME!
+     * @param aName the name of the field
+     * @param aType the type of the field
+     * @param aLength the length of the field
      */
     public Field(final String aName, final Type aType, final int aLength)
     {

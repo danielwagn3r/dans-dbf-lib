@@ -6,19 +6,20 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
+ * Base class for parameterized test cases.
  *
  * @author Vesa Åkerman
  */
-public class BaseTestcase // Lower case 'c' on purpose, otherwise JUnit complains.
+public abstract class BaseTestcase // Lower case 'c' on purpose, otherwise JUnit complains.
 
 {
     protected Version version;
     protected String versionDirectory;
 
     /**
-     * DOCUMENT ME!
+     * Returns the list of alternative parameter tuples to run the tests with.
      *
-     * @return DOCUMENT ME!
+     * @return the parameters
      */
     @Parameters
     public static Collection<Object[]> data()
@@ -34,7 +35,13 @@ public class BaseTestcase // Lower case 'c' on purpose, otherwise JUnit complain
         return Arrays.asList(testParameters);
     }
 
-    protected BaseTestcase(Version aVersion, String aVersionDirectory)
+    /**
+     * Constructs a test case.
+     *
+     * @param aVersion the version parameter
+     * @param aVersionDirectory the version directory parameter
+     */
+    protected BaseTestcase(final Version aVersion, final String aVersionDirectory)
     {
         version = aVersion;
         versionDirectory = aVersionDirectory;

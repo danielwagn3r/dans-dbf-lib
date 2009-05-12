@@ -34,7 +34,7 @@ import java.math.BigInteger;
 public class TestUtil
 {
     /**
-     * Tests {@link Util#changeEndianness(int) }.
+     * Tests <tt>Util.changeEndianness(int)</tt>.
      */
     @Test
     public void changeEndianness_integer()
@@ -76,7 +76,7 @@ public class TestUtil
     }
 
     /**
-     * Tests {@link Util#changeEndianness(short) }.
+     * Tests <tt>Util.changeEndianness(short)</tt>.
      */
     @Test
     public void changeEndianness_short()
@@ -118,7 +118,7 @@ public class TestUtil
     }
 
     /**
-     * Test a simple case for Util.getDbtFile.
+     * Test a simple case for <tt>Util.getDbtFile</tt>.
      */
     @Test
     public void getDbtFile_simple_case()

@@ -94,7 +94,7 @@ public class DateValue
         }
         catch (IOException ex)
         {
-            throw new Error("Writing to ByteArrayOutputStream should not cause an IOException", ex);
+            assert false : "Writing to ByteArrayOutputStream should not cause an IOException";
         }
 
         return bos.toByteArray();
