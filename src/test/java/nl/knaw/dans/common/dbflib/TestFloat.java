@@ -44,7 +44,7 @@ import java.util.List;
  */
 @RunWith(Parameterized.class)
 public class TestFloat
-    extends BaseTestingCase
+    extends BaseTestCase
 {
     /**
      * Creates a new TestFloat object.

@@ -158,42 +158,44 @@ public class TestUtil
     public void getNumberOfDigits()
     {
         assertEquals(1,
-                     Util.getNumberOfDigits(0));
+                     Util.getNumberOfIntDigits(0));
         assertEquals(1,
-                     Util.getNumberOfDigits(1));
+                     Util.getNumberOfIntDigits(1));
         assertEquals(1,
-                     Util.getNumberOfDigits(2));
+                     Util.getNumberOfIntDigits(2));
         assertEquals(1,
-                     Util.getNumberOfDigits(9));
+                     Util.getNumberOfIntDigits(9));
         assertEquals(2,
-                     Util.getNumberOfDigits(10));
+                     Util.getNumberOfIntDigits(10));
         assertEquals(2,
-                     Util.getNumberOfDigits(99));
+                     Util.getNumberOfIntDigits(99));
         assertEquals(3,
-                     Util.getNumberOfDigits(100));
+                     Util.getNumberOfIntDigits(100));
         assertEquals(6,
-                     Util.getNumberOfDigits(999999));
+                     Util.getNumberOfIntDigits(999999));
         assertEquals(7,
-                     Util.getNumberOfDigits(1000000));
+                     Util.getNumberOfIntDigits(1000000));
         assertEquals(7,
-                     Util.getNumberOfDigits(-1000000));
+                     Util.getNumberOfIntDigits(-1000000));
         assertEquals(10,
-                     Util.getNumberOfDigits(Integer.MAX_VALUE));
+                     Util.getNumberOfIntDigits(Integer.MAX_VALUE));
+        assertEquals(50,
+                     Util.getNumberOfIntDigits(new BigInteger("12345678901234567890123456789012345678901234567890")));
 
         assertEquals(1,
-                     Util.getNumberOfDigits(0L));
+                     Util.getNumberOfIntDigits(0L));
         assertEquals(15,
-                     Util.getNumberOfDigits(123456789012345L));
+                     Util.getNumberOfIntDigits(123456789012345L));
         assertEquals(15,
-                     Util.getNumberOfDigits(-123456789012345L));
+                     Util.getNumberOfIntDigits(-123456789012345L));
         assertEquals(19,
-                     Util.getNumberOfDigits(Long.MAX_VALUE));
+                     Util.getNumberOfIntDigits(Long.MAX_VALUE));
 
         assertEquals(15,
-                     Util.getNumberOfDigits(new BigInteger("123456789012345")));
+                     Util.getNumberOfIntDigits(new BigInteger("123456789012345")));
         assertEquals(15,
-                     Util.getNumberOfDigits(new BigInteger("-123456789012345")));
+                     Util.getNumberOfIntDigits(new BigInteger("-123456789012345")));
         assertEquals(30,
-                     Util.getNumberOfDigits(new BigInteger("123456789012345678901234567890")));
+                     Util.getNumberOfIntDigits(new BigInteger("123456789012345678901234567890")));
     }
 }

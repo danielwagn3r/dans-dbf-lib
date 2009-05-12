@@ -46,7 +46,7 @@ import java.util.Set;
  */
 @RunWith(Parameterized.class)
 public class TestRoundTrip
-    extends BaseTestingCase
+    extends BaseTestCase
 {
     /**
      * Creates a new TestRoundTrip object.

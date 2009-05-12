@@ -39,7 +39,7 @@ import java.util.Iterator;
  */
 @RunWith(Parameterized.class)
 public class TestMemo
-    extends BaseTestingCase
+    extends BaseTestCase
 {
     /**
      * Creates a new TestMemo object.

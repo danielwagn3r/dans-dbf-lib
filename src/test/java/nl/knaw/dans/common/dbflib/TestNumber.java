@@ -39,7 +39,7 @@ import java.util.List;
  */
 @RunWith(Parameterized.class)
 public class TestNumber
-    extends BaseTestingCase
+    extends BaseTestCase
 {
     /**
      * Creates a new TestNumber object.

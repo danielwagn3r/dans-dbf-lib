@@ -38,7 +38,7 @@ import java.util.Iterator;
  */
 @RunWith(Parameterized.class)
 public class TestCharacter
-    extends BaseTestingCase
+    extends BaseTestCase
 {
     /**
      * Creates a new TestCharacter object.

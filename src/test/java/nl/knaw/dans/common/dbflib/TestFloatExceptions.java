@@ -24,7 +24,7 @@ import java.util.List;
  */
 @RunWith(Parameterized.class)
 public class TestFloatExceptions
-    extends BaseTestingCase
+    extends BaseTestCase
 {
     private Table table;
 

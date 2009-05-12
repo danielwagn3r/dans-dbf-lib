@@ -9,7 +9,7 @@ import java.util.Collection;
  *
  * @author Vesa Åkerman
  */
-public class BaseTestingCase
+public class BaseTestCase
 {
     protected Version version;
     protected String versionDirectory;
@@ -33,7 +33,7 @@ public class BaseTestingCase
         return Arrays.asList(testParameters);
     }
 
-    protected BaseTestingCase(Version aVersion, String aVersionDirectory)
+    protected BaseTestCase(Version aVersion, String aVersionDirectory)
     {
         version = aVersion;
         versionDirectory = aVersionDirectory;

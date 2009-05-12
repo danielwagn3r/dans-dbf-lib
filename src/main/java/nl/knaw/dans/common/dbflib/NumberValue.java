@@ -113,7 +113,7 @@ public class NumberValue
          */
         int nrPositionsForDecimals = aField.getDecimalCount() == 0 ? 0 : aField.getDecimalCount() + 1;
 
-        if (Util.getSignWidth(numberValue) + Util.getNumberOfDigits(numberValue.intValue()) > aField.getLength()
+        if (Util.getSignWidth(numberValue) + Util.getNumberOfIntDigits(numberValue) > aField.getLength()
                 - nrPositionsForDecimals)
         {
             throw new ValueTooLargeException("Number does not fit in field: " + numberValue);

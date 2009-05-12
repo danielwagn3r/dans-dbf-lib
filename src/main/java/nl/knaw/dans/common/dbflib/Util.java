@@ -25,6 +25,7 @@ import java.io.DataOutput;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
@@ -225,16 +226,16 @@ class Util
     }
 
     /**
-        * Creates a Date object with the specfied value and the time fields set to zero.
-        * Note that month is zero-based.  The <tt>java.util.Calendar</tt> class has constants
-        * for all the months.
-        *
-        * @param year the year
-        * @param month zero-based month number
-        * @param day one-based day number
-        *
-        * @return a <tt>java.util.Date</tt> object
-        */
+     * Creates a Date object with the specfied value and the time fields set to zero.
+     * Note that month is zero-based.  The <tt>java.util.Calendar</tt> class has constants
+     * for all the months.
+     *
+     * @param year the year
+     * @param month zero-based month number
+     * @param day one-based day number
+     *
+     * @return a <tt>java.util.Date</tt> object
+     */
     static Date createDate(int year, int month, int day)
     {
         final Calendar cal = Calendar.getInstance();
@@ -256,46 +257,42 @@ class Util
     }
 
     /**
-     * Returns the number of digits in an integer.
+     * Returns the number of digits before the decimal point in a number.
      *
-     * @param aInteger the integer
+     * @param aNumber the number
      * @return the number of digits
      */
-    static int getNumberOfDigits(final int aInteger)
+    static int getNumberOfIntDigits(final Number aNumber)
     {
-        if (aInteger == 0)
+        if (aNumber instanceof Float
+                || aNumber instanceof Double
+                || aNumber instanceof Short
+                || aNumber instanceof Integer
+                || aNumber instanceof Long)
         {
-            return 1;
+            long longValue = aNumber.longValue();
+
+            if (longValue == 0)
+            {
+                return 1;
+            }
+
+            return (int) Math.floor(Math.log10(Math.abs(longValue))) + 1;
         }
 
-        return (int) Math.floor(Math.log10(Math.abs(aInteger))) + 1;
-    }
+        BigInteger bi = null;
 
-    /**
-     * Returns the number of digits in a long integer.
-     *
-     * @param aLong the long integer
-     * @return the number of digits
-     */
-    static int getNumberOfDigits(final long aLong)
-    {
-        if (aLong == 0)
+        if (aNumber instanceof BigDecimal)
         {
-            return 1;
+            bi = ((BigDecimal) aNumber).toBigInteger();
         }
 
-        return (int) Math.floor(Math.log10(Math.abs(aLong))) + 1;
-    }
+        if (aNumber instanceof BigInteger)
+        {
+            bi = (BigInteger) aNumber;
+        }
 
-    /**
-     * Returns the number of digits in a BigInteger.
-     *
-     * @param aBigInteger the long integer
-     * @return the number of digits
-     */
-    static int getNumberOfDigits(final BigInteger aBigInteger)
-    {
-        return aBigInteger.abs().toString().length();
+        return bi.abs().toString().length();
     }
 
     /**
@@ -303,11 +300,30 @@ class Util
      *
      * @param aNumber
      * @return 1 if <tt>aInteger</tt> is negative, 0 otherwise
-     * ALSO '+' POSSIBLE?
+     *
      */
     static int getSignWidth(Number aNumber)
     {
-        return aNumber.intValue() < 0 ? 1 : 0;
+        if (aNumber instanceof Float
+                || aNumber instanceof Double
+                || aNumber instanceof Short
+                || aNumber instanceof Integer
+                || aNumber instanceof Long)
+        {
+            return aNumber.longValue() < 0 ? 1 : 0;
+        }
+
+        if (aNumber instanceof BigDecimal)
+        {
+            return ((BigDecimal) aNumber).signum() == -1 ? 1 : 0;
+        }
+
+        if (aNumber instanceof BigInteger)
+        {
+            return ((BigInteger) aNumber).signum() == -1 ? 1 : 0;
+        }
+
+        throw new IllegalArgumentException("Unsupported Number type");
     }
 
     static byte[] repeat(byte aByte, int aTimes)
