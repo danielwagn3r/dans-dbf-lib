@@ -21,7 +21,8 @@ package nl.knaw.dans.common.dbflib;
 
 
 /**
- * Thrown when trying to add a record with more fields than are defined in the table file.
+ * Thrown when trying to add a {@link Field} to a {@link Table} when it is not supported
+ * by the {@link Version} specified.
  *
  * @author Vesa Åkerman
  */
