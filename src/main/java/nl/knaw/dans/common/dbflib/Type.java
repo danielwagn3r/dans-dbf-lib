@@ -59,7 +59,16 @@ public enum Type
     /**
      * A String value (without length limitations), mapped to <tt>java.lang.String</tt>.
      */
-    MEMO('M', 10);
+    MEMO('M', 10), 
+    /*
+     * A binary value (without length limitations), mapped to <tt>byte[]</tt>.
+     */
+    GENERAL('G', 10), 
+    /*
+     * A binary value (without length limitations), mapped to <tt>byte[]</tt>.
+     */
+    BINARY('B', 10);
+    // Fields
     private static final Map<Character, Type> typeMap = new HashMap<Character, Type>();
     private final char code;
     private final int length;

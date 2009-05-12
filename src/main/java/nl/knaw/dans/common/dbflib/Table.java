@@ -338,6 +338,10 @@ public class Table
             case DATE:
                 return new DateValue((Date) aValue);
 
+            case BINARY:
+            case GENERAL:
+                return new ByteArrayValue((byte[]) aValue);
+
             default:
                 assert false : "Not all types handled.";
 
@@ -373,7 +377,7 @@ public class Table
                 raw = Util.repeat((byte) ' ',
                                   field.getLength());
             }
-            else if (field.getType() == Type.MEMO)
+            else if (field.getType() == Type.MEMO || field.getType() == Type.BINARY || field.getType() == Type.GENERAL)
             {
                 int index = writeMemo(raw);
 
@@ -548,6 +552,13 @@ public class Table
                 case MEMO:
                     recordValues.put(field.getName(),
                                      new StringValue(readMemo(new String(rawData))));
+
+                    break;
+
+                case GENERAL:
+                case BINARY:
+                    recordValues.put(field.getName(),
+                                     new ByteArrayValue(readMemo(new String(rawData))));
 
                     break;
 

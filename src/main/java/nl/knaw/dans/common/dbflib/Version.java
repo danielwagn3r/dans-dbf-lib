@@ -52,7 +52,11 @@ public enum Version
 
     private static Type[] getDbase5Types()
     {
-        return new Type[] { Type.CHARACTER, Type.NUMBER, Type.DATE, Type.LOGICAL, Type.MEMO, Type.FLOAT };
+        return new Type[]
+               {
+                   Type.CHARACTER, Type.NUMBER, Type.DATE, Type.LOGICAL, Type.MEMO, Type.FLOAT, Type.BINARY,
+                   Type.GENERAL
+               };
     }
 
     private final int maxLengthCharField;
