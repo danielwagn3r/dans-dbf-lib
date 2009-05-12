@@ -22,37 +22,55 @@ package nl.knaw.dans.common.dbflib;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Enumerates the supported table versions.
  * <p>
  * <b>Note:</b>  Not all versions listed here are supported yet.
  *
  * @author Jan van Mansum
+ * @author Vesa Åkerman
  */
 public enum Version
 {
-    DBASE_3(253, 19, 0, 0x1a1a, 2, new Type[] {Type.CHARACTER, Type.NUMBER, Type.DATE, Type.LOGICAL, Type.MEMO}),
-    DBASE_4(253, 20, 8, 0x00,   0, new Type[] {Type.CHARACTER, Type.NUMBER, Type.DATE, Type.LOGICAL, Type.MEMO, Type.FLOAT}),
-    DBASE_5(253, 20, 8, 0x00,   0, new Type[] {Type.CHARACTER, Type.NUMBER, Type.DATE, Type.LOGICAL, Type.MEMO, Type.FLOAT});
+
+    DBASE_3(253, 19, 0, 0x1a1a, 2,
+            getDbase3Types()),
+    DBASE_4(253, 20, 8, 0x00, 0,
+            getDbase4Types()), 
+    DBASE_5(253, 20, 8, 0x00, 0,
+            getDbase5Types());
+    // Trick Jalopy formatter into behaving.
+    private static Type[] getDbase3Types()
+    {
+        return new Type[] { Type.CHARACTER, Type.NUMBER, Type.DATE, Type.LOGICAL, Type.MEMO };
+    }
+
+    private static Type[] getDbase4Types()
+    {
+        return new Type[] { Type.CHARACTER, Type.NUMBER, Type.DATE, Type.LOGICAL, Type.MEMO, Type.FLOAT };
+    }
+
+    private static Type[] getDbase5Types()
+    {
+        return new Type[] { Type.CHARACTER, Type.NUMBER, Type.DATE, Type.LOGICAL, Type.MEMO, Type.FLOAT };
+    }
 
     private final int maxLengthCharField;
     private final int maxLengthNumberField;
     private final int memoDataOffset;
     private final int memoFieldEndMarker;
     private final int memoFieldEndMarkerLength;
-
     final List<Type> fieldTypes = new ArrayList<Type>();
 
-    Version(int aMaxLengthCharField, int aMaxLengthNumberField,
-            int aMemoDataOffset, int aMemoFieldEndMarker, int aMemoFieldEndMarkerLength,
-            Type[] aFieldTypes)
+    Version(final int aMaxLengthCharField, final int aMaxLengthNumberField, final int aMemoDataOffset,
+            final int aMemoFieldEndMarker, final int aMemoFieldEndMarkerLength, final Type[] aFieldTypes)
     {
         maxLengthCharField = aMaxLengthCharField;
         maxLengthNumberField = aMaxLengthNumberField;
         memoDataOffset = aMemoDataOffset;
         memoFieldEndMarker = aMemoFieldEndMarker;
         memoFieldEndMarkerLength = aMemoFieldEndMarkerLength;
+
         for (Type type : aFieldTypes)
         {
             fieldTypes.add(type);
@@ -102,10 +120,6 @@ public enum Version
         return 0;
     }
 
-    /*
-     * The commented 'case' options found in documentation, but not yet
-     * come across in using the library
-     */
     static Version getVersion(final int aVersionByte)
     {
         switch (aVersionByte)
@@ -118,17 +132,13 @@ public enum Version
         }
     }
 
-    /**
-     * @return the maxLengthCharField
-     */
-    public int getMaxLengthCharField() {
+    int getMaxLengthCharField()
+    {
         return maxLengthCharField;
     }
 
-    /**
-     * @return the maxLengthNumberField
-     */
-    public int getMaxLengthNumberField() {
+    int getMaxLengthNumberField()
+    {
         return maxLengthNumberField;
     }
 }
