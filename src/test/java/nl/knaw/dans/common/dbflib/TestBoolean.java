@@ -21,7 +21,7 @@ import java.util.List;
  */
 @RunWith(Parameterized.class)
 public class TestBoolean
-    extends BaseTestCase
+    extends BaseTestcase
 {
     /**
      * Creates a new TestBooolean object.

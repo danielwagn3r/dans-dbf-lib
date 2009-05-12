@@ -24,7 +24,7 @@ import java.util.List;
  */
 @RunWith(Parameterized.class)
 public class TestFloatExceptions
-    extends BaseTestCase
+    extends BaseTestcase
 {
     private Table table;
 
@@ -102,7 +102,6 @@ public class TestFloatExceptions
      * @throws ValueTooLargeException DOCUMENT ME!
      * @throws RecordTooLargeException DOCUMENT ME!
      */
-    @Ignore("Ignored till exception handling is implemented")
     @Test(expected = ValueTooLargeException.class)
     public void tooBigIntegerValue()
                             throws IOException,

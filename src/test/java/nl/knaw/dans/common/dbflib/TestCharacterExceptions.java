@@ -19,7 +19,7 @@ import java.util.List;
  */
 @RunWith(Parameterized.class)
 public class TestCharacterExceptions
-    extends BaseTestCase
+    extends BaseTestcase
 {
     private Table table;
 

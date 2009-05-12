@@ -19,7 +19,7 @@ import java.util.List;
  */
 @RunWith(Parameterized.class)
 public class TestNumberExceptions
-    extends BaseTestCase
+    extends BaseTestcase
 {
     private Table table;
 

@@ -41,7 +41,7 @@ import java.util.List;
  */
 @RunWith(Parameterized.class)
 public class TestDate
-    extends BaseTestCase
+    extends BaseTestcase
 {
     /**
      * Creates a new TestDate object.

@@ -9,7 +9,8 @@ import java.util.Collection;
  *
  * @author Vesa Åkerman
  */
-public class BaseTestCase
+public class BaseTestcase // Lower case 'c' on purpose, otherwise JUnit complains.
+
 {
     protected Version version;
     protected String versionDirectory;
@@ -33,7 +34,7 @@ public class BaseTestCase
         return Arrays.asList(testParameters);
     }
 
-    protected BaseTestCase(Version aVersion, String aVersionDirectory)
+    protected BaseTestcase(Version aVersion, String aVersionDirectory)
     {
         version = aVersion;
         versionDirectory = aVersionDirectory;
