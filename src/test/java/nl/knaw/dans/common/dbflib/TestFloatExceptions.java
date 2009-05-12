@@ -83,7 +83,7 @@ public class TestFloatExceptions
      */
     @Before
     public void setUp()
-               throws IOException, CorruptedTableException
+               throws IOException, CorruptedTableException, InvalidFieldTypeException, InvalidFieldLengthException
     {
         final File outputDir = new File("target/test-output/" + versionDirectory + "/types/FLOAT");
         outputDir.mkdirs();
@@ -125,9 +125,10 @@ public class TestFloatExceptions
                             throws IOException,
                                    CorruptedTableException,
                                    ValueTooLargeException,
-                                   RecordTooLargeException
+                                   RecordTooLargeException,
+                                   InvalidFieldLengthException
     {
-        table.addRecord(new BigInteger("99999999999999999999999999"),
+        table.addRecord(new BigInteger("99999999999999999999999"),
                         0.0,
                         0.0);
     }

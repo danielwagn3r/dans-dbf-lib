@@ -150,7 +150,12 @@ public class TestFloat
     */
     @Test
     public void writeFloat()
-                    throws IOException, CorruptedTableException, RecordTooLargeException, ValueTooLargeException
+                    throws IOException,
+                           CorruptedTableException,
+                           RecordTooLargeException,
+                           ValueTooLargeException,
+                           InvalidFieldTypeException,
+                           InvalidFieldLengthException
     {
         final File outputDir = new File("target/test-output/" + versionDirectory + "/types/FLOAT");
         outputDir.mkdirs();

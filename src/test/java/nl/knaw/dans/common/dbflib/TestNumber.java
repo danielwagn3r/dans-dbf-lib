@@ -218,7 +218,11 @@ public class TestNumber
      */
     @Test
     public void writing_maximal_and_minimal_values()
-                                            throws IOException, CorruptedTableException, ValueTooLargeException
+                                            throws IOException,
+                                                   CorruptedTableException,
+                                                   ValueTooLargeException,
+                                                   InvalidFieldTypeException,
+                                                   InvalidFieldLengthException
     {
         Ranges ignoredRanges = new Ranges();
         ignoredRanges.addRange(0x01, 0x03); // modified date

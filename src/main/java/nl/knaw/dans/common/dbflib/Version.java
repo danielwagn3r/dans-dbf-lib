@@ -19,6 +19,9 @@
  */
 package nl.knaw.dans.common.dbflib;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Enumerates the supported table versions.
@@ -29,19 +32,31 @@ package nl.knaw.dans.common.dbflib;
  */
 public enum Version
 {
-    DBASE_3(0, 0x1a1a, 2),
-    DBASE_4(8, 0x00, 0),
-    DBASE_5(8, 0x00, 0);
+    DBASE_3(253, 19, 0, 0x1a1a, 2, new Type[] {Type.CHARACTER, Type.NUMBER, Type.DATE, Type.LOGICAL, Type.MEMO}),
+    DBASE_4(253, 20, 8, 0x00,   0, new Type[] {Type.CHARACTER, Type.NUMBER, Type.DATE, Type.LOGICAL, Type.MEMO, Type.FLOAT}),
+    DBASE_5(253, 20, 8, 0x00,   0, new Type[] {Type.CHARACTER, Type.NUMBER, Type.DATE, Type.LOGICAL, Type.MEMO, Type.FLOAT});
 
+    private final int maxLengthCharField;
+    private final int maxLengthNumberField;
     private final int memoDataOffset;
     private final int memoFieldEndMarker;
     private final int memoFieldEndMarkerLength;
 
-    Version(int aMemoDataOffset, int aMemoFieldEndMarker, int aMemoFieldEndMarkerLength)
+    final List<Type> fieldTypes = new ArrayList<Type>();
+
+    Version(int aMaxLengthCharField, int aMaxLengthNumberField,
+            int aMemoDataOffset, int aMemoFieldEndMarker, int aMemoFieldEndMarkerLength,
+            Type[] aFieldTypes)
     {
+        maxLengthCharField = aMaxLengthCharField;
+        maxLengthNumberField = aMaxLengthNumberField;
         memoDataOffset = aMemoDataOffset;
         memoFieldEndMarker = aMemoFieldEndMarker;
         memoFieldEndMarkerLength = aMemoFieldEndMarkerLength;
+        for (Type type : aFieldTypes)
+        {
+            fieldTypes.add(type);
+        }
     }
 
     int getMemoDataOffset()
@@ -95,21 +110,25 @@ public enum Version
     {
         switch (aVersionByte)
         {
-            case 0x03:
             case 0x83:
                 return DBASE_3;
 
-//            case 0x04:
-//            case 0x7B:
-            case 0x8B:
-
-//            case 0x8E:
-                return DBASE_4;
-
-//            case 0x05:
-//                return DBASE_5;
             default:
-                return null;
+                return DBASE_5;
         }
+    }
+
+    /**
+     * @return the maxLengthCharField
+     */
+    public int getMaxLengthCharField() {
+        return maxLengthCharField;
+    }
+
+    /**
+     * @return the maxLengthNumberField
+     */
+    public int getMaxLengthNumberField() {
+        return maxLengthNumberField;
     }
 }

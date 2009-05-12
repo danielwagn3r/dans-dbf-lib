@@ -119,6 +119,7 @@ public class Database
      * @return a <tt>Table</tt> object
      */
     public Table addTable(final String aName, final List<Field> aFields)
+                   throws InvalidFieldTypeException, InvalidFieldLengthException
     {
         Table table = tableMap.get(aName);
 

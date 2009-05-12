@@ -95,7 +95,11 @@ public class TestMemo
     */
     @Test
     public void writeMemo()
-                   throws IOException, CorruptedTableException, ValueTooLargeException
+                   throws IOException,
+                          CorruptedTableException,
+                          ValueTooLargeException,
+                          InvalidFieldTypeException,
+                          InvalidFieldLengthException
     {
         final Ranges ignoredRangesDbf = new Ranges();
         ignoredRangesDbf.addRange(0x01, 0x03); // modified

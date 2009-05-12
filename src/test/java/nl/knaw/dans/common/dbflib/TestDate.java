@@ -100,7 +100,12 @@ public class TestDate
      */
     @Test
     public void writeDate()
-                   throws IOException, CorruptedTableException, ValueTooLargeException, RecordTooLargeException
+                   throws IOException,
+                          CorruptedTableException,
+                          ValueTooLargeException,
+                          RecordTooLargeException,
+                          InvalidFieldTypeException,
+                          InvalidFieldLengthException
     {
         final File outputDir = new File("target/test-output/" + versionDirectory + "/types/DATE");
         outputDir.mkdirs();

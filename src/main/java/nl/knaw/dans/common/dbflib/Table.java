@@ -135,7 +135,7 @@ public class Table
      * @throws IllegalArgumentException if <tt>aTableFiel</tt> is <tt>null</tt>
      */
     public Table(final File aTableFile, final Version aVersion, final List<Field> aFields)
-          throws IllegalArgumentException
+          throws InvalidFieldTypeException, InvalidFieldLengthException
     {
         this(aTableFile);
         header.setVersion(aVersion);

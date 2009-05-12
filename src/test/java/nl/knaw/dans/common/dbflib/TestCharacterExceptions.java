@@ -63,7 +63,7 @@ public class TestCharacterExceptions
      */
     @Before
     public void setUp()
-               throws IOException, CorruptedTableException
+               throws IOException, CorruptedTableException, InvalidFieldTypeException, InvalidFieldLengthException
     {
         final File outputDir = new File("target/test-output/" + versionDirectory + "/types/CHARACTER");
         outputDir.mkdirs();

@@ -18,7 +18,7 @@ import java.util.List;
  * @author Vesa Åkerman
  */
 @RunWith(Parameterized.class)
-public class TestNumberExceptions
+public class TestFieldExceptions
     extends BaseTestcase
 {
     private Table table;
@@ -29,7 +29,7 @@ public class TestNumberExceptions
      * @param aVersion DOCUMENT ME!
      * @param aVersionDirectory DOCUMENT ME!
      */
-    public TestNumberExceptions(Version aVersion, String aVersionDirectory)
+    public TestFieldExceptions(Version aVersion, String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
@@ -44,10 +44,10 @@ public class TestNumberExceptions
     public void setUp()
                throws IOException, CorruptedTableException, InvalidFieldTypeException, InvalidFieldLengthException
     {
-        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/NUMBER");
+        final File outputDir = new File("target/test-output/" + versionDirectory + "/types");
         outputDir.mkdirs();
 
-        final File tableFile = new File(outputDir, "VALTOOLARGE.DBF");
+        final File tableFile = new File(outputDir, "FIELDEXCEPTION  .DBF");
         UnitTestUtil.remove(tableFile);
 
         final List<Field> fields = new ArrayList<Field>();

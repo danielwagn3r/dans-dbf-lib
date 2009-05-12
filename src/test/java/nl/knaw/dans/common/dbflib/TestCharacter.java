@@ -29,7 +29,9 @@ import org.junit.runners.Parameterized;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Tests reading and writing character fields
@@ -104,35 +106,36 @@ public class TestCharacter
      * @throws IOException DOCUMENT ME!
      * @throws CorruptedTableException DOCUMENT ME!
      */
+    @Test(expected = InvalidFieldLengthException.class)
+    public void writeTooLongField()
+                           throws IOException,
+                                  CorruptedTableException,
+                                  ValueTooLargeException,
+                                  RecordTooLargeException,
+                                  InvalidFieldTypeException,
+                                  InvalidFieldLengthException
+    {
+        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/CHARACTER");
+        outputDir.mkdirs();
 
-//    @Test(expected = ValueTooLargeException.class)
-//    public void writeTooLongField()
-//                           throws IOException,
-//                                  CorruptedTableException,
-//                                  ValueTooLargeException,
-//                                  RecordTooLargeException
-//    {
-//        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/CHARACTER");
-//        outputDir.mkdirs();
-//
-//        final File tableFile = new File(outputDir, "FIELDTOOLONG.DBF");
-//        final List<Field> fields = new ArrayList<Field>();
-//        fields.add(new Field("CHAR", Type.CHARACTER, 270, 0));
-//
-//        final Table table = new Table(tableFile, version, fields);
-//
-//        try
-//        {
-//            table.open(IfNonExistent.CREATE);
-//
-//            table.addRecord("this text is not longer than the defined field length, but the field  "
-//                          + "length exceeds the maximum length of a character field xxxxxxxxxxxxxxx"
-//                          + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-//                          + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-//        }
-//        finally
-//        {
-//            table.close();
-//        }
-//    }
+        final File tableFile = new File(outputDir, "FIELDTOOLONG.DBF");
+        final List<Field> fields = new ArrayList<Field>();
+        fields.add(new Field("CHAR", Type.CHARACTER, 270, 0));
+
+        final Table table = new Table(tableFile, version, fields);
+
+        try
+        {
+            table.open(IfNonExistent.CREATE);
+
+            table.addRecord("this text is not longer than the defined field length, but the field  "
+                            + "length exceeds the maximum length of a character field xxxxxxxxxxxxxxx"
+                            + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                            + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+        }
+        finally
+        {
+            table.close();
+        }
+    }
 }

@@ -88,6 +88,14 @@ class DbfHeader
     private static final int LENGTH_RESERVED_3 = OFFSET_FIELD_DESCRIPTORS - OFFSET_RESERVED_3;
 
     /*
+     * Maximum field lengths.
+     * Notice: version dependent maximum field lengths defined in the Version class
+     */
+    private static final int MAX_LENGTH_FLOAT_FIELD = 20;
+    private static final int MAX_LENGTH_LOGICAL_FIELD = 1;
+    private static final int MAX_LENGTH_DATE_FIELD = 8;
+
+    /*
      * Special bytes.
      */
     private static final byte FIELD_DESCRIPTOR_ARRAY_TERMINATOR = 0x0D;
@@ -273,10 +281,89 @@ class DbfHeader
     }
 
     void setFields(final List<Field> aFieldList)
+            throws InvalidFieldTypeException, InvalidFieldLengthException
     {
         fields = aFieldList;
+        checkFieldValidity(fields);
         calculateRecordLength();
         calculateHeaderLength();
+    }
+
+    void checkFieldValidity(List<Field> aFieldList)
+                     throws InvalidFieldTypeException, InvalidFieldLengthException
+    {
+        boolean invalidLength = false;
+
+        for (Field field : aFieldList)
+        {
+            if (! version.fieldTypes.contains(field.getType()))
+            {
+                throw new InvalidFieldTypeException("Invalid field type ('" + field.getType().toString()
+                                                    + "') for this version ");
+            }
+
+            switch (field.getType())
+            {
+                case CHARACTER:
+
+                    if (field.getLength() < 1 || field.getLength() > version.getMaxLengthCharField())
+                    {
+                        invalidLength = true;
+                    }
+
+                    break;
+
+                case NUMBER:
+
+                    if (field.getLength() < 1 || field.getLength() > version.getMaxLengthNumberField())
+                    {
+                        invalidLength = true;
+                    }
+
+                    break;
+
+                case FLOAT:
+
+                    if (field.getLength() < 1 || field.getLength() > MAX_LENGTH_FLOAT_FIELD)
+                    {
+                        invalidLength = true;
+                    }
+
+                    break;
+
+                case LOGICAL:
+
+                    if (field.getLength() < 1 || field.getLength() > MAX_LENGTH_LOGICAL_FIELD)
+                    {
+                        invalidLength = true;
+                    }
+
+                    break;
+
+                case DATE:
+
+                    if (field.getLength() < 1 || field.getLength() > MAX_LENGTH_DATE_FIELD)
+                    {
+                        invalidLength = true;
+                    }
+
+                    break;
+            }
+
+            if (invalidLength)
+            {
+                if (field.getLength() < 1)
+                {
+                    throw new InvalidFieldLengthException("Field length less than one (field '" + field.getName()
+                                                          + "') ");
+                }
+                else
+                {
+                    throw new InvalidFieldLengthException("Field length exceeds the allowed field length (field '"
+                                                          + field.getName() + "') ");
+                }
+            }
+        }
     }
 
     void setVersion(final Version aVersion)

@@ -93,7 +93,12 @@ public class TestBoolean
     */
     @Test
     public void writeBoolean()
-                      throws IOException, CorruptedTableException, ValueTooLargeException, RecordTooLargeException
+                      throws IOException,
+                             CorruptedTableException,
+                             ValueTooLargeException,
+                             RecordTooLargeException,
+                             InvalidFieldTypeException,
+                             InvalidFieldLengthException
     {
         final File outputDir = new File("target/test-output/" + versionDirectory + "/types/BOOLEAN");
         outputDir.mkdirs();
