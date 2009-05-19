@@ -26,10 +26,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -50,6 +52,26 @@ public class TestNumber
     public TestNumber(final Version aVersion, final String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * No Clipper5, because 'Numeric' field in Clipper5 behaves
+     * like 'Float' field in dBaseIV and dBaseV.
+     */
+    @Parameters
+    public static Collection<Object[]> data()
+    {
+        final Object[][] testParameters =
+            new Object[][]
+            {
+                { Version.DBASE_3, "dbase3plus" },
+                { Version.DBASE_4, "dbase4" },
+                { Version.DBASE_5, "dbase5" }
+            };
+
+        return Arrays.asList(testParameters);
     }
 
     /**
@@ -236,41 +258,5 @@ public class TestNumber
         ignoredRanges.addRange(0xac, 0xaf); // idem
 
         UnitTestUtil.doCopyAndCompareTest(versionDirectory + "/types", "NUMBER", version, ignoredRanges, null);
-    }
-
-    // TODO: Purpose of this test?
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws DbfLibException DOCUMENT ME!
-     */
-    @Test
-    public void writeNumber()
-                     throws IOException, DbfLibException
-    {
-        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/NUMBER");
-        outputDir.mkdirs();
-
-        final File tableFile = new File(outputDir, "VALTOOLARGE.DBF");
-        UnitTestUtil.remove(tableFile);
-
-        final List<Field> fields = new ArrayList<Field>();
-        fields.add(new Field("INTFIELD", Type.NUMBER, 5, 0));
-        fields.add(new Field("DECFIELD", Type.NUMBER, 5, 2));
-
-        final Table table = new Table(tableFile, version, fields);
-
-        table.open(IfNonExistent.CREATE);
-
-        try
-        {
-            table.addRecord(12345);
-            table.addRecord(0, 12.34);
-        }
-        finally
-        {
-            table.close();
-        }
     }
 }

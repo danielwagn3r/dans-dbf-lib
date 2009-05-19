@@ -33,12 +33,14 @@ import java.util.List;
 public enum Version
 {
 
-    DBASE_3(253, 19, 0, 0x1a1a, 2,
+    DBASE_3(254, 19, 1, 0, 0x1a1a, 2,
             getDbase3Types()),
-    DBASE_4(253, 20, 8, 0x00, 0,
+    DBASE_4(254, 20, 1, 8, 0x00, 0,
             getDbase4Types()), 
-    DBASE_5(253, 20, 8, 0x00, 0,
-            getDbase5Types());
+    DBASE_5(254, 20, 1, 8, 0x00, 0,
+            getDbase5Types()), 
+    CLIPPER_5(1024, 19, 2, 0, 0x1a, 1,
+              getClipper5Types());
     // Trick Jalopy formatter into behaving.
     private static Type[] getDbase3Types()
     {
@@ -59,18 +61,26 @@ public enum Version
                };
     }
 
+    private static Type[] getClipper5Types()
+    {
+        return new Type[] { Type.CHARACTER, Type.NUMBER, Type.DATE, Type.LOGICAL, Type.MEMO };
+    }
+
     private final int maxLengthCharField;
     private final int maxLengthNumberField;
+    private final int lengthHeaderTerminator;
     private final int memoDataOffset;
     private final int memoFieldEndMarker;
     private final int memoFieldEndMarkerLength;
     final List<Type> fieldTypes = new ArrayList<Type>();
 
-    Version(final int aMaxLengthCharField, final int aMaxLengthNumberField, final int aMemoDataOffset,
-            final int aMemoFieldEndMarker, final int aMemoFieldEndMarkerLength, final Type[] aFieldTypes)
+    Version(final int aMaxLengthCharField, final int aMaxLengthNumberField, final int aLengthHeaderTerminator,
+            final int aMemoDataOffset, final int aMemoFieldEndMarker, final int aMemoFieldEndMarkerLength,
+            final Type[] aFieldTypes)
     {
         maxLengthCharField = aMaxLengthCharField;
         maxLengthNumberField = aMaxLengthNumberField;
+        lengthHeaderTerminator = aLengthHeaderTerminator;
         memoDataOffset = aMemoDataOffset;
         memoFieldEndMarker = aMemoFieldEndMarker;
         memoFieldEndMarkerLength = aMemoFieldEndMarkerLength;
@@ -79,6 +89,21 @@ public enum Version
         {
             fieldTypes.add(type);
         }
+    }
+
+    int getMaxLengthCharField()
+    {
+        return maxLengthCharField;
+    }
+
+    int getMaxLengthNumberField()
+    {
+        return maxLengthNumberField;
+    }
+
+    int getLengthHeaderTerminator()
+    {
+        return lengthHeaderTerminator;
     }
 
     int getMemoDataOffset()
@@ -98,7 +123,7 @@ public enum Version
 
     static int getVersionByte(Version aVersion, boolean aHasMemo)
     {
-        if (aVersion == DBASE_3)
+        if (aVersion == DBASE_3 || aVersion == CLIPPER_5)
         {
             if (aHasMemo)
             {
@@ -124,25 +149,19 @@ public enum Version
         return 0;
     }
 
-    static Version getVersion(final int aVersionByte)
+    static Version getVersion(final int aVersionByte, final int aLengthHeaderTerminator)
     {
-        switch (aVersionByte)
+        if (aLengthHeaderTerminator == 2)
         {
-            case 0x83:
-                return DBASE_3;
-
-            default:
-                return DBASE_5;
+            return CLIPPER_5;
         }
-    }
-
-    int getMaxLengthCharField()
-    {
-        return maxLengthCharField;
-    }
-
-    int getMaxLengthNumberField()
-    {
-        return maxLengthNumberField;
+        else if (aVersionByte == 0x83)
+        {
+            return DBASE_3;
+        }
+        else
+        {
+            return DBASE_5;
+        }
     }
 }

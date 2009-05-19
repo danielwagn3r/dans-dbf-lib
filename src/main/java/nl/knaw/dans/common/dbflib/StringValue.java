@@ -75,7 +75,8 @@ public class StringValue
 
         if (stringBytes.length > fieldLength && aField.getType() != Type.MEMO)
         {
-            throw new ValueTooLargeException("Character string exceeds the allowed length for this character field ");
+            throw new ValueTooLargeException("Character string exceeds the allowed length for character field '"
+                                             + aField.getName() + "' ");
         }
 
         try

@@ -85,15 +85,14 @@ public class TestFloatExceptions
     public void setUp()
                throws IOException, CorruptedTableException, InvalidFieldTypeException, InvalidFieldLengthException
     {
-        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/FLOAT");
-        outputDir.mkdirs();
+        final String outputDir = "target/test-output/" + versionDirectory + "/exceptions";
+        UnitTestUtil.recreateDirectory(outputDir);
 
-        final File tableFile = new File(outputDir, "WRITEFLOAT.DBF");
-        UnitTestUtil.remove(tableFile);
+        final File tableFile = new File(outputDir + "/WRITEFLOAT.DBF");
 
         final List<Field> fields = new ArrayList<Field>();
         fields.add(new Field("FLOAT_1", Type.FLOAT, 20, 0));
-        fields.add(new Field("FLOAT_2", Type.NUMBER, 20, 1));
+        fields.add(new Field("FLOAT_2", Type.FLOAT, 20, 1));
         fields.add(new Field("FLOAT_3", Type.FLOAT, 20, 18));
 
         table = new Table(tableFile, version, fields);
@@ -131,5 +130,24 @@ public class TestFloatExceptions
         table.addRecord(new BigInteger("99999999999999999999999"),
                         0.0,
                         0.0);
+    }
+
+    /**
+     * Tests that adding a value that is too big triggers a <tt>ValueTooLargeException</tt>.
+     *
+     * @throws IOException not expected
+     * @throws CorruptedTableException not expected
+     * @throws ValueTooLargeException expected!
+     * @throws RecordTooLargeException not expected
+     */
+    @Test(expected = ValueTooLargeException.class)
+    public void tooBigDecimalValue()
+                            throws IOException,
+                                   CorruptedTableException,
+                                   ValueTooLargeException,
+                                   RecordTooLargeException,
+                                   InvalidFieldLengthException
+    {
+        table.addRecord(0, 0.0, 9.999999999999999999);
     }
 }

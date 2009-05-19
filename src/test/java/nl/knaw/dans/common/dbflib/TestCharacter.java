@@ -29,9 +29,7 @@ import org.junit.runners.Parameterized;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Tests reading and writing character fields
@@ -101,41 +99,31 @@ public class TestCharacter
     }
 
     /**
-     * tests writing field that exceeds the maximum allowed field length for the datatype
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
+     * Tests writing character fields that are first read from a .dbf file.
      */
-    @Test(expected = InvalidFieldLengthException.class)
-    public void writeTooLongField()
-                           throws IOException,
-                                  CorruptedTableException,
-                                  ValueTooLargeException,
-                                  RecordTooLargeException,
-                                  InvalidFieldTypeException,
-                                  InvalidFieldLengthException
+    @Test
+    public void writeCharacter()
+                        throws IOException,
+                               CorruptedTableException,
+                               ValueTooLargeException,
+                               InvalidFieldTypeException,
+                               InvalidFieldLengthException
     {
-        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/CHARACTER");
-        outputDir.mkdirs();
+        final Ranges ignoredRanges = new Ranges();
+        ignoredRanges.addRange(0x01, 0x03); // modified
+        ignoredRanges.addRange(0x1d, 0x1d); // language driver
+        ignoredRanges.addRange(0x1e, 0x1f); // reserved
+        ignoredRanges.addRange(0x2c, 0x2f); // field description "address in memory"
+        ignoredRanges.addRange(0x4C, 0x4f); // field data address
 
-        final File tableFile = new File(outputDir, "FIELDTOOLONG.DBF");
-        final List<Field> fields = new ArrayList<Field>();
-        fields.add(new Field("CHAR", Type.CHARACTER, 270, 0));
+        /*
+         * Garbage in Clipper 5, in other versions not meaningful.
+         */
+        ignoredRanges.addRange(0x26, 0x2a); // garbage
+        ignoredRanges.addRange(0x32, 0x3f); // garbage
+        ignoredRanges.addRange(0x46, 0x4a); // garbage
+        ignoredRanges.addRange(0x52, 0x5f); // garbage
 
-        final Table table = new Table(tableFile, version, fields);
-
-        try
-        {
-            table.open(IfNonExistent.CREATE);
-
-            table.addRecord("this text is not longer than the defined field length, but the field  "
-                            + "length exceeds the maximum length of a character field xxxxxxxxxxxxxxx"
-                            + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                            + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-        }
-        finally
-        {
-            table.close();
-        }
+        UnitTestUtil.doCopyAndCompareTest(versionDirectory + "/types", "CHARACTE", version, ignoredRanges, null);
     }
 }

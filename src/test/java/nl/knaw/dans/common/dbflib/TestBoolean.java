@@ -29,9 +29,7 @@ import org.junit.runners.Parameterized;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Tests reading and writing boolean fields.
@@ -86,42 +84,33 @@ public class TestBoolean
     }
 
     /**
-    * Tests writing of boolean fields.
-    *
-    * @throws IOException not expected
-    * @throws CorruptedTableException DOCUMENT ME!
-    */
+     * Tests writing boolean fields that are first read from a .dbf file.
+     */
     @Test
     public void writeBoolean()
                       throws IOException,
                              CorruptedTableException,
                              ValueTooLargeException,
-                             RecordTooLargeException,
                              InvalidFieldTypeException,
                              InvalidFieldLengthException
     {
-        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/BOOLEAN");
-        outputDir.mkdirs();
+        final Ranges ignoredRanges = new Ranges();
+        ignoredRanges.addRange(0x01, 0x03); // modified
+        ignoredRanges.addRange(0x1d, 0x1d); // language driver
+        ignoredRanges.addRange(0x1e, 0x1f); // reserved
+        ignoredRanges.addRange(0x2c, 0x2f); // field description "address in memory"
+        ignoredRanges.addRange(0x34, 0x34); // work area id
+        ignoredRanges.addRange(0x4C, 0x4f); // field data address
+        ignoredRanges.addRange(0x54, 0x54); // work area id
 
-        final File tableFile = new File(outputDir, "WRITEBOOLEAN.DBF");
-        UnitTestUtil.remove(tableFile);
+        /*
+         * Garbage in Clipper 5, in other versions not meaningful.
+         */
+        ignoredRanges.addRange(0x25, 0x2a); // garbage
+        ignoredRanges.addRange(0x32, 0x3f); // garbage
+        ignoredRanges.addRange(0x48, 0x4a); // garbage
+        ignoredRanges.addRange(0x52, 0x5f); // garbage
 
-        final List<Field> fields = new ArrayList<Field>();
-        fields.add(new Field("BOOLEAN", Type.LOGICAL, 1));
-
-        final Table table = new Table(tableFile, version, fields);
-
-        try
-        {
-            table.open(IfNonExistent.CREATE);
-
-            table.addRecord(true);
-            table.addRecord(false);
-            table.addRecord();
-        }
-        finally
-        {
-            table.close();
-        }
+        UnitTestUtil.doCopyAndCompareTest(versionDirectory + "/types", "BOOLEAN", version, ignoredRanges, null);
     }
 }

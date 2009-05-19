@@ -243,8 +243,15 @@ class UnitTestUtil
         }
         finally
         {
-            orgTable.close();
-            copyTable.close();
+            if (orgTable != null)
+            {
+                orgTable.close();
+            }
+
+            if (copyTable != null)
+            {
+                copyTable.close();
+            }
         }
 
         long diffOffset = UnitTestUtil.compare(orgFile, copyFile, aIgnoredRangesDbf);

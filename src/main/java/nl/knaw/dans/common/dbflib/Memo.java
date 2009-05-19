@@ -89,7 +89,16 @@ class Memo
         else if (aIfNonExistent.isCreate())
         {
             raf = new RandomAccessFile(memoFile, "rw");
-            nextAvailableBlock = 1;
+
+            if (version == Version.CLIPPER_5)
+            {
+                nextAvailableBlock = 2;
+            }
+            else
+            {
+                nextAvailableBlock = 1;
+            }
+
             writeMemoHeader();
         }
         else if (aIfNonExistent.isError())
@@ -144,6 +153,7 @@ class Memo
         switch (version)
         {
             case DBASE_3:
+            case CLIPPER_5:
 
                 while ((c = raf.read()) != MARKER_MEMO_END)
                 {
@@ -225,7 +235,14 @@ class Memo
 
         if (version.getMemoFieldEndMarkerLength() != 0)
         {
-            raf.writeShort(version.getMemoFieldEndMarker());
+            if (version.getMemoFieldEndMarkerLength() == 1)
+            {
+                raf.writeByte(version.getMemoFieldEndMarker());
+            }
+            else
+            {
+                raf.writeShort(version.getMemoFieldEndMarker());
+            }
         }
 
         /*

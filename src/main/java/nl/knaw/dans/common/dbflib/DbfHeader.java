@@ -79,8 +79,7 @@ class DbfHeader
     private static final int LENGTH_FIELD_DESCR_AFTER_DECIMAL_COUNT =
         FD_OFFSET_NEXT_FIELD - FD_OFFSET_RESERVED_MULTIUSER_1;
     private static final int LENGTH_TABLE_HEADER_AFTER_RECORD_COUNT = OFFSET_FIELD_DESCRIPTORS - OFFSET_RESERVED_1;
-    private static final int LENGTH_FIELD_DESCRIPTOR_ARRAY_TERMINATOR = 1;
-    private static final int LENGTH_TABLE_HEADER = 32;
+    private static final int LENGTH_TABLE_INFO_BLOCK = 32;
     private static final int LENGTH_DELETE_FLAG = 1;
     private static final int OFFSET_WORK_AREA_ID = 20;
     private static final int LENGTH_RESERVED_1 = OFFSET_INCOMPLETE_TRANSATION - OFFSET_RESERVED_1;
@@ -104,6 +103,7 @@ class DbfHeader
      * Fields.
      */
     private Version version;
+    private int versionByte;
     private int recordCount;
     private List<Field> fields = new ArrayList<Field>();
     private short headerLength;
@@ -114,10 +114,21 @@ class DbfHeader
     void readAll(final DataInput aDataInput)
           throws IOException, CorruptedTableException
     {
-        readVersion(aDataInput);
+        readVersionByte(aDataInput);
         readModifiedDate(aDataInput);
         readRecordCount(aDataInput);
         readHeaderLength(aDataInput);
+
+        /*
+         * In CLIPPER 5 there are two header terminator bytes, in dBase only one.
+         *
+         * The length of the first general table info block is 32 and of the subsequent
+         * field descriptors is also 32.  The headerLength includes the table info block,
+         * field descriptors and the final terminator byte(s).  To find out how many
+         * terminator bytes there are we simply find the remainder after division by 32.
+         */
+        version = Version.getVersion(versionByte, headerLength % 32);
+
         readRecordLength(aDataInput);
         aDataInput.skipBytes(LENGTH_TABLE_HEADER_AFTER_RECORD_COUNT);
         readFieldDescriptors(aDataInput,
@@ -157,8 +168,8 @@ class DbfHeader
     private void calculateHeaderLength()
     {
         headerLength = (short) (
-                           LENGTH_TABLE_HEADER + LENGTH_FIELD_DESCRIPTOR * fields.size()
-                           + LENGTH_FIELD_DESCRIPTOR_ARRAY_TERMINATOR
+                           LENGTH_TABLE_INFO_BLOCK + LENGTH_FIELD_DESCRIPTOR * fields.size()
+                           + version.getLengthHeaderTerminator()
                        );
     }
 
@@ -166,7 +177,7 @@ class DbfHeader
                        throws CorruptedTableException
     {
         final int nrBytesFieldDescriptorArray =
-            headerLength - LENGTH_TABLE_HEADER - LENGTH_FIELD_DESCRIPTOR_ARRAY_TERMINATOR;
+            headerLength - LENGTH_TABLE_INFO_BLOCK - version.getLengthHeaderTerminator();
 
         if ((nrBytesFieldDescriptorArray % LENGTH_FIELD_DESCRIPTOR) != 0)
         {
@@ -235,12 +246,23 @@ class DbfHeader
     private Field readField(final DataInput aDataInput)
                      throws IOException
     {
+        int length = 0;
+        int decimalCount = 0;
+
         final String name = Util.readString(aDataInput, LENGTH_FIELD_NAME);
         final char typeChar = (char) aDataInput.readByte();
         aDataInput.skipBytes(LENGTH_FIELD_DATA_ADDRESS);
 
-        final int length = aDataInput.readUnsignedByte();
-        final int decimalCount = aDataInput.readUnsignedByte();
+        if (version == Version.CLIPPER_5 && typeChar == Type.CHARACTER.getCode())
+        {
+            length = Util.changeEndianness((short) aDataInput.readUnsignedShort());
+        }
+        else
+        {
+            length = aDataInput.readUnsignedByte();
+            decimalCount = aDataInput.readUnsignedByte();
+        }
+
         aDataInput.skipBytes(LENGTH_FIELD_DESCR_AFTER_DECIMAL_COUNT);
 
         return new Field(name,
@@ -249,10 +271,10 @@ class DbfHeader
                          decimalCount);
     }
 
-    void readVersion(final DataInput aDataInput)
-              throws IOException
+    void readVersionByte(final DataInput aDataInput)
+                  throws IOException
     {
-        version = Version.getVersion(aDataInput.readUnsignedByte());
+        versionByte = aDataInput.readUnsignedByte();
     }
 
     void readRecordCount(final DataInput aDataInput)

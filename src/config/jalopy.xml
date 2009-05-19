@@ -5,8 +5,8 @@
             <version>15</version>
         </compliance>
         <style>
-            <description>MIXED Code Formatting Styles</description>
-            <name>MIXED</name>
+            <description>DANS DBF Library Code Formatting Styles</description>
+            <name>dans-dbf-lib-formatting</name>
         </style>
     </general>
     <inspector>

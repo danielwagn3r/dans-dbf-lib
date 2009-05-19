@@ -31,11 +31,9 @@ import org.junit.runners.Parameterized.Parameters;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Tests reading FLOAT fields.
@@ -69,7 +67,8 @@ public class TestFloat
             new Object[][]
             {
                 { Version.DBASE_4, "dbase4" },
-                { Version.DBASE_5, "dbase5" }
+                { Version.DBASE_5, "dbase5" },
+                { Version.CLIPPER_5, "clipper5" }
             };
 
         return Arrays.asList(testParameters);
@@ -127,8 +126,19 @@ public class TestFloat
             r = recordIterator.next();
             assertEquals(0,
                          r.getNumberValue("FLOAT1").intValue());
-            assertEquals(new BigInteger("10000000000000000000"),
-                         (BigInteger) (r.getNumberValue("FLOAT2")));
+
+            // In Clipper5 maximum length 19 digits
+            if (version == Version.CLIPPER_5)
+            {
+                assertEquals(1000000000000000000L,
+                             r.getNumberValue("FLOAT2").longValue());
+            }
+            else
+            {
+                assertEquals(new BigInteger("10000000000000000000"),
+                             (BigInteger) (r.getNumberValue("FLOAT2")));
+            }
+
             assertEquals(5.555555555555560000,
                          r.getNumberValue("FLOAT3").doubleValue(),
                          0.0);
@@ -143,46 +153,40 @@ public class TestFloat
     }
 
     /**
-    * Tests writing of DATE fields.
-    *
-    * @throws IOException DOCUMENT ME!
-    * @throws CorruptedTableException DOCUMENT ME!
+    * Tests writing float fields that are first read from a .dbf file.
     */
     @Test
     public void writeFloat()
                     throws IOException,
                            CorruptedTableException,
-                           RecordTooLargeException,
                            ValueTooLargeException,
                            InvalidFieldTypeException,
                            InvalidFieldLengthException
     {
-        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/FLOAT");
-        outputDir.mkdirs();
+        final Ranges ignoredRanges = new Ranges();
+        ignoredRanges.addRange(0x01, 0x03); // modified
+        ignoredRanges.addRange(0x1d, 0x1d); // language driver
+        ignoredRanges.addRange(0x1e, 0x1f); // reserved
+        ignoredRanges.addRange(0x2c, 0x2f); // field description "address in memory"
+        ignoredRanges.addRange(0x4c, 0x4f); // field description "address in memory"
+        ignoredRanges.addRange(0x6c, 0x6f); // field description "address in memory"
+        ignoredRanges.addRange(0x8c, 0x8f); // field description "address in memory"
+        ignoredRanges.addRange(0xac, 0xaf); // field description "address in memory"
+        ignoredRanges.addRange(0x25, 0x2a); // garbage at the end of Field Name field
+        ignoredRanges.addRange(0x47, 0x4a); // garbage at the end of Field Name field
 
-        final File tableFile = new File(outputDir, "WRITEFLOAT.DBF");
-        UnitTestUtil.remove(tableFile);
+        /*
+         * Garbage in Clipper 5, in other versions not meaningful.
+         */
+        ignoredRanges.addRange(0x32, 0x3f); // garbage
+        ignoredRanges.addRange(0x52, 0x5f); // garbage
+        ignoredRanges.addRange(0x67, 0x6a); // garbage
+        ignoredRanges.addRange(0x72, 0x7f); // garbage
+        ignoredRanges.addRange(0x87, 0x8a); // garbage
+        ignoredRanges.addRange(0x92, 0x9f); // garbage
+        ignoredRanges.addRange(0xa7, 0xaa); // garbage
+        ignoredRanges.addRange(0xb2, 0xbf); // garbage
 
-        final List<Field> fields = new ArrayList<Field>();
-        fields.add(new Field("FLOAT_1", Type.FLOAT, 20, 0));
-        fields.add(new Field("FLOAT_2", Type.NUMBER, 20, 1));
-        fields.add(new Field("FLOAT_3", Type.FLOAT, 20, 18));
-
-        final Table table = new Table(tableFile, version, fields);
-
-        try
-        {
-            table.open(IfNonExistent.CREATE);
-
-            table.addRecord(0, 0.0, 0.0);
-            table.addRecord(1234567890, 1234567890.1, 1.123456789);
-            table.addRecord(new BigInteger("10000000000000000000"),
-                            10000000000000000.0,
-                            0.00000000000000001);
-        }
-        finally
-        {
-            table.close();
-        }
+        UnitTestUtil.doCopyAndCompareTest(versionDirectory + "/types", "FLOAT", version, ignoredRanges, null);
     }
 }

@@ -29,10 +29,8 @@ import org.junit.runners.Parameterized;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Tests reading date fields.
@@ -91,46 +89,29 @@ public class TestDate
     }
 
     /**
-     * Tests writing DATE values.
-     *
-     * @throws IOException not expected
-     * @throws CorruptedTableException not expected
-     * @throws ValueTooLargeException not expected
-     * @throws RecordTooLargeException not expected
-     */
+    * Tests writing DATE fields that are first read from a .dbf file.
+    */
     @Test
     public void writeDate()
                    throws IOException,
                           CorruptedTableException,
                           ValueTooLargeException,
-                          RecordTooLargeException,
                           InvalidFieldTypeException,
                           InvalidFieldLengthException
     {
-        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/DATE");
-        outputDir.mkdirs();
+        final Ranges ignoredRanges = new Ranges();
+        ignoredRanges.addRange(0x01, 0x03); // modified
+        ignoredRanges.addRange(0x1d, 0x1d); // language driver
+        ignoredRanges.addRange(0x1e, 0x1f); // reserved
+        ignoredRanges.addRange(0x2c, 0x2f); // field description "address in memory"
+        ignoredRanges.addRange(0x34, 0x34); // work area id
 
-        final File tableFile = new File(outputDir, "WRITEDATE.DBF");
-        UnitTestUtil.remove(tableFile);
+        /*
+         * Garbage in Clipper 5, in other versions not meaningful.
+         */
+        ignoredRanges.addRange(0x25, 0x2a); // garbage
+        ignoredRanges.addRange(0x32, 0x3f); // garbage
 
-        final List<Field> fields = new ArrayList<Field>();
-        fields.add(new Field("DATE", Type.DATE, 8));
-
-        final Table table = new Table(tableFile, version, fields);
-
-        try
-        {
-            table.open(IfNonExistent.CREATE);
-
-            table.addRecord(Util.createDate(1909, Calendar.MARCH, 18));
-            table.addRecord(Util.createDate(1970, Calendar.JANUARY, 1));
-            table.addRecord(Util.createDate(1990, Calendar.OCTOBER, 31));
-            table.addRecord(Util.createDate(2030, Calendar.JUNE, 15));
-            table.addRecord(Util.createDate(2222, Calendar.DECEMBER, 20));
-        }
-        finally
-        {
-            table.close();
-        }
+        UnitTestUtil.doCopyAndCompareTest(versionDirectory + "/types", "DATE", version, ignoredRanges, null);
     }
 }

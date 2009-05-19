@@ -381,7 +381,7 @@ public class Table
             {
                 int index = writeMemo(raw);
 
-                if (header.getVersion() == Version.DBASE_3)
+                if (header.getVersion() == Version.DBASE_3 || header.getVersion() == Version.CLIPPER_5)
                 {
                     raw = String.format("%" + field.getLength() + "d", index).getBytes();
                 }

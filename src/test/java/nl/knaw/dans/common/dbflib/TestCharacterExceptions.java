@@ -65,15 +65,14 @@ public class TestCharacterExceptions
     public void setUp()
                throws IOException, CorruptedTableException, InvalidFieldTypeException, InvalidFieldLengthException
     {
-        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/CHARACTER");
-        outputDir.mkdirs();
+        final String outputDir = "target/test-output/" + versionDirectory + "/exceptions";
+        UnitTestUtil.recreateDirectory(outputDir);
 
-        final File tableFile = new File(outputDir, "WRITECHAR.DBF");
-        UnitTestUtil.remove(tableFile);
+        final File tableFile = new File(outputDir + "/WRITECHAR.DBF");
 
         final List<Field> fields = new ArrayList<Field>();
         fields.add(new Field("CHAR1", Type.CHARACTER, 20, 0));
-        fields.add(new Field("CHAR2", Type.CHARACTER, 253, 0));
+        fields.add(new Field("CHAR2", Type.CHARACTER, 254, 0));
 
         table = new Table(tableFile, version, fields);
         table.open(IfNonExistent.CREATE);
@@ -117,9 +116,9 @@ public class TestCharacterExceptions
                      throws IOException, CorruptedTableException, ValueTooLargeException, RecordTooLargeException
     {
         table.addRecord("This is exactly 20 c",
-                        "This is exactly 253 characters, which is the limit for character fields in DBase products"
+                        "This is exactly 254 characters, which is the limit for character fields in DBase products"
                         + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                        + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx!!!");
+                        + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx!!!");
     }
 
     /**
@@ -154,7 +153,7 @@ public class TestCharacterExceptions
                                       RecordTooLargeException
     {
         table.addRecord("This is ok",
-                        "This is more than 253 characters, which is the limit for character fields in DBase products"
+                        "This is more than 254 characters, which is the limit for character fields in DBase products"
                         + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                         + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                         + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"

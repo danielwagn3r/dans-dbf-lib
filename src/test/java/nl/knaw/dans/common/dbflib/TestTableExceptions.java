@@ -19,14 +19,14 @@
  */
 package nl.knaw.dans.common.dbflib;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Tests reading and writing memo fields.
@@ -34,7 +34,7 @@ import java.io.IOException;
  * @author Vesa Åkerman
  * @author Jan van Mansum
  */
-public class TestFileExceptions
+public class TestTableExceptions
 {
     /**
      * Tests that <tt>java.io.FileNotFoundException</tt> is thrown when opening a non-existent
@@ -70,7 +70,7 @@ public class TestFileExceptions
     public void emptyFile()
                    throws IOException, CorruptedTableException
     {
-        final File emptyFile = new File("src/test/resources/dbase3plus/fileExceptions/EMPTY.DBF");
+        final File emptyFile = new File("src/test/resources/dbase3plus/tableExceptions/EMPTY.DBF");
         final Table table = new Table(emptyFile);
 
         try
@@ -96,7 +96,7 @@ public class TestFileExceptions
     public void memoFileMissing()
                          throws IOException, CorruptedTableException
     {
-        final File missingMemoDbf = new File("src/test/resources/dbase3plus/fileExceptions/MISSMEMO.DBF");
+        final File missingMemoDbf = new File("src/test/resources/dbase3plus/tableExceptions/MISSMEMO.DBF");
         final Table table = new Table(missingMemoDbf);
 
         try
@@ -120,7 +120,7 @@ public class TestFileExceptions
     public void emptyMemoFile()
                        throws IOException, CorruptedTableException
     {
-        final File memEmptyDbf = new File("src/test/resources/dbase3plus/fileExceptions/MEMEMPTY.DBF");
+        final File memEmptyDbf = new File("src/test/resources/dbase3plus/tableExceptions/MEMEMPTY.DBF");
         final Table table = new Table(memEmptyDbf);
 
         try
@@ -145,7 +145,7 @@ public class TestFileExceptions
     public void corruptedMemoFilePointer()
                                   throws IOException, CorruptedTableException
     {
-        final File pntrErrorDbf = new File("src/test/resources/dbase3plus/fileExceptions/PNTRERR.DBF");
+        final File pntrErrorDbf = new File("src/test/resources/dbase3plus/tableExceptions/PNTRERR.DBF");
         final Table table = new Table(pntrErrorDbf);
 
         try
@@ -166,7 +166,79 @@ public class TestFileExceptions
     @Test(expected = IllegalArgumentException.class)
     public void directoryIsFile()
     {
-        final File databaseDirectory = new File("src/test/resources/dbase3plus/fileExceptions/bogusDirectory");
+        final File databaseDirectory = new File("src/test/resources/dbase3plus/tableExceptions/bogusDirectory");
         new Database(databaseDirectory, Version.DBASE_3);
+    }
+
+    /**
+     * Test writing character string when the field length exceeds the maximum allowed field length for the datatype
+     *
+     */
+    @Test(expected = InvalidFieldLengthException.class)
+    public void writeTooLongField()
+                           throws IOException,
+                                  CorruptedTableException,
+                                  ValueTooLargeException,
+                                  RecordTooLargeException,
+                                  InvalidFieldTypeException,
+                                  InvalidFieldLengthException
+    {
+        final File outputDir = new File("target/test-output/dbase3plus/exceptions");
+        outputDir.mkdirs();
+
+        final File tableFile = new File(outputDir, "FIELDTOOLONG.DBF");
+        final List<Field> fields = new ArrayList<Field>();
+        fields.add(new Field("CHAR", Type.CHARACTER, 255, 0));
+
+        final Table table = new Table(tableFile, Version.DBASE_3, fields);
+
+        try
+        {
+            table.open(IfNonExistent.CREATE);
+
+            table.addRecord("this text is not longer than the defined field length, but the field  "
+                            + "length exceeds the maximum length of a character field");
+        }
+        finally
+        {
+            table.close();
+        }
+    }
+
+    /**
+     * In this test no exception is expected.  Goal of this test is simply to test that 'addRecord'
+     * method with parameters of field values goes through (this method is not tested in any of the
+     * other unit tests)
+     */
+    @Test
+    public void addRecordTest()
+                       throws IOException, DbfLibException
+    {
+        final File outputDir = new File("target/test-output/dbase4/addrecordtest");
+        outputDir.mkdirs();
+
+        final File tableFile = new File(outputDir, "ADDRECORDS.DBF");
+
+        final List<Field> fields = new ArrayList<Field>();
+        fields.add(new Field("INT", Type.NUMBER, 5, 0));
+        fields.add(new Field("DEC", Type.NUMBER, 5, 2));
+        fields.add(new Field("CHAR", Type.CHARACTER, 10));
+        fields.add(new Field("LOGICAL", Type.LOGICAL, 1));
+        fields.add(new Field("FLOAT", Type.FLOAT, 8, 2));
+
+        final Table table = new Table(tableFile, Version.DBASE_4, fields);
+
+        table.open(IfNonExistent.CREATE);
+
+        try
+        {
+            table.addRecord(12345);
+            table.addRecord(0, 12.34);
+            table.addRecord(0, 99.99, "TEST", true, 777.77);
+        }
+        finally
+        {
+            table.close();
+        }
     }
 }

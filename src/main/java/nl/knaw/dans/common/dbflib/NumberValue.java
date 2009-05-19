@@ -73,7 +73,7 @@ public class NumberValue
             * Longer values MAY need a Long.  To be on the safe side, we always use Long here.
             * Long can accomodate at least 18 digits.
             *
-            * Long.MAX_VALUE = 9 223 372 036 854 77raFile5 807
+            * Long.MAX_VALUE = 9 223 372 036 854 775 807
             */
             else if (stringValue.length() < 19)
             {
@@ -116,7 +116,8 @@ public class NumberValue
         if (Util.getSignWidth(numberValue) + Util.getNumberOfIntDigits(numberValue) > aField.getLength()
                 - nrPositionsForDecimals)
         {
-            throw new ValueTooLargeException("Number does not fit in field: " + numberValue);
+            throw new ValueTooLargeException("Number does not fit in the field '" + aField.getName() + "': "
+                                             + numberValue);
         }
 
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();

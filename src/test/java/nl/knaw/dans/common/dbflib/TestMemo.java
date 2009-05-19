@@ -110,6 +110,14 @@ public class TestMemo
         ignoredRangesDbf.addRange(0x4c, 0x4f); // field description "address in memory"
         ignoredRangesDbf.addRange(0x54, 0x54); // work area id
 
+        /*
+         * Garbage in Clipper 5, in other versions not meaningful.
+         */
+        ignoredRangesDbf.addRange(0x26, 0x2a); // garbage
+        ignoredRangesDbf.addRange(0x32, 0x3f); // garbage
+        ignoredRangesDbf.addRange(0x46, 0x4a); // garbage
+        ignoredRangesDbf.addRange(0x52, 0x5f); // garbage
+
         final Ranges ignoredRangesDbt = new Ranges();
 
         if (version == Version.DBASE_3)
@@ -124,6 +132,13 @@ public class TestMemo
         else if (version == Version.DBASE_5)
         {
             ignoredRangesDbt.addRange(0x16, 0x1ff); // reserved/garbage
+        }
+        else if (version == Version.CLIPPER_5)
+        {
+            ignoredRangesDbt.addRange(0x04, 0x3ff); // reserved/garbage
+            ignoredRangesDbt.addRange(0x402, 0x5ff); // reserved/garbage
+            ignoredRangesDbt.addRange(0xe9c, 0xfff); // reserved/garbage
+            ignoredRangesDbt.addRange(0x11fe, 0x11ff); // zero padding
         }
 
         UnitTestUtil.doCopyAndCompareTest(versionDirectory + "/types", "MEMOTEST", version, ignoredRangesDbf,

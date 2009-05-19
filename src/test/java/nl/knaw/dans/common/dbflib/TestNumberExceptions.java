@@ -44,11 +44,10 @@ public class TestNumberExceptions
     public void setUp()
                throws IOException, CorruptedTableException, InvalidFieldTypeException, InvalidFieldLengthException
     {
-        final File outputDir = new File("target/test-output/" + versionDirectory + "/types/NUMBER");
-        outputDir.mkdirs();
+        final String outputDir = "target/test-output/" + versionDirectory + "/exceptions";
+        UnitTestUtil.recreateDirectory(outputDir);
 
-        final File tableFile = new File(outputDir, "VALTOOLARGE.DBF");
-        UnitTestUtil.remove(tableFile);
+        final File tableFile = new File(outputDir + "/VALTOOLARGE.DBF");
 
         final List<Field> fields = new ArrayList<Field>();
         fields.add(new Field("INTFIELD", Type.NUMBER, 5, 0));

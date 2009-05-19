@@ -160,8 +160,21 @@ public class TestRoundTrip
                          r1.getNumberValue("ID"));
             assertEquals("String data 02",
                          r1.getStringValue("STRFIELD").trim());
-            assertEquals(false,
-                         r1.getBooleanValue("LOGICFIELD"));
+
+            /* in Clipper 'false' value can be given as an empty field, and the method
+            * called here returns then 'null' as the return value
+            */
+            if (version == Version.CLIPPER_5)
+            {
+                assertEquals(null,
+                             r1.getBooleanValue("LOGICFIELD"));
+            }
+            else
+            {
+                assertEquals(false,
+                             r1.getBooleanValue("LOGICFIELD"));
+            }
+
             assertEquals(Util.createDate(1909, Calendar.MARCH, 20),
                          r1.getDateValue("DATEFIELD"));
             assertEquals(-23.45,
@@ -186,8 +199,21 @@ public class TestRoundTrip
                          r3.getNumberValue("ID"));
             assertEquals("Full5678901234567890123456789012345678901234567890",
                          r3.getStringValue("STRFIELD").trim());
-            assertEquals(false,
-                         r3.getBooleanValue("LOGICFIELD"));
+
+            /* in Clipper 'false' value can be given as an empty field, and the method
+            * called here returns then 'null' as the return value
+            */
+            if (version == Version.CLIPPER_5)
+            {
+                assertEquals(null,
+                             r3.getBooleanValue("LOGICFIELD"));
+            }
+            else
+            {
+                assertEquals(false,
+                             r3.getBooleanValue("LOGICFIELD"));
+            }
+
             assertEquals(Util.createDate(1909, Calendar.MARCH, 20),
                          r3.getDateValue("DATEFIELD"));
             assertEquals(-0.30,
@@ -285,21 +311,35 @@ public class TestRoundTrip
         ignoredRangesDbf.addRange(0x34, 0x94); // work area id
         ignoredRangesDbf.addRange(0x34, 0xb4); // work area id
         ignoredRangesDbf.addRange(0x34, 0xd4); // work area id
+                                               /* in Clipper5 there is so much garbage in the header area that from
+        * the field definitions on all the data is skipped
+        */
+
+        if (version == Version.CLIPPER_5)
+        {
+            ignoredRangesDbf.addRange(0x20, 0xdf); // reserved/garbage
+        }
 
         final Ranges ignoredRangesDbt = new Ranges();
 
         if (version == Version.DBASE_3)
         {
             ignoredRangesDbt.addRange(0x04, 0x1ff); // reserved/garbage
-            ignoredRangesDbt.addRange(0x432, 0x5ff); // garbage beyond dbase eof bytes
+            ignoredRangesDbt.addRange(0x432, 0x5ff); // zero padding beyond dbase eof bytes
         }
         else if (version == Version.DBASE_4)
         {
-            ignoredRangesDbt.addRange(0x438, 0x5ff); // garbage at the end of the block
+            ignoredRangesDbt.addRange(0x438, 0x5ff); // zero padding beyond dbase eof bytes
         }
         else if (version == Version.DBASE_5)
         {
             ignoredRangesDbt.addRange(0x16, 0x1ff); // reserved/garbage
+        }
+        else if (version == Version.CLIPPER_5)
+        {
+            ignoredRangesDbt.addRange(0x04, 0x3ff); // reserved/garbage
+            ignoredRangesDbt.addRange(0x4f5, 0x5ff); // garbage beyond eof bytes
+            ignoredRangesDbt.addRange(0x631, 0x7ff); // zero padding beyond eof bytes
         }
 
         UnitTestUtil.doCopyAndCompareTest(versionDirectory + "/cars", "cars", version, ignoredRangesDbf,
