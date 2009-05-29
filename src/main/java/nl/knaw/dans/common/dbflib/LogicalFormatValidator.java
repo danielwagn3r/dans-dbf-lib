@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 class LogicalFormatValidator
     extends AbstractDataValidator
 {
-    private static final Pattern booleanPattern = Pattern.compile("[YNTF]");
+    private static final Pattern booleanPattern = Pattern.compile("[YNTF ]");
 
     LogicalFormatValidator(final Field aField)
     {
@@ -57,7 +57,7 @@ class LogicalFormatValidator
 
             if (! booleanPattern.matcher(booleanString).matches())
             {
-                throw new DataMismatchException("Boolean must be one of Y, N, T, F");
+                throw new DataMismatchException("Boolean must be one of Y, N, T, F or a space");
             }
 
             return;

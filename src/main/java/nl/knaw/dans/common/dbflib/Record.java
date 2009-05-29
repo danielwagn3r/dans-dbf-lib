@@ -61,7 +61,7 @@ public class Record
      * <tr>
      *      <td><b>StringValue</b></td>
      *      <td bgcolor="lightgreen">Accepted if within maximum length</td>
-     *      <td bgcolor="lightgreen">Accepted if one of "Y", "N", "T" or "F", no leading/trailing spaces allowed</td>
+     *      <td bgcolor="lightgreen">Accepted if one of "Y", "N", "T", "F" or a space, no leading/trailing spaces allowed</td>
      *      <td bgcolor="lightgreen">Accepted if a valid number, that fits in the field and has exactly the number
      *          of decimals as the field's decimal count</td>
      *      <td bgcolor="lightgreen">See NUMBER</td>

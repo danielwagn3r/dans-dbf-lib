@@ -107,6 +107,8 @@ class NumberFormatValidator
                 throw new DataMismatchException("The string '" + stringValue
                                                 + "' does not contain a valid number, is too long or contains an incorrect number of decimals");
             }
+
+            return;
         }
 
         throw new DataMismatchException("Cannot write objects of type '" + aTypedObject.getClass().getName()

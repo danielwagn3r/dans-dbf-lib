@@ -35,13 +35,14 @@ public class TestLogicalFormatValidator
      * @throws DbfLibException DOCUMENT ME!
      */
     @Test
-    public void shouldAcceptStringWithYNTF()
-                                    throws DbfLibException
+    public void shouldAcceptStringWithYNTF_or_Space()
+            throws DbfLibException
     {
         validator.validate("Y");
         validator.validate("N");
         validator.validate("T");
         validator.validate("F");
+        validator.validate(" ");
     }
 
     /**
@@ -51,8 +52,40 @@ public class TestLogicalFormatValidator
      */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectStringWithA()
-                                 throws DbfLibException
+            throws DbfLibException
     {
         validator.validate("A");
+    }
+
+    @Test(expected = DataMismatchException.class)
+    public void shouldRejectTooLargeValue()
+            throws DbfLibException
+    {
+        validator.validate("True");
+    }
+
+    @Test
+    public void shouldAcceptBoolean() throws DbfLibException
+    {
+        validator.validate(Boolean.TRUE);
+        validator.validate(Boolean.FALSE);
+    }
+
+    @Test(expected = DataMismatchException.class)
+    public void shouldRejectNumber() throws DbfLibException
+    {
+        validator.validate(123);
+    }
+
+    @Test(expected = DataMismatchException.class)
+    public void shouldRejectDate() throws DbfLibException
+    {
+        validator.validate(Util.createDate(2009, 5, 29));
+    }
+
+    @Test(expected = DataMismatchException.class)
+    public void shouldRejectByteArray() throws DbfLibException
+    {
+        validator.validate(new byte[] {0x01, 0x02});
     }
 }
