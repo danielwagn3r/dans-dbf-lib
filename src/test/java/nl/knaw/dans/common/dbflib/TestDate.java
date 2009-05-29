@@ -93,11 +93,7 @@ public class TestDate
     */
     @Test
     public void writeDate()
-                   throws IOException,
-                          CorruptedTableException,
-                          ValueTooLargeException,
-                          InvalidFieldTypeException,
-                          InvalidFieldLengthException
+                   throws IOException, DbfLibException
     {
         final Ranges ignoredRanges = new Ranges();
         ignoredRanges.addRange(0x01, 0x03); // modified

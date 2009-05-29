@@ -21,34 +21,18 @@ package nl.knaw.dans.common.dbflib;
 
 
 /**
- * Represents a binary value in a record.  The typed and untyped values are both
- * the same byte array.
+ * Abstract base class for <tt>DataValidator</tt> implementations.  Stores the
+ * connected field.
  *
  * @author Jan van Mansum
  */
-public class ByteArrayValue
-    extends Value
+abstract class AbstractDataValidator
+    implements DataValidator
 {
-    /**
-     * Creates a new ByteArrayValue object.
-     *
-     * @param aBinaryValue the byte array value
-     */
-    public ByteArrayValue(final byte[] aBinaryValue)
-    {
-        super(aBinaryValue);
-    }
+    protected final Field field;
 
-    @Override
-    protected Object doGetTypedValue()
+    protected AbstractDataValidator(final Field aField)
     {
-        return raw;
-    }
-
-    @Override
-    protected byte[] doGetRawValue(Field aField)
-                            throws ValueTooLargeException
-    {
-        return raw;
+        field = aField;
     }
 }

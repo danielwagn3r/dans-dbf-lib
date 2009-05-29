@@ -19,36 +19,38 @@
  */
 package nl.knaw.dans.common.dbflib;
 
+import java.util.Date;
 
 /**
- * Represents a binary value in a record.  The typed and untyped values are both
- * the same byte array.
  *
  * @author Jan van Mansum
  */
-public class ByteArrayValue
-    extends Value
+class MemoFormatValidator
+    extends AbstractDataValidator
 {
+    MemoFormatValidator(final Field aField)
+    {
+        super(aField);
+        assert aField.getType() == Type.MEMO : "Can only be validator for MEMO fields";
+    }
+
     /**
-     * Creates a new ByteArrayValue object.
+     * {@inheritDoc}
      *
-     * @param aBinaryValue the byte array value
+     * For a MEMO field values of types <tt>String</tt>, <tt>Boolean</tt>, <tt>java.util.Date</tt> and
+     * <tt>Number</tt> are acceptable.
      */
-    public ByteArrayValue(final byte[] aBinaryValue)
+    public void validate(Object aTypedObject)
+                  throws DbfLibException
     {
-        super(aBinaryValue);
-    }
+        if (aTypedObject instanceof String
+                || aTypedObject instanceof Boolean
+                || aTypedObject instanceof Date
+                || aTypedObject instanceof Number)
+        {
+            return;
+        }
 
-    @Override
-    protected Object doGetTypedValue()
-    {
-        return raw;
-    }
-
-    @Override
-    protected byte[] doGetRawValue(Field aField)
-                            throws ValueTooLargeException
-    {
-        return raw;
+        throw new DataMismatchException("Cannot write value of type " + aTypedObject.getClass().getName());
     }
 }

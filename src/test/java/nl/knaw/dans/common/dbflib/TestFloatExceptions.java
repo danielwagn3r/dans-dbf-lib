@@ -58,8 +58,6 @@ public class TestFloatExceptions
     }
 
     /**
-     * {@inheritDoc}
-     *
      * No dBase III+, because it has no FLOAT type.
      */
     @Parameters
@@ -121,11 +119,7 @@ public class TestFloatExceptions
      */
     @Test(expected = ValueTooLargeException.class)
     public void tooBigIntegerValue()
-                            throws IOException,
-                                   CorruptedTableException,
-                                   ValueTooLargeException,
-                                   RecordTooLargeException,
-                                   InvalidFieldLengthException
+                            throws IOException, DbfLibException
     {
         table.addRecord(new BigInteger("99999999999999999999999"),
                         0.0,
@@ -142,11 +136,7 @@ public class TestFloatExceptions
      */
     @Test(expected = ValueTooLargeException.class)
     public void tooBigDecimalValue()
-                            throws IOException,
-                                   CorruptedTableException,
-                                   ValueTooLargeException,
-                                   RecordTooLargeException,
-                                   InvalidFieldLengthException
+                            throws IOException, DbfLibException
     {
         table.addRecord(0, 0.0, 9.999999999999999999);
     }

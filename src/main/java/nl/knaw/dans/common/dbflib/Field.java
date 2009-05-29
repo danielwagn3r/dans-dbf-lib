@@ -33,6 +33,7 @@ public class Field
     private final int length;
     private final int decimalCount;
     private final String formatString;
+    private final DataValidator validator;
 
     /**
      * Creates a new Field object.  If the specified type has a fixed size and
@@ -74,8 +75,8 @@ public class Field
         type = aType;
         length = aType.getLength() == -1 ? aLength : aType.getLength();
         decimalCount = aDecimalCount;
-
         formatString = "%" + length + (decimalCount == 0 ? "d" : "." + decimalCount + "f");
+        validator = DataFormatValidatorFactory.createValidator(this);
     }
 
     /**
@@ -118,8 +119,17 @@ public class Field
         return decimalCount;
     }
 
+    /*
+     * Used internally to format numbers.
+     */
     String getFormatString()
     {
         return formatString;
+    }
+
+    void validateTypedValue(final Object aTypedValue)
+                     throws DbfLibException
+    {
+        validator.validate(aTypedValue);
     }
 }

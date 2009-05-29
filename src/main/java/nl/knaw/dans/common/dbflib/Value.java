@@ -22,7 +22,11 @@ package nl.knaw.dans.common.dbflib;
 
 /**
  * Represents a value that can be stored in a record.  Values can be created by
- * instantiating sub-classes of this type.
+ * instantiating sub-classes of this type.  They have a raw and typed value.
+ * The raw value is the byte array that is stored in the .DBF file.  The typed
+ * value is a Java object.  The class of this object is by convention named in
+ * the first part of the Value's class name (e.g., <tt>BooleanValue</tt> has
+ * <tt>Boolean</tt> as its typed value class).
  *
  * @author Jan van Mansum
  */
@@ -68,10 +72,11 @@ public abstract class Value
     }
 
     byte[] getRawValue(final Field aField)
-                throws ValueTooLargeException
+                throws DbfLibException
     {
         if (raw == null && typed != null)
         {
+            aField.validateTypedValue(typed);
             raw = doGetRawValue(aField);
         }
 

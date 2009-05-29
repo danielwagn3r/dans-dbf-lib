@@ -98,7 +98,7 @@ public class TestCharacterExceptions
      */
     @Test
     public void fitsComfortably()
-                         throws IOException, CorruptedTableException, ValueTooLargeException, RecordTooLargeException
+                         throws IOException, DbfLibException
     {
         table.addRecord("Less than 20", "This is not at all long");
     }
@@ -113,7 +113,7 @@ public class TestCharacterExceptions
      */
     @Test
     public void fitsExactly()
-                     throws IOException, CorruptedTableException, ValueTooLargeException, RecordTooLargeException
+                     throws IOException, DbfLibException
     {
         table.addRecord("This is exactly 20 c",
                         "This is exactly 254 characters, which is the limit for character fields in DBase products"
@@ -131,10 +131,7 @@ public class TestCharacterExceptions
      */
     @Test(expected = ValueTooLargeException.class)
     public void firstFieldDoesNotFit()
-                              throws IOException,
-                                     CorruptedTableException,
-                                     ValueTooLargeException,
-                                     RecordTooLargeException
+                              throws IOException, DbfLibException
     {
         table.addRecord("This is more than 20 characters", "This long field is ok");
     }
@@ -147,10 +144,7 @@ public class TestCharacterExceptions
      */
     @Test(expected = ValueTooLargeException.class)
     public void secondFieldDoesNotFit()
-                               throws IOException,
-                                      CorruptedTableException,
-                                      ValueTooLargeException,
-                                      RecordTooLargeException
+                               throws IOException, DbfLibException
     {
         table.addRecord("This is ok",
                         "This is more than 254 characters, which is the limit for character fields in DBase products"

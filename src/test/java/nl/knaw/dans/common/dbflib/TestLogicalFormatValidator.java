@@ -19,36 +19,40 @@
  */
 package nl.knaw.dans.common.dbflib;
 
+import org.junit.Test;
 
 /**
- * Represents a binary value in a record.  The typed and untyped values are both
- * the same byte array.
  *
  * @author Jan van Mansum
  */
-public class ByteArrayValue
-    extends Value
+public class TestLogicalFormatValidator
 {
+    private final DataValidator validator = new LogicalFormatValidator(new Field("test", Type.LOGICAL));
+
     /**
-     * Creates a new ByteArrayValue object.
+     * DOCUMENT ME!
      *
-     * @param aBinaryValue the byte array value
+     * @throws DbfLibException DOCUMENT ME!
      */
-    public ByteArrayValue(final byte[] aBinaryValue)
+    @Test
+    public void shouldAcceptStringWithYNTF()
+                                    throws DbfLibException
     {
-        super(aBinaryValue);
+        validator.validate("Y");
+        validator.validate("N");
+        validator.validate("T");
+        validator.validate("F");
     }
 
-    @Override
-    protected Object doGetTypedValue()
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
+    @Test(expected = DataMismatchException.class)
+    public void shouldRejectStringWithA()
+                                 throws DbfLibException
     {
-        return raw;
-    }
-
-    @Override
-    protected byte[] doGetRawValue(Field aField)
-                            throws ValueTooLargeException
-    {
-        return raw;
+        validator.validate("A");
     }
 }

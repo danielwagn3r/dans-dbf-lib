@@ -56,8 +56,6 @@ public class TestFloat
     }
 
     /**
-     * {@inheritDoc}
-     *
      * No dBase III+, because it has no FLOAT type.
      */
     @Parameters
@@ -157,11 +155,7 @@ public class TestFloat
     */
     @Test
     public void writeFloat()
-                    throws IOException,
-                           CorruptedTableException,
-                           ValueTooLargeException,
-                           InvalidFieldTypeException,
-                           InvalidFieldLengthException
+                    throws IOException, DbfLibException
     {
         final Ranges ignoredRanges = new Ranges();
         ignoredRanges.addRange(0x01, 0x03); // modified

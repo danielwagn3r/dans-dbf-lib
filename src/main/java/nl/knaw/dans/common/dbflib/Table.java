@@ -297,7 +297,7 @@ public class Table
      * @throws RecordTooLargeException if more field values are provided than there are field in this table
      */
     public void addRecord(final Object... aFieldValue)
-                   throws IOException, CorruptedTableException, ValueTooLargeException, RecordTooLargeException
+                   throws IOException, DbfLibException
     {
         if (aFieldValue.length > header.getFields().size())
         {
@@ -361,7 +361,7 @@ public class Table
      * @see Record
      */
     public void addRecord(final Record aRecord)
-                   throws IOException, CorruptedTableException, ValueTooLargeException
+                   throws IOException, DbfLibException
     {
         checkOpen();
 

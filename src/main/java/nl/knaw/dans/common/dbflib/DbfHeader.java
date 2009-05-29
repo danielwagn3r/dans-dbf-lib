@@ -439,7 +439,7 @@ class DbfHeader
         aDataOutput.writeByte(aField.getType().getCode());
 
         /*
-         * Field data address.  Used only with FoxPro. In other cases fill with 00h
+         * Field data address.  Used only with FoxPro. In other cases fill with 00h.
          */
         aDataOutput.writeInt(0x00);
 
@@ -504,7 +504,7 @@ class DbfHeader
          * as simply the last two digits of the actual year.  DBFs created after 1999
          * will therefore have the wrong date.
          * To comply with this practise, we subtract 1900 from the given year if it is
-         * less than 2000, and 200 0if it is greater than or equal to 2000
+         * less than 2000, and 2000 if it is greater than or equal to 2000
          */
         final Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR) - 1900;

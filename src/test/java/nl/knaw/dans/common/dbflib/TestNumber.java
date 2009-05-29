@@ -55,8 +55,6 @@ public class TestNumber
     }
 
     /**
-     * {@inheritDoc}
-     *
      * No Clipper5, because 'Numeric' field in Clipper5 behaves
      * like 'Float' field in dBaseIV and dBaseV.
      */
@@ -240,11 +238,7 @@ public class TestNumber
      */
     @Test
     public void writing_maximal_and_minimal_values()
-                                            throws IOException,
-                                                   CorruptedTableException,
-                                                   ValueTooLargeException,
-                                                   InvalidFieldTypeException,
-                                                   InvalidFieldLengthException
+                                            throws IOException, DbfLibException
     {
         Ranges ignoredRanges = new Ranges();
         ignoredRanges.addRange(0x01, 0x03); // modified date

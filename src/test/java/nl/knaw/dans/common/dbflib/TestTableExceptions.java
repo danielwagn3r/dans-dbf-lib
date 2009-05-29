@@ -176,12 +176,7 @@ public class TestTableExceptions
      */
     @Test(expected = InvalidFieldLengthException.class)
     public void writeTooLongField()
-                           throws IOException,
-                                  CorruptedTableException,
-                                  ValueTooLargeException,
-                                  RecordTooLargeException,
-                                  InvalidFieldTypeException,
-                                  InvalidFieldLengthException
+                           throws IOException, DbfLibException
     {
         final File outputDir = new File("target/test-output/dbase3plus/exceptions");
         outputDir.mkdirs();

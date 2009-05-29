@@ -104,22 +104,8 @@ public class NumberValue
 
     @Override
     protected byte[] doGetRawValue(final Field aField)
-                            throws ValueTooLargeException
     {
         final Number numberValue = (Number) typed;
-
-        /*
-         * If too large to fit, throw exception.
-         */
-        int nrPositionsForDecimals = aField.getDecimalCount() == 0 ? 0 : aField.getDecimalCount() + 1;
-
-        if (Util.getSignWidth(numberValue) + Util.getNumberOfIntDigits(numberValue) > aField.getLength()
-                - nrPositionsForDecimals)
-        {
-            throw new ValueTooLargeException("Number does not fit in the field '" + aField.getName() + "': "
-                                             + numberValue);
-        }
-
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         try

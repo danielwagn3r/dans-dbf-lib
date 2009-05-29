@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Represents a record in a table.  A record is basically maps a <tt>java.lang.String</tt>
+ * Represents a record in a table.  A record basically maps a <tt>String</tt>
  * key to a value object for a specified row in a table.  The type of the value object depends
  * on the field type.  To find out which DBF types map to which Java types, see
  * {@link Type}.
@@ -38,7 +38,88 @@ public class Record
     private final Map<String, Value> valueMap;
 
     /**
-     * Creates a new Record object.
+     * Creates a new Record object.  <tt>aValueMap</tt> must specify the values
+     * for the fields in the record.  The concrete <tt>Value</tt> subclasses must
+     * be compatible with the corresponding DBF field types, otherwise {@link DataMismatchException}
+     * is thrown when trying to add the record.
+     * <p>
+     * The following is a table of the <tt>Value</tt> subclasses, the DBF field types and
+     * the result of passing the one as a value for the other:
+     *
+     * <table border="1" cellpadding="4">
+     * <tr>
+     *      <td>&nbsp;</td>
+     *      <td><b>CHARACTER</b></td>
+     *      <td><b>LOGICAL</b></td>
+     *      <td><b>NUMBER</b></td>
+     *      <td><b>FLOAT</b></td>
+     *      <td><b>DATE</b></td>
+     *      <td><b>MEMO</b></td>
+     *      <td><b>BINARY</b></td>
+     *      <td><b>GENERAL</b></td>
+     * </tr>
+     * <tr>
+     *      <td><b>StringValue</b></td>
+     *      <td bgcolor="lightgreen">Accepted if within maximum length</td>
+     *      <td bgcolor="lightgreen">Accepted if one of "Y", "N", "T" or "F", no leading/trailing spaces allowed</td>
+     *      <td bgcolor="lightgreen">Accepted if a valid number, that fits in the field and has exactly the number
+     *          of decimals as the field's decimal count</td>
+     *      <td bgcolor="lightgreen">See NUMBER</td>
+     *      <td bgcolor="lightgreen">Accepted if in the format
+     *          YYYYMMDD.  No leading or trailing spaces.
+     *          No check is done whether the date is itself valid.</td>
+     *      <td bgcolor="lightgreen">Accepted</td>
+     *      <td bgcolor="lightgreen">Accepted</td>
+     *      <td bgcolor="lightgreen">Accepted</td>
+     * </tr>
+     * <tr>
+     *      <td><b>BooleanValue</b></td>
+     *      <td bgcolor="lightgreen">Accepted, Y or N written as first character of the field</td>
+     *      <td bgcolor="lightgreen">Accepted, Y or N written</td>
+     *      <td bgcolor="pink">DME)<sup>*</sup></td>
+     *      <td bgcolor="pink">DME</td>
+     *      <td bgcolor="pink">DME</td>
+     *      <td bgcolor="lightgreen">Accepted</td>
+     *      <td bgcolor="lightgreen">Accepted</td>
+     *      <td bgcolor="lightgreen">Accepted</td>
+     * </tr>
+     * <tr>
+     *      <td><b>NumberValue</b></td>
+     *      <td bgcolor="lightgreen">Accepted, if the number fits in the field</td>
+     *      <td bgcolor="pink">DME</td>
+     *      <td bgcolor="lightgreen">Accepted, if the digits before the decimal point and the minus sign (if any) together
+     *          do not occupy more space than reserved for them by the field.  If there are too many digits after the
+     *          decimal point they are rounded</td>
+     *      <td bgcolor="lightgreen">See NUMBER</td>
+     *      <td bgcolor="pink">DME</td>
+     *      <td bgcolor="lightgreen">Accepted</td>
+     *      <td bgcolor="lightgreen">Accepted</td>
+     *      <td bgcolor="lightgreen">Accepted</td>
+     * </tr>
+     * <tr>
+     *      <td><b>DateValue</b></td>
+     *      <td bgcolor="lightgreen">Accepted, if the CHARACTER field is at least 10 long (the size of a DATE field in DBF).</td>
+     *      <td bgcolor="pink">DME</td>
+     *      <td bgcolor="pink">DME</td>
+     *      <td bgcolor="pink">DME</td>
+     *      <td bgcolor="lightgreen">Accepted</td>
+     *      <td bgcolor="lightgreen">Accepted, Date written as YYYYMMDD</td>
+     *      <td bgcolor="lightgreen">Accepted, Date written as YYYYMMDD</td>
+     *      <td bgcolor="lightgreen">Accepted, Date written as YYYYMMDD</td>
+     * </tr>
+     * <tr>
+     *      <td><b>ByteArrayValue</b></td>
+     *      <td bgcolor="pink">DME</td>
+     *      <td bgcolor="pink">DME</td>
+     *      <td bgcolor="pink">DME</td>
+     *      <td bgcolor="pink">DME</td>
+     *      <td bgcolor="pink">DME</td>
+     *      <td bgcolor="lightgreen">Accepted, Date written as YYYYMMDD</td>
+     *      <td bgcolor="lightgreen">Accepted, Date written as YYYYMMDD</td>
+     *      <td bgcolor="lightgreen">Accepted, Date written as YYYYMMDD</td>
+     * </tr>
+     * </table>
+     * )<sup>*</sup> DataMismatchException
      *
      * @param aValueMap the mapping from field name to field value
      */
@@ -59,7 +140,7 @@ public class Record
      * @throws ValueTooLargeException if the value was too large to be read
      */
     public byte[] getRawValue(final Field aField)
-                       throws ValueTooLargeException
+                       throws DbfLibException
     {
         final Value v = valueMap.get(aField.getName());
 
@@ -93,7 +174,7 @@ public class Record
     }
 
     /**
-     * Returns the value of the specified field as a <tt>java.lang.Number</tt>.  The exact class
+     * Returns the value of the specified field as a <tt>Number</tt>.  The exact class
      * used depends on the size of the corresponding {@link Field} and its <tt>decimalCount</tt>
      * property.  If <tt>decimalCount</tt> is zero an integral type is returned, otherwise a fractional
      * type.  Depending on the size <tt>java.lang.Integer</tt>, <tt>java.lang.Long</tt> or
@@ -109,7 +190,7 @@ public class Record
      * <p>
      * Example:
      * <pre>
-     *aFieldName
+     *
      * public Record searchSomeNum(final double val)
      * {
      *      //

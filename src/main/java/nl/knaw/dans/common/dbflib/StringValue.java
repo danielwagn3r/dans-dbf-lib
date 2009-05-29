@@ -73,18 +73,14 @@ public class StringValue
         final byte[] stringBytes = ((String) typed).getBytes();
         final ByteArrayOutputStream bos = new ByteArrayOutputStream(fieldLength);
 
-        if (stringBytes.length > fieldLength && aField.getType() != Type.MEMO)
-        {
-            throw new ValueTooLargeException("Character string exceeds the allowed length for character field '"
-                                             + aField.getName() + "' ");
-        }
-
         try
         {
             bos.write(stringBytes);
 
             /*
-             * A memo has no length, but otherwise fill up to the maximum length with zeros.
+             * Memo data has no maximum length, so we cannot fill up the rest of the field
+             * with zero's, as with the other fields.  The maximum length of the memo field
+             * refers to the DBT entry pointer length in the DBF.
              */
             if (aField.getType() != Type.MEMO)
             {

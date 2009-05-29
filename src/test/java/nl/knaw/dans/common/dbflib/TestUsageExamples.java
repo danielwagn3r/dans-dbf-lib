@@ -60,7 +60,7 @@ public class TestUsageExamples
      */
     @Test
     public void test()
-              throws IOException, CorruptedTableException, ValueTooLargeException, RecordTooLargeException
+              throws IOException, DbfLibException
     {
         PrintStream out = System.out;
 

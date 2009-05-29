@@ -103,11 +103,7 @@ public class TestCharacter
      */
     @Test
     public void writeCharacter()
-                        throws IOException,
-                               CorruptedTableException,
-                               ValueTooLargeException,
-                               InvalidFieldTypeException,
-                               InvalidFieldLengthException
+                        throws IOException, DbfLibException
     {
         final Ranges ignoredRanges = new Ranges();
         ignoredRanges.addRange(0x01, 0x03); // modified

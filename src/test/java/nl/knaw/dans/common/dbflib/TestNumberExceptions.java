@@ -79,10 +79,7 @@ public class TestNumberExceptions
      */
     @Test(expected = ValueTooLargeException.class)
     public void firstValueTooLarge()
-                            throws IOException,
-                                   CorruptedTableException,
-                                   ValueTooLargeException,
-                                   RecordTooLargeException
+                            throws IOException, DbfLibException
     {
         table.addRecord(123456);
     }
@@ -97,10 +94,7 @@ public class TestNumberExceptions
      */
     @Test(expected = ValueTooLargeException.class)
     public void secondValueTooLarge()
-                             throws IOException,
-                                    CorruptedTableException,
-                                    ValueTooLargeException,
-                                    RecordTooLargeException
+                             throws IOException, DbfLibException
     {
         table.addRecord(0, 123.45);
     }

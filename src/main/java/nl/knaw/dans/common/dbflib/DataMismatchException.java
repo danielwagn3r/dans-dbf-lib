@@ -21,34 +21,20 @@ package nl.knaw.dans.common.dbflib;
 
 
 /**
- * Represents a binary value in a record.  The typed and untyped values are both
- * the same byte array.
+ * Thrown to indicate that the data provided cannot be written to the database.
+ * The data was provided as a Java object of incompatible type (for instance a
+ * <tt>Boolean</tt> object to a DATE type field) or the format of the data was
+ * wrong (for instance a <tt>String</tt> object to a NUMBER type field, which is
+ * allowed, but the <tt>String</tt> contains "1a", that is, it is not a valid
+ * number.
  *
  * @author Jan van Mansum
  */
-public class ByteArrayValue
-    extends Value
+public class DataMismatchException
+    extends DbfLibException
 {
-    /**
-     * Creates a new ByteArrayValue object.
-     *
-     * @param aBinaryValue the byte array value
-     */
-    public ByteArrayValue(final byte[] aBinaryValue)
+    DataMismatchException(final String aMessage)
     {
-        super(aBinaryValue);
-    }
-
-    @Override
-    protected Object doGetTypedValue()
-    {
-        return raw;
-    }
-
-    @Override
-    protected byte[] doGetRawValue(Field aField)
-                            throws ValueTooLargeException
-    {
-        return raw;
+        super(aMessage);
     }
 }
