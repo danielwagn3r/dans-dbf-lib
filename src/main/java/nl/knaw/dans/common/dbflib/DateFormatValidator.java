@@ -61,6 +61,8 @@ class DateFormatValidator
                 throw new DataMismatchException("'" + aTypedObject
                                                 + " is not in the correct date format for DBF (YYYY-MM-DD)");
             }
+
+            return;
         }
 
         throw new DataMismatchException("Cannot write objects of type '" + aTypedObject.getClass().getName()

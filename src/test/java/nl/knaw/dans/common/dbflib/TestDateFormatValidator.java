@@ -25,9 +25,9 @@ import org.junit.Test;
  *
  * @author Jan van Mansum
  */
-public class TestLogicalFormatValidator
+public class TestDateFormatValidator
 {
-    private final DataValidator validator = new LogicalFormatValidator(new Field("test", Type.LOGICAL));
+    private final DataValidator validator = new DateFormatValidator(new Field("test", Type.DATE));
 
     /**
      * DOCUMENT ME!
@@ -35,14 +35,10 @@ public class TestLogicalFormatValidator
      * @throws DbfLibException DOCUMENT ME!
      */
     @Test
-    public void shouldAcceptStringWithYNTF_or_Space()
-                                             throws DbfLibException
+    public void shouldAcceptEightDigitString()
+                                      throws DbfLibException
     {
-        validator.validate("Y");
-        validator.validate("N");
-        validator.validate("T");
-        validator.validate("F");
-        validator.validate(" ");
+        validator.validate("12345678");
     }
 
     /**
@@ -51,10 +47,10 @@ public class TestLogicalFormatValidator
      * @throws DbfLibException DOCUMENT ME!
      */
     @Test(expected = DataMismatchException.class)
-    public void shouldRejectStringWithA()
-                                 throws DbfLibException
+    public void shouldRejectEightDigitStringWithLeadingSpaces()
+        throws DbfLibException
     {
-        validator.validate("A");
+        validator.validate(" 12345678");
     }
 
     /**
@@ -63,10 +59,10 @@ public class TestLogicalFormatValidator
      * @throws DbfLibException DOCUMENT ME!
      */
     @Test(expected = DataMismatchException.class)
-    public void shouldRejectTooLargeValue()
-                                   throws DbfLibException
+    public void shouldRejectEightDigitStringWithTrailingSpaces()
+        throws DbfLibException
     {
-        validator.validate("True");
+        validator.validate("12345678 ");
     }
 
     /**
@@ -74,12 +70,47 @@ public class TestLogicalFormatValidator
      *
      * @throws DbfLibException DOCUMENT ME!
      */
-    @Test
-    public void shouldAcceptBoolean()
+    @Test(expected = DataMismatchException.class)
+    public void shouldRejectSevenDigitString()
+                                      throws DbfLibException
+    {
+        validator.validate("1234567");
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
+    @Test(expected = DataMismatchException.class)
+    public void shouldRejectNineDigitString()
+                                     throws DbfLibException
+    {
+        validator.validate("123456789");
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
+    @Test(expected = DataMismatchException.class)
+    public void shouldRejectNotAllDigitString()
+                                       throws DbfLibException
+    {
+        validator.validate("1234567a");
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
+    @Test(expected = DataMismatchException.class)
+    public void shouldRejectBoolean()
                              throws DbfLibException
     {
-        validator.validate(Boolean.TRUE);
-        validator.validate(Boolean.FALSE);
+        validator.validate(true);
     }
 
     /**
@@ -91,7 +122,7 @@ public class TestLogicalFormatValidator
     public void shouldRejectNumber()
                             throws DbfLibException
     {
-        validator.validate(123);
+        validator.validate(20091011);
     }
 
     /**
@@ -99,11 +130,11 @@ public class TestLogicalFormatValidator
      *
      * @throws DbfLibException DOCUMENT ME!
      */
-    @Test(expected = DataMismatchException.class)
-    public void shouldRejectDate()
+    @Test
+    public void shouldAcceptDate()
                           throws DbfLibException
     {
-        validator.validate(Util.createDate(2009, 5, 29));
+        validator.validate(Util.createDate(2009, 6, 4));
     }
 
     /**
@@ -115,6 +146,6 @@ public class TestLogicalFormatValidator
     public void shouldRejectByteArray()
                                throws DbfLibException
     {
-        validator.validate(new byte[] { 0x01, 0x02 });
+        validator.validate(new byte[] { 0x09, 0x10, 0x11 });
     }
 }
