@@ -13,6 +13,20 @@ This library is used by DANS for the {{{http://mixed.dans.knaw.nl}MIXED Project}
 
 News
 
+* 8 June 2009. Beta 02!!
+
+    The library has grown another couple of K.  We added Clipper 5 support and made the
+API a little bit more flexible and robust.  You can now write Number objects to
+CHARACTER fields or Strings containing numbers to NUMBER fields, etc.  For the
+overview of all the validations see {{{./apidocs/nl/knaw/dans/common/dbflib/Record.html#Record(java.util.Map)}Javadoc for the Record class}}.
+
+    Please, give us your feed-back.  The previous versions have been downloaded about 200 times
+from several sites, but so far we have had no comments or bug reports.  If you would
+like to see new features, or find bugs or if you can contribute sample DBFs, please
+{{{https://lists.sourceforge.net/lists/listinfo/dans-dbf-lib-users}contact us!}}  We are especially interested in a copy of dBase II, FoxBase and FoxPro
+to generate test files.  If nothing else, please {{{http://apps.sourceforge.net/aguestbook/dans-dbf-lib/}sign the guestbook}} ...
+
+
 * 12 May 2009.  Beta 01!
 
     Today we released the first beta version of DANS DBF Library.  That means we feel

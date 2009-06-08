@@ -4,7 +4,7 @@
     <groupId>nl.knaw.dans.common</groupId>
     <artifactId>dans-dbf-lib</artifactId>
     <name>DANS DBF Library</name>
-    <!--version>1.0.0-alpha-06</version-->
+    <!--version>1.0.0-beta-02</version-->
     <version>1.0.0-SNAPSHOT</version>
     <url>http://dans-dbf-lib.sourceforge.net/</url>
     <inceptionYear>2009</inceptionYear>

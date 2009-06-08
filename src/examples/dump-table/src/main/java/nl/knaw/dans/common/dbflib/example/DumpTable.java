@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
 import nl.knaw.dans.common.dbflib.CorruptedTableException;
+import nl.knaw.dans.common.dbflib.DbfLibException;
 import nl.knaw.dans.common.dbflib.Field;
 import nl.knaw.dans.common.dbflib.IfNonExistent;
 import nl.knaw.dans.common.dbflib.Record;
@@ -86,10 +87,10 @@ public class DumpTable
             System.out.println("Trouble reading table or table not found");
             ioe.printStackTrace();
         }
-        catch(CorruptedTableException cte)
+        catch(DbfLibException dbflibException)
         {
-            System.out.println("Table was corrupt");
-            cte.printStackTrace();
+            System.out.println("Problem getting raw value");
+            dbflibException.printStackTrace();
         }
         finally
         {

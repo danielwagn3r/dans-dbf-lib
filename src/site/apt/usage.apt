@@ -165,6 +165,13 @@ table.addRecord(record);
 // in the list returned by Table.getFields();
 table.addRecord(18, false, "Another new string", "Another long string", Calendar.getInstance().getTime());
 
+// The even easier way ... (since beta 02)
+// The values do not have to be of the exact corresponding type as the database field anymore.
+// Some conversions are done.
+table.addRecord("19", "T", 3.14159, 2.71828, "20090608");
+// Parses the string "19" as a NUMBER, Writes the String "T" (true) to a LOGICAL field,
+// Writes pi to a CHARACTER field, writes e to a MEMO field and "20090608" to a DATE field.
+
 +------------------------------------------------------------------------------+
 
 * Using the Database Class

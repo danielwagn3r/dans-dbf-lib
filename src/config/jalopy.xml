@@ -177,8 +177,8 @@
                 <generate>
                     <class>1</class>
                     <constructor>1</constructor>
-                    <field>1</field>
-                    <method>1</method>
+                    <field>0</field>
+                    <method>0</method>
                 </generate>
                 <parseComments>false</parseComments>
                 <parseDescription>false</parseDescription>
