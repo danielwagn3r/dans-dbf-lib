@@ -322,31 +322,28 @@ public class Table
 
     private Value createValueObject(final Type aFieldType, final Object aValue)
     {
-        switch (aFieldType)
+        if (aValue instanceof Number)
         {
-            case NUMBER:
-            case FLOAT:
-                return new NumberValue((Number) aValue);
-
-            case MEMO:
-            case CHARACTER:
-                return new StringValue((String) aValue);
-
-            case LOGICAL:
-                return new BooleanValue((Boolean) aValue);
-
-            case DATE:
-                return new DateValue((Date) aValue);
-
-            case BINARY:
-            case GENERAL:
-                return new ByteArrayValue((byte[]) aValue);
-
-            default:
-                assert false : "Not all types handled.";
-
-                return null;
+            return new NumberValue((Number) aValue);
         }
+        else if (aValue instanceof String)
+        {
+            return new StringValue((String) aValue);
+        }
+        else if (aValue instanceof Boolean)
+        {
+            return new BooleanValue((Boolean) aValue);
+        }
+        else if (aValue instanceof Date)
+        {
+            return new DateValue((Date) aValue);
+        }
+        else if (aValue instanceof byte[])
+        {
+            return new ByteArrayValue((byte[]) aValue);
+        }
+
+        return null;
     }
 
     /**

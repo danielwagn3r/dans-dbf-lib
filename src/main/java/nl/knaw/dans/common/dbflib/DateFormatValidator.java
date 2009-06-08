@@ -59,7 +59,7 @@ class DateFormatValidator
             if (! datePattern.matcher(dateString).matches())
             {
                 throw new DataMismatchException("'" + aTypedObject
-                                                + " is not in the correct date format for DBF (YYYY-MM-DD)");
+                                                + " is not in the correct date format for DBF (YYYYMMDD)");
             }
 
             return;

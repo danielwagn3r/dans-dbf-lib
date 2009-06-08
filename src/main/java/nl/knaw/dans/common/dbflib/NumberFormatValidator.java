@@ -40,28 +40,28 @@ class NumberFormatValidator
         /*
          * Build the pattern that the data must comply to if it is a String.
          */
-        int beforeCommaLength = field.getLength();
-        String decimalPattern = "";
+        int beforeDecimalPointLength = field.getLength();
+        String decimalPartPattern = "";
 
         if (field.getDecimalCount() > 0)
         {
             /*
              * Subtract one extra for the decimal point.
              */
-            beforeCommaLength -= field.getDecimalCount() - 1;
+            beforeDecimalPointLength -= field.getDecimalCount() - 1;
 
-            decimalPattern = "\\.\\d{" + field.getDecimalCount() + "," + field.getDecimalCount() + "}";
+            decimalPartPattern = "\\.\\d{" + field.getDecimalCount() + "," + field.getDecimalCount() + "}";
         }
 
         String withSignAlternative = "";
 
-        if (beforeCommaLength > 2)
+        if (beforeDecimalPointLength > 1)
         {
-            withSignAlternative = "\\-\\d{1," + (beforeCommaLength - 1) + "}|";
+            withSignAlternative = "\\-\\d{1," + (beforeDecimalPointLength - 1) + "}|";
         }
 
-        String withoutSignAlternative = "\\d{1," + beforeCommaLength + "}";
-        String patternString = "(" + withSignAlternative + withoutSignAlternative + ")" + decimalPattern;
+        String withoutSignAlternative = "\\d{1," + beforeDecimalPointLength + "}";
+        String patternString = "(" + withSignAlternative + withoutSignAlternative + ")" + decimalPartPattern;
 
         stringPattern = Pattern.compile(patternString);
     }

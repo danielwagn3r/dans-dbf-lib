@@ -110,9 +110,19 @@ public class NumberValue
 
         try
         {
-            final byte[] bytes = String.format(Locale.US,
-                                               aField.getFormatString(),
-                                               numberValue).getBytes();
+            byte[] bytes = null;
+
+            if (aField.getType() == Type.NUMBER || aField.getType() == Type.FLOAT)
+            {
+                bytes =
+                    String.format(Locale.US,
+                                  aField.getFormatString(),
+                                  numberValue).getBytes();
+            }
+            else
+            {
+                bytes = typed.toString().getBytes();
+            }
 
             bos.write(bytes);
             bos.write(Util.repeat((byte) 0x00, aField.getLength() - bytes.length));
