@@ -27,14 +27,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Tests that the InvalidFieldTypeException is thrown at the appropriate times.
  *
  * @author Vesa Åkerman
  */
 public class TestInvalidFieldType
 {
-    /**
-     *
-     */
     @Test(expected = InvalidFieldTypeException.class)
     public void floatTypeNotValid()
                            throws IOException,

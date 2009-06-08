@@ -55,9 +55,6 @@ public class TestUsageExamples
     private static final String fileNameDbf = "MYTABLE.DBF";
     private static final String fileNameDbt = "MYTABLE.DBT";
 
-    /**
-     * Tests that the code used in the Usage page runs without throwing exceptions.
-     */
     @Test
     public void test()
               throws IOException, DbfLibException
@@ -153,6 +150,14 @@ public class TestUsageExamples
                                 "Another new string",
                                 "Another long string",
                                 Calendar.getInstance().getTime());
+
+                // The even easier way ... (since beta 02)
+                // The values do not have to be of the exact corresponding type as the database field anymore.
+                // Some conversions are done.
+                table.addRecord("19", "T", 3.14159, 2.71828, "20090608");
+
+                // Parses the string "19" as a NUMBER, Writes the String "T" (true) to a LOGICAL field,
+                // Writes pi to a CHARACTER field, writes e to a MEMO field and "20090608" to a DATE field.
 
                 // ... do your stuff
             }

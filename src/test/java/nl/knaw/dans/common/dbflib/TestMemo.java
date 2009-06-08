@@ -52,9 +52,6 @@ public class TestMemo
         super(aVersion, aVersionDirectory);
     }
 
-    /**
-    * Tests reading memo fields.
-    */
     @Test
     public void readMemo()
                   throws FileNotFoundException, IOException, CorruptedTableException
@@ -90,9 +87,6 @@ public class TestMemo
         }
     }
 
-    /**
-    * Tests writing memo fields.
-    */
     @Test
     public void writeMemo()
                    throws IOException, DbfLibException

@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 /**
- * Tests reading and writing character fields
+ * Tests reading and writing character fields.
  *
  * @author Vesa Åkerman
  */
@@ -51,12 +51,6 @@ public class TestCharacter
         super(aVersion, aVersionDirectory);
     }
 
-    /**
-     * Tests reading of character fields.
-     *
-     * @throws IOException not expected
-     * @throws CorruptedTableException not expected
-     */
     @Test
     public void readCharacter()
                        throws IOException, CorruptedTableException
@@ -98,9 +92,6 @@ public class TestCharacter
         }
     }
 
-    /**
-     * Tests writing character fields that are first read from a .dbf file.
-     */
     @Test
     public void writeCharacter()
                         throws IOException, DbfLibException

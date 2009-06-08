@@ -49,12 +49,6 @@ public class TestReadingDataTypesSimpleCase
     private Record r2 = null;
     private Record r3 = null;
 
-    /**
-     * Sets up the test environment.
-     *
-     * @throws IOException not expected
-     * @throws CorruptedTableException not expected
-     */
     @Before
     public void setUp()
                throws IOException, CorruptedTableException
@@ -71,11 +65,6 @@ public class TestReadingDataTypesSimpleCase
         r3 = records.get(3);
     }
 
-    /**
-     * Cleans up the test environment.
-     *
-     * @throws IOException not expected
-     */
     @After
     public void tearDown()
                   throws IOException
@@ -83,9 +72,6 @@ public class TestReadingDataTypesSimpleCase
         cars.close();
     }
 
-    /**
-     * Tests reading field definitions.
-     */
     @Test
     public void definitions()
                      throws FileNotFoundException, IOException, CorruptedTableException
@@ -139,9 +125,6 @@ public class TestReadingDataTypesSimpleCase
                      10);
     }
 
-    /**
-     * Tests reading numbers.
-     */
     @Test
     public void number()
     {
@@ -164,9 +147,6 @@ public class TestReadingDataTypesSimpleCase
                      r3.getNumberValue("CC"));
     }
 
-    /**
-     * Tests reading text fields.
-     */
     @Test
     public void character()
     {
@@ -180,9 +160,6 @@ public class TestReadingDataTypesSimpleCase
                      r3.getStringValue("NAME").toString().trim());
     }
 
-    /**
-     * Tests reading boolean values.
-     */
     @Test
     public void logical()
     {
@@ -196,9 +173,6 @@ public class TestReadingDataTypesSimpleCase
                      r3.getBooleanValue("SEDAN"));
     }
 
-    /**
-     * Tests reading dates.
-     */
     @Test
     public void date()
     {
@@ -212,9 +186,6 @@ public class TestReadingDataTypesSimpleCase
                      r3.getDateValue("PROD_DATE"));
     }
 
-    /**
-     * Tests reading memo fields.
-     */
     @Test
     public void memo()
     {

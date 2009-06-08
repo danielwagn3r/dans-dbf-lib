@@ -72,12 +72,6 @@ public class TestFloat
         return Arrays.asList(testParameters);
     }
 
-    /**
-     * Tests reading of DATE fields.
-     *
-     * @throws IOException not expected
-     * @throws CorruptedTableException not expected
-     */
     @Test
     public void readFloat()
                    throws IOException, CorruptedTableException
@@ -150,9 +144,6 @@ public class TestFloat
         }
     }
 
-    /**
-    * Tests writing float fields that are first read from a .dbf file.
-    */
     @Test
     public void writeFloat()
                     throws IOException, DbfLibException

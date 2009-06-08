@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * Test that float exceptions are thrown in the appropriate cases.
  *
  * @author Vesa Åkerman
  */
@@ -73,12 +74,6 @@ public class TestFloatExceptions
         return Arrays.asList(testParameters);
     }
 
-    /**
-     * Sets up the testing environment.
-     *
-     * @throws IOException not expected
-     * @throws CorruptedTableException not expected
-     */
     @Before
     public void setUp()
                throws IOException, CorruptedTableException, InvalidFieldTypeException, InvalidFieldLengthException
@@ -97,11 +92,6 @@ public class TestFloatExceptions
         table.open(IfNonExistent.CREATE);
     }
 
-    /**
-     * Cleans up the test environment.
-     *
-     * @throws IOException not expected
-     */
     @After
     public void tearDown()
                   throws IOException
@@ -109,14 +99,6 @@ public class TestFloatExceptions
         table.close();
     }
 
-    /**
-     * Tests that adding a value that is too big triggers a <tt>ValueTooLargeException</tt>.
-     *
-     * @throws IOException not expected
-     * @throws CorruptedTableException not expected
-     * @throws ValueTooLargeException expected!
-     * @throws RecordTooLargeException not expected
-     */
     @Test(expected = ValueTooLargeException.class)
     public void tooBigIntegerValue()
                             throws IOException, DbfLibException
@@ -126,14 +108,6 @@ public class TestFloatExceptions
                         0.0);
     }
 
-    /**
-     * Tests that adding a value that is too big triggers a <tt>ValueTooLargeException</tt>.
-     *
-     * @throws IOException not expected
-     * @throws CorruptedTableException not expected
-     * @throws ValueTooLargeException expected!
-     * @throws RecordTooLargeException not expected
-     */
     @Test(expected = ValueTooLargeException.class)
     public void tooBigDecimalValue()
                             throws IOException, DbfLibException

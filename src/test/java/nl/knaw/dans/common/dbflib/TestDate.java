@@ -52,12 +52,6 @@ public class TestDate
         super(aVersion, aVersionDirectory);
     }
 
-    /**
-     * Tests reading DATE fields.
-     *
-     * @throws IOException not expected
-     * @throws CorruptedTableException not expected
-     */
     @Test
     public void readDate()
                   throws IOException, CorruptedTableException
@@ -88,9 +82,6 @@ public class TestDate
         }
     }
 
-    /**
-    * Tests writing DATE fields that are first read from a .dbf file.
-    */
     @Test
     public void writeDate()
                    throws IOException, DbfLibException

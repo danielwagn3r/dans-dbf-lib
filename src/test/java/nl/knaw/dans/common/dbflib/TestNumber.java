@@ -74,9 +74,6 @@ public class TestNumber
 
     /**
      * Tests reading fields with the maximum and minimum lengths and decimal count respectively.
-     *
-     * @throws IOException not expected
-     * @throws CorruptedTableException not expected
      */
     @Test
     public strictfp void reading_maximal_and_minimal_values()
@@ -230,12 +227,6 @@ public class TestNumber
         }
     }
 
-    /**
-     * Tests writing the minal/maximal values.
-     *
-     * @throws IOException should not happen
-     * @throws CorruptedTableException should not happen
-     */
     @Test
     public void writing_maximal_and_minimal_values()
                                             throws IOException, DbfLibException

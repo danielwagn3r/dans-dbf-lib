@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Tests reading and writing memo fields.
+ * Tests table related exceptions.
  *
  * @author Vesa Åkerman
  * @author Jan van Mansum
@@ -110,12 +110,6 @@ public class TestTableExceptions
         }
     }
 
-    /**
-     * Tests that an exception is thrown if the DBT with a DBF is empty.
-     *
-     * @throws IOException not expected
-     * @throws CorruptedTableException not expected
-     */
     @Test(expected = RuntimeException.class)
     public void emptyMemoFile()
                        throws IOException, CorruptedTableException
@@ -134,13 +128,6 @@ public class TestTableExceptions
         }
     }
 
-    /**
-     * Tests that an exception is thrown if a memo index points to an invalid location
-     * in the DBT.
-     *
-     * @throws IOException not expected
-     * @throws CorruptedTableException not expected
-     */
     @Test(expected = RuntimeException.class)
     public void corruptedMemoFilePointer()
                                   throws IOException, CorruptedTableException
@@ -159,10 +146,6 @@ public class TestTableExceptions
         }
     }
 
-    /**
-     * Tests that an <tt>IllegalArgumentException</tt> is thrown if the database directory is
-     * actually a file.
-     */
     @Test(expected = IllegalArgumentException.class)
     public void directoryIsFile()
     {
@@ -170,10 +153,6 @@ public class TestTableExceptions
         new Database(databaseDirectory, Version.DBASE_3);
     }
 
-    /**
-     * Test writing character string when the field length exceeds the maximum allowed field length for the datatype
-     *
-     */
     @Test(expected = InvalidFieldLengthException.class)
     public void writeTooLongField()
                            throws IOException, DbfLibException

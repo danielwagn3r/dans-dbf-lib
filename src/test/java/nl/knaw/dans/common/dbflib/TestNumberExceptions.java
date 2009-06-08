@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Test that the Number related exceptions are thrown at the appropriate times.
  *
  * @author Vesa Åkerman
  */
@@ -26,20 +27,14 @@ public class TestNumberExceptions
     /**
      * Creates a new TestCharacterExceptions object.
      *
-     * @param aVersion DOCUMENT ME!
-     * @param aVersionDirectory DOCUMENT ME!
+     * @param aVersion test parameter
+     * @param aVersionDirectory test parameter
      */
     public TestNumberExceptions(Version aVersion, String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     */
     @Before
     public void setUp()
                throws IOException, CorruptedTableException, InvalidFieldTypeException, InvalidFieldLengthException
@@ -57,11 +52,6 @@ public class TestNumberExceptions
         table.open(IfNonExistent.CREATE);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
     @After
     public void tearDown()
                   throws IOException
@@ -69,14 +59,6 @@ public class TestNumberExceptions
         table.close();
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     * @throws ValueTooLargeException DOCUMENT ME!
-     * @throws RecordTooLargeException DOCUMENT ME!
-     */
     @Test(expected = ValueTooLargeException.class)
     public void firstValueTooLarge()
                             throws IOException, DbfLibException
@@ -84,14 +66,6 @@ public class TestNumberExceptions
         table.addRecord(123456);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     * @throws ValueTooLargeException DOCUMENT ME!
-     * @throws RecordTooLargeException DOCUMENT ME!
-     */
     @Test(expected = ValueTooLargeException.class)
     public void secondValueTooLarge()
                              throws IOException, DbfLibException
@@ -99,14 +73,6 @@ public class TestNumberExceptions
         table.addRecord(0, 123.45);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     * @throws InvalidFieldTypeException DOCUMENT ME!
-     * @throws InvalidFieldLengthException DOCUMENT ME!
-     */
     @Test(expected = InvalidFieldLengthException.class)
     public void tooLongNumberField()
                             throws IOException,

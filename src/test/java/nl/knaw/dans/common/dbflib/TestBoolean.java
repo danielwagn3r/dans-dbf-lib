@@ -43,20 +43,14 @@ public class TestBoolean
     /**
      * Creates a new TestBoolean object.
      *
-     * @param aVersion DOCUMENT ME!
-     * @param aVersionDirectory DOCUMENT ME!
+     * @param aVersion test parameter
+     * @param aVersionDirectory test parameter
      */
     public TestBoolean(final Version aVersion, final String aVersionDirectory)
     {
         super(aVersion, aVersionDirectory);
     }
 
-    /**
-     * tests reading of boolean fields
-     *
-     * @throws IOException not expected
-     * @throws CorruptedTableException not expected
-     */
     @Test
     public void readBoolean()
                      throws IOException, CorruptedTableException
@@ -83,9 +77,6 @@ public class TestBoolean
         }
     }
 
-    /**
-     * Tests writing boolean fields that are first read from a .dbf file.
-     */
     @Test
     public void writeBoolean()
                       throws IOException, DbfLibException
