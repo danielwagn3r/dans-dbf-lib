@@ -378,13 +378,13 @@ public class Table
             {
                 int index = writeMemo(raw);
 
-                if (header.getVersion() == Version.DBASE_3 || header.getVersion() == Version.CLIPPER_5)
+                if (header.getVersion() == Version.DBASE_4 || header.getVersion() == Version.DBASE_5)
                 {
-                    raw = String.format("%" + field.getLength() + "d", index).getBytes();
+                    raw = String.format("%0" + field.getLength() + "d", index).getBytes();
                 }
                 else
                 {
-                    raw = String.format("%0" + field.getLength() + "d", index).getBytes();
+                    raw = String.format("%" + field.getLength() + "d", index).getBytes();
                 }
             }
 
@@ -470,18 +470,22 @@ public class Table
     private void openMemo(final IfNonExistent aIfNonExistent)
                    throws IOException, CorruptedTableException
     {
-        File dbtFile = Util.getDbtFile(tableFile);
+        File memoFile = Util.getMemoFile(tableFile,
+                                         header.getVersion());
 
-        if (dbtFile == null)
+        if (memoFile == null)
         {
+            final String extension = (header.getVersion() == Version.FOXPRO_26 ? ".fpt" : ".dbt");
+
             if (aIfNonExistent.isError())
             {
-                throw new CorruptedTableException("Could not find .DBT file or multiple matches for .DBT file");
+                throw new CorruptedTableException("Could not find file '" + Util.stripExtension(tableFile.getPath())
+                                                  + extension + "' (or multiple matches for the file)");
             }
             else if (aIfNonExistent.isCreate())
             {
                 final String tableFilePath = tableFile.getPath();
-                dbtFile = new File(tableFilePath.substring(0, tableFilePath.length() - ".dbf".length()) + ".dbt");
+                memoFile = new File(tableFilePath.substring(0, tableFilePath.length() - ".dbf".length()) + extension);
             }
             else
             {
@@ -490,7 +494,7 @@ public class Table
         }
 
         memo =
-            new Memo(dbtFile,
+            new Memo(memoFile,
                      header.getVersion());
         memo.open(aIfNonExistent);
     }
@@ -554,6 +558,7 @@ public class Table
 
                 case GENERAL:
                 case BINARY:
+                case PICTURE:
                     recordValues.put(field.getName(),
                                      new ByteArrayValue(readMemo(new String(rawData))));
 

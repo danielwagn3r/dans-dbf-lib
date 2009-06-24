@@ -302,15 +302,19 @@ public class TestRoundTrip
         ignoredRangesDbf.addRange(0xac, 0xaf); // idem
         ignoredRangesDbf.addRange(0xcc, 0xcf); // idem
         ignoredRangesDbf.addRange(0x34, 0x34); // work area id
-        ignoredRangesDbf.addRange(0x34, 0x54); // work area id
-        ignoredRangesDbf.addRange(0x34, 0x74); // work area id
-        ignoredRangesDbf.addRange(0x34, 0x94); // work area id
-        ignoredRangesDbf.addRange(0x34, 0xb4); // work area id
-        ignoredRangesDbf.addRange(0x34, 0xd4); // work area id
-                                               /* in Clipper5 there is so much garbage in the header area that from
+        ignoredRangesDbf.addRange(0x54, 0x54); // work area id
+        ignoredRangesDbf.addRange(0x74, 0x74); // work area id
+        ignoredRangesDbf.addRange(0x94, 0x94); // work area id
+        ignoredRangesDbf.addRange(0xb4, 0xb4); // work area id
+        ignoredRangesDbf.addRange(0xd4, 0xd4); // work area id
+        ignoredRangesDbf.addRange(0x105, 0x10e); // block number in memo file
+                                                 // (in some versions padded with zeros, in other versions with spaces)
+
+        ignoredRangesDbf.addRange(0x161, 0x16a); // idem
+
+        /* in Clipper5 there is so much garbage in the header area that from
         * the field definitions on all the data is skipped
         */
-
         if (version == Version.CLIPPER_5)
         {
             ignoredRangesDbf.addRange(0x20, 0xdf); // reserved/garbage
@@ -336,6 +340,12 @@ public class TestRoundTrip
             ignoredRangesDbt.addRange(0x04, 0x3ff); // reserved/garbage
             ignoredRangesDbt.addRange(0x4f5, 0x5ff); // garbage beyond eof bytes
             ignoredRangesDbt.addRange(0x631, 0x7ff); // zero padding beyond eof bytes
+        }
+        else if (version == Version.FOXPRO_26)
+        {
+            ignoredRangesDbt.addRange(0x08, 0x0f); // file name (not written in FoxPro)
+            ignoredRangesDbt.addRange(0x2f6, 0x2fb); // garbage
+            ignoredRangesDbt.addRange(0x438, 0x4fb); // garbage
         }
 
         UnitTestUtil.doCopyAndCompareTest(versionDirectory + "/cars", "cars", version, ignoredRangesDbf,

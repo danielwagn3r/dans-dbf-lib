@@ -93,6 +93,15 @@ class Util
         return (short) ((second << 8) + first);
     }
 
+    static int changeEndiannessUnsignedShort(final int aInteger)
+    {
+        int third = (aInteger & 0x0000ff00) >>> 8;
+
+        int fourth = aInteger & 0x000000ff;
+
+        return (fourth << 8) + third;
+    }
+
     static String stripExtension(final String aFileName)
     {
         int pointIndex = aFileName.lastIndexOf('.');
@@ -106,19 +115,31 @@ class Util
     }
 
     /**
-     * Given a .DBF file, returns the accompanying .DBT file or <tt>null</tt> if there is none.
+     * Given a .DBF file, returns the accompanying .DBT file (.FPT in FOxPro)
+     * or <tt>null</tt> if there is none.
      * The base name of the two files must match case sensitively.  The case of the characters
      * in the file names' respective extension does not matter.  However, if more than one
      * matching file is found (e.g., xxx.Dbt and xxx.dBt and xxx.DBT) <tt>null</tt> is returned.
      *
      * @param aDbfFile the .DBF file
-     * @return .DBT file
+     * @return .DBT file or .FPT file
      */
-    static File getDbtFile(final File aDbfFile)
+    static File getMemoFile(final File aDbfFile, final Version aVersion)
     {
         if (! aDbfFile.exists())
         {
             return null;
+        }
+
+        final String extension;
+
+        if (aVersion == Version.FOXPRO_26)
+        {
+            extension = ".fpt";
+        }
+        else
+        {
+            extension = ".dbt";
         }
 
         final String parentDirName = aDbfFile.getParent();
@@ -130,7 +151,7 @@ class Util
                 {
                     public boolean accept(File aDir, String aName)
                     {
-                        return dbfBaseName.equals(stripExtension(aName)) && aName.toLowerCase().endsWith(".dbt");
+                        return dbfBaseName.equals(stripExtension(aName)) && (aName.toLowerCase().endsWith(extension));
                     }
                 });
 

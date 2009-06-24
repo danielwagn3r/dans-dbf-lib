@@ -37,14 +37,12 @@ class Memo
      * Offsets.
      */
     private static final int OFFSET_NEXT_AVAILABLE_BLOCK_INDEX = 0;
-    private static final int OFFSET_FILE_NAME = 8;
     private static final int OFFSET_BLOCK_SIZE = 20;
 
     /*
      * Lengths.
      */
-    private static final int LENGTH_MEMO_BLOCK = 512;
-    private static final int LENGTH_NEXT_AVAILABLE_BLOCK_INDEX = 4;
+    private static final int DEFAULT_LENGTH_MEMO_BLOCK = 512;
     private static final int LENGTH_FILE_NAME = 8;
 
     /*
@@ -58,6 +56,7 @@ class Memo
     private final File memoFile;
     private RandomAccessFile raf = null;
     private int nextAvailableBlock = 0;
+    private int blockLength = DEFAULT_LENGTH_MEMO_BLOCK;
     private Version version;
 
     /**
@@ -85,6 +84,12 @@ class Memo
         if (memoFile.exists())
         {
             raf = new RandomAccessFile(memoFile, "rw");
+
+            if (version == Version.FOXPRO_26)
+            {
+                raf.skipBytes(4);
+                blockLength = raf.readInt();
+            }
         }
         else if (aIfNonExistent.isCreate())
         {
@@ -146,9 +151,10 @@ class Memo
              throws IOException, CorruptedTableException
     {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        int memoLength = 0;
         int c = 0;
 
-        raf.seek(aBlockIndex * LENGTH_MEMO_BLOCK);
+        raf.seek(aBlockIndex * blockLength);
 
         switch (version)
         {
@@ -169,13 +175,22 @@ class Memo
 
             case DBASE_4:
             case DBASE_5:
+            case FOXPRO_26:
                 /* at the beginning of each memo there is a header of 8 bytes.
-                 * 4 first bytes: FFFF0800h
-                 * 4 last bytes: offset to the end of memo (length of data + 8)
+                 * 4 first bytes: dBase - FFFF0800h, FoxPro - type of data (text/general/picture)
+                 * 4 last bytes: dBase  - offset to the end of memo (length of data + 8)
+                 *               FoxPro - length of data
                  */
                 raf.skipBytes(4);
 
-                int memoLength = Util.changeEndianness(raf.readInt()) - version.getMemoDataOffset();
+                if (version == Version.FOXPRO_26)
+                {
+                    memoLength = raf.readInt();
+                }
+                else
+                {
+                    memoLength = Util.changeEndianness(raf.readInt()) - version.getMemoDataOffset();
+                }
 
                 for (int i = 0; i < memoLength; i++)
                 {
@@ -206,15 +221,15 @@ class Memo
     {
         final int nrBytesToWrite =
             aMemoBytes.length + version.getMemoFieldEndMarkerLength() + version.getMemoDataOffset();
-        int nrBlocksToWrite = nrBytesToWrite / LENGTH_MEMO_BLOCK + 1;
-        int nrSpacesToPadLastBlock = LENGTH_MEMO_BLOCK - nrBytesToWrite % LENGTH_MEMO_BLOCK;
+        int nrBlocksToWrite = nrBytesToWrite / blockLength + 1;
+        int nrSpacesToPadLastBlock = blockLength - nrBytesToWrite % blockLength;
 
         /*
          * Exact fit; we don't need an extra block.
          */
-        if (nrSpacesToPadLastBlock == LENGTH_MEMO_BLOCK)
+        if (nrSpacesToPadLastBlock == blockLength)
         {
-            nrSpacesToPadLastBlock = -LENGTH_MEMO_BLOCK;
+            nrSpacesToPadLastBlock = -blockLength;
             --nrBlocksToWrite;
         }
 
@@ -223,12 +238,17 @@ class Memo
         /*
          * Write the string and end of file markers.
          */
-        raf.seek(blockIndex * LENGTH_MEMO_BLOCK);
+        raf.seek(blockIndex * blockLength);
 
         if (version == Version.DBASE_4 || version == Version.DBASE_5)
         {
             raf.writeInt(0xffff0800);
             raf.writeInt(Util.changeEndianness(aMemoBytes.length + version.getMemoDataOffset()));
+        }
+        else if (version == Version.FOXPRO_26)
+        {
+            raf.writeInt(1);
+            raf.writeInt(aMemoBytes.length);
         }
 
         raf.write(aMemoBytes); // Note: cuts off higher bytes, so assumes ASCII string
@@ -254,11 +274,19 @@ class Memo
         }
 
         /*
-         * Updated next available block to write.
+         * Update next available block to write.
          */
         raf.seek(OFFSET_NEXT_AVAILABLE_BLOCK_INDEX);
         nextAvailableBlock += nrBlocksToWrite;
-        raf.writeInt(Util.changeEndianness(nextAvailableBlock));
+
+        if (version == Version.FOXPRO_26)
+        {
+            raf.writeInt(nextAvailableBlock);
+        }
+        else
+        {
+            raf.writeInt(Util.changeEndianness(nextAvailableBlock));
+        }
 
         return blockIndex;
     }
@@ -272,14 +300,18 @@ class Memo
         /*
          * Number of next available block intialized to zero.
          */
-        raf.writeInt(Util.changeEndianness(nextAvailableBlock));
+        raf.writeInt(0);
 
         /*
-         * Fill the bytes up to file name with zeros.
+         * Write the block length . In FoxPro.
          */
-        for (int i = LENGTH_NEXT_AVAILABLE_BLOCK_INDEX; i < OFFSET_FILE_NAME; i++)
+        if (version == Version.FOXPRO_26)
         {
-            raf.writeByte(0x00);
+            raf.writeInt(blockLength);
+        }
+        else
+        {
+            raf.writeInt(0);
         }
 
         /*
@@ -289,24 +321,35 @@ class Memo
                          Util.stripExtension(memoFile.getName()).toUpperCase(),
                          LENGTH_FILE_NAME);
 
-        /*
-         * Meaning of the following bytes not clear.  These values in all .dbt files
-         * that we have seen have the following values.  In dBaseIV and V.
-         */
-        raf.writeByte(0x00);
-        raf.writeByte(0x00);
-        raf.writeByte(0x02);
-        raf.writeByte(0x01);
+        if (version == Version.DBASE_4 || version == Version.DBASE_5)
+        {
+            /*
+             * Meaning of the following bytes not clear.  These values in all .dbt files
+             * that we have seen have the following values.  In dBaseIV and V.
+             */
+            raf.writeByte(0x00);
+            raf.writeByte(0x00);
+            raf.writeByte(0x02);
+            raf.writeByte(0x01);
 
-        /*
-         * Write the block size.  In dBaseIV and V.
-         */
-        raf.writeShort(Util.changeEndianness((short) LENGTH_MEMO_BLOCK));
+            /*
+             * Write the block size.  In dBaseIV and V.
+             */
+            raf.writeShort(Util.changeEndianness((short) blockLength));
+        }
+        else
+        {
+            raf.writeByte(0x00);
+            raf.writeByte(0x00);
+            raf.writeByte(0x00);
+            raf.writeByte(0x00);
+            raf.writeShort(0);
+        }
 
         /*
          * Rest of the header is filled with zeros
          */
-        for (int i = OFFSET_BLOCK_SIZE + 2; i < LENGTH_MEMO_BLOCK; i++)
+        for (int i = OFFSET_BLOCK_SIZE + 2; i < blockLength; i++)
         {
             raf.writeByte(0x00);
         }

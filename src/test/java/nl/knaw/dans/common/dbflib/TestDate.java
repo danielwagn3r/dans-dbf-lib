@@ -91,7 +91,6 @@ public class TestDate
         ignoredRanges.addRange(0x1d, 0x1d); // language driver
         ignoredRanges.addRange(0x1e, 0x1f); // reserved
         ignoredRanges.addRange(0x2c, 0x2f); // field description "address in memory"
-        ignoredRanges.addRange(0x34, 0x34); // work area id
 
         /*
          * Garbage in Clipper 5, in other versions not meaningful.

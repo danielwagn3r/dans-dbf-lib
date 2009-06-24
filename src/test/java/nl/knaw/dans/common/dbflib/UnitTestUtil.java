@@ -191,15 +191,15 @@ class UnitTestUtil
     }
 
     /**
-     * Performs a test in which a DBF is copied by reading it and writing it using the Table class after
-     * which a byte-wise compare of the DBFs and DBTs is done.  Ranges of bytes to be ignored when comparing the
-     * files can be provided.
+     * Performs a test in which a DBF is copied by reading it and writing it using the Table class, after
+     * which a byte by byte comparision of the . DBF files and .DBT files (.FPT files in FoxPro) is done.
+     * Ranges of bytes to be ignored when comparing the files can be provided.
      *
      * @param aSubDir the sub-directory of src/test/resources/ to find the source file and of target/test-output to put the
      *      copied file
      * @param aTableBaseName the base name of the table
      * @param aIgnoredRangesDbf ranges to ignore when comparing the DBFs
-     * @param aIgnoredRangesDbt ranges to ignore when comparing the DBTs
+     * @param aIgnoredRangesDbt ranges to ignore when comparing the DBTs (FPT in FoxPro)
      *
      * @throws IOException should not happen
      * @throws CorruptedTableException should not happen
@@ -258,16 +258,17 @@ class UnitTestUtil
             return;
         }
 
-        final File orgDbtFile = Util.getDbtFile(orgFile);
-        final File copyDbtFile = Util.getDbtFile(copyFile);
+        final File orgMemoFile = Util.getMemoFile(orgFile, aVersion);
+        final File copyMemoFile = Util.getMemoFile(copyFile, aVersion);
+        final String extension = (aVersion == Version.FOXPRO_26 ? ".fpt" : ".dbt");
 
-        if (orgDbtFile == null || copyDbtFile == null)
+        if (orgMemoFile == null || copyMemoFile == null)
         {
-            assertTrue("DBT file expected but not found", false);
+            assertTrue(extension + " file expected but not found", false);
         }
 
-        diffOffset = UnitTestUtil.compare(orgDbtFile, copyDbtFile, aIgnoredRangesDbt);
-        assertEquals("DBT files differ at offset 0x" + Integer.toHexString((int) diffOffset), -1, diffOffset);
+        diffOffset = UnitTestUtil.compare(orgMemoFile, copyMemoFile, aIgnoredRangesDbt);
+        assertEquals(extension + " files differ at offset 0x" + Integer.toHexString((int) diffOffset), -1, diffOffset);
     }
 
     static void copyFile(File in, File outDir, String outFileName)

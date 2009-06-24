@@ -67,6 +67,10 @@ public enum Type
     /*
      * A binary value (without length limitations), mapped to <tt>byte[]</tt>.
      */
+    PICTURE('P', 10), 
+    /*
+     * A binary value (without length limitations), mapped to <tt>byte[]</tt>.
+     */
     BINARY('B', 10);
     // Fields
     private static final Map<Character, Type> typeMap = new HashMap<Character, Type>();

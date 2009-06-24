@@ -100,6 +100,15 @@ public class TestMemo
         ignoredRangesDbf.addRange(0x4c, 0x4f); // field description "address in memory"
         ignoredRangesDbf.addRange(0x54, 0x54); // work area id
 
+        if (version == Version.FOXPRO_26)
+        {
+            ignoredRangesDbf.addRange(0x78, 0x81); // block number in memo file
+                                                   // (in some versions padded with zeros, in other versions with spaces)
+
+            ignoredRangesDbf.addRange(0xba, 0xc3); // idem
+            ignoredRangesDbf.addRange(0xdb, 0xe4); // idem
+        }
+
         /*
          * Garbage in Clipper 5, in other versions not meaningful.
          */
@@ -129,6 +138,12 @@ public class TestMemo
             ignoredRangesDbt.addRange(0x402, 0x5ff); // reserved/garbage
             ignoredRangesDbt.addRange(0xe9c, 0xfff); // reserved/garbage
             ignoredRangesDbt.addRange(0x11fe, 0x11ff); // zero padding
+        }
+        else if (version == Version.FOXPRO_26)
+        {
+            ignoredRangesDbt.addRange(0x08, 0x0f); // file name (not written in FoxPro)
+            ignoredRangesDbt.addRange(0xc7d, 0xdff); // garbage
+            ignoredRangesDbt.addRange(0x1005, 0x11ff); // garbage
         }
 
         UnitTestUtil.doCopyAndCompareTest(versionDirectory + "/types", "MEMOTEST", version, ignoredRangesDbf,

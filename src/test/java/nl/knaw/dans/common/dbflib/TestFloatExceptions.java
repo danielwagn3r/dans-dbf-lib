@@ -68,7 +68,8 @@ public class TestFloatExceptions
             new Object[][]
             {
                 { Version.DBASE_4, "dbase4" },
-                { Version.DBASE_5, "dbase5" }
+                { Version.DBASE_5, "dbase5" },
+                { Version.FOXPRO_26, "FoxPro26" }
             };
 
         return Arrays.asList(testParameters);

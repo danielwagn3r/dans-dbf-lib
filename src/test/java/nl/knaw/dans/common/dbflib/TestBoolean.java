@@ -86,9 +86,7 @@ public class TestBoolean
         ignoredRanges.addRange(0x1d, 0x1d); // language driver
         ignoredRanges.addRange(0x1e, 0x1f); // reserved
         ignoredRanges.addRange(0x2c, 0x2f); // field description "address in memory"
-        ignoredRanges.addRange(0x34, 0x34); // work area id
         ignoredRanges.addRange(0x4C, 0x4f); // field data address
-        ignoredRanges.addRange(0x54, 0x54); // work area id
 
         /*
          * Garbage in Clipper 5, in other versions not meaningful.

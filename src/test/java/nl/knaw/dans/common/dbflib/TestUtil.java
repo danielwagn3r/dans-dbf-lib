@@ -123,7 +123,8 @@ public class TestUtil
     @Test
     public void getDbtFile_simple_case()
     {
-        File dbtFile = Util.getDbtFile(new File("src/test/resources/util/get_dbt_file1/x.DBF"));
+        File dbtFile = Util.getMemoFile(new File("src/test/resources/util/get_dbt_file1/x.DBF"),
+                                        Version.DBASE_5);
 
         assertNotNull(".DBT file is null", dbtFile);
         assertEquals("x.DBT",
@@ -136,7 +137,8 @@ public class TestUtil
     @Test
     public void getDbtFile_returns_null_if_dbt_non_existent()
     {
-        File dbtFile = Util.getDbtFile(new File("src/test/resources/util/get_dbt_file2/x.DBF"));
+        File dbtFile = Util.getMemoFile(new File("src/test/resources/util/get_dbt_file2/x.DBF"),
+                                        Version.DBASE_5);
 
         assertNull("Found non-existing .DBT", dbtFile);
     }
@@ -147,7 +149,8 @@ public class TestUtil
     @Test
     public void getDbtFile_returns_null_if_dbf_non_existent()
     {
-        File dbtFile = Util.getDbtFile(new File("src/test/resources/util/get_dbt_file3/x.DBF"));
+        File dbtFile = Util.getMemoFile(new File("src/test/resources/util/get_dbt_file3/x.DBF"),
+                                        Version.DBASE_5);
         assertNull("Found non-existing .DBT", dbtFile);
     }
 

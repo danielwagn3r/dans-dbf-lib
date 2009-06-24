@@ -40,7 +40,9 @@ public enum Version
     DBASE_5(254, 20, 1, 8, 0x00, 0,
             getDbase5Types()), 
     CLIPPER_5(1024, 19, 2, 0, 0x1a, 1,
-              getClipper5Types());
+              getClipper5Types()), 
+    FOXPRO_26(254, 20, 1, 8, 0x00, 0,
+              getFoxProTypes());
     // Trick Jalopy formatter into behaving.
     private static Type[] getDbase3Types()
     {
@@ -64,6 +66,15 @@ public enum Version
     private static Type[] getClipper5Types()
     {
         return new Type[] { Type.CHARACTER, Type.NUMBER, Type.DATE, Type.LOGICAL, Type.MEMO };
+    }
+
+    private static Type[] getFoxProTypes()
+    {
+        return new Type[]
+               {
+                   Type.CHARACTER, Type.NUMBER, Type.DATE, Type.LOGICAL, Type.MEMO, Type.FLOAT, Type.GENERAL,
+                   Type.PICTURE
+               };
     }
 
     private final int maxLengthCharField;
@@ -145,6 +156,17 @@ public enum Version
                 return 0x03;
             }
         }
+        else if (aVersion == FOXPRO_26)
+        {
+            if (aHasMemo)
+            {
+                return 0xF5;
+            }
+            else
+            {
+                return 0x03;
+            }
+        }
 
         return 0;
     }
@@ -158,6 +180,10 @@ public enum Version
         else if (aVersionByte == 0x83)
         {
             return DBASE_3;
+        }
+        else if (aVersionByte == 0xF5)
+        {
+            return FOXPRO_26;
         }
         else
         {

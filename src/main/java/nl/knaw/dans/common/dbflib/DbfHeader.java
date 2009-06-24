@@ -255,7 +255,7 @@ class DbfHeader
 
         if (version == Version.CLIPPER_5 && typeChar == Type.CHARACTER.getCode())
         {
-            length = Util.changeEndianness((short) aDataInput.readUnsignedShort());
+            length = Util.changeEndiannessUnsignedShort(aDataInput.readUnsignedShort());
         }
         else
         {
@@ -439,7 +439,7 @@ class DbfHeader
         aDataOutput.writeByte(aField.getType().getCode());
 
         /*
-         * Field data address.  Used only with FoxPro. In other cases fill with 00h.
+         * Field data address.  Used only in FoxPro. In other cases fill with 00h
          */
         aDataOutput.writeInt(0x00);
 
