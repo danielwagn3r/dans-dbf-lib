@@ -31,7 +31,7 @@ public abstract class BaseTestcase // Lower case 'c' on purpose, otherwise JUnit
                 { Version.DBASE_4, "dbase4" },
                 { Version.DBASE_5, "dbase5" },
                 { Version.CLIPPER_5, "clipper5" },
-                { Version.FOXPRO_26, "FoxPro26" }
+                { Version.FOXPRO_26, "foxpro26" }
             };
 
         return Arrays.asList(testParameters);

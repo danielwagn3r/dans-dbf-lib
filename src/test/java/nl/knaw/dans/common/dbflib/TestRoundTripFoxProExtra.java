@@ -60,8 +60,8 @@ public class TestRoundTripFoxProExtra
     public void reading()
                  throws FileNotFoundException, IOException, CorruptedTableException
     {
-        final Database database = new Database(new File("src/test/resources/FoxPro26/FproSpec"),
-                                               Version.FOXPRO_26);
+        final Database database =
+            new Database(new File("src/test/resources/foxpro26/foxprospecial"), Version.FOXPRO_26);
         final Set<String> tableNames = database.getTableNames();
 
         assertEquals(1,
@@ -250,7 +250,7 @@ public class TestRoundTripFoxProExtra
         ignoredRangesDbt.addRange(0x08, 0x0f); // file name not in original file
         ignoredRangesDbt.addRange(0x240, 0x5ff); // because of different block sizes, comparison can be done only till first memo
 
-        UnitTestUtil.doCopyAndCompareTest("FoxPro26/FproSpec", "FPROALL", Version.FOXPRO_26, ignoredRangesDbf,
+        UnitTestUtil.doCopyAndCompareTest("foxpro26/foxprospecial", "FPROALL", Version.FOXPRO_26, ignoredRangesDbf,
                                           ignoredRangesDbt);
     }
 }
