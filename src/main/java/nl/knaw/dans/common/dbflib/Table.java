@@ -313,14 +313,13 @@ public class Table
             final Field field = fieldIterator.next();
 
             map.put(field.getName(),
-                    createValueObject(field.getType(),
-                                      fieldValue));
+                    createValueObject(fieldValue));
         }
 
         addRecord(new Record(map));
     }
 
-    private Value createValueObject(final Type aFieldType, final Object aValue)
+    private Value createValueObject(final Object aValue)
     {
         if (aValue instanceof Number)
         {

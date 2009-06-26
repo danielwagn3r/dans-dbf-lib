@@ -22,6 +22,8 @@ package nl.knaw.dans.common.dbflib;
 import org.junit.Test;
 
 /**
+ * Tests the CharacterFormatValidator.
+ *
  * @author Jan van Mansum
  */
 public class TestCharacterFormatValidator

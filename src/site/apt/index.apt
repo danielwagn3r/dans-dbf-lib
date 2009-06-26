@@ -13,6 +13,21 @@ This library is used by DANS for the {{{http://mixed.dans.knaw.nl}MIXED Project}
 
 News
 
+* 26 June 2009.  Beta 03!!!
+
+    FoxPro 2.6 files can now also be read and written.  This brings the list of supported DBF versions to:
+
+    * dBase III+
+   
+    * dBase IV
+
+    * dBase V
+
+    * Clipper 5
+
+    * FoxPro 2.6
+
+
 * 8 June 2009. Beta 02!!
 
     The library has grown another couple of K.  We added Clipper 5 support and made the
