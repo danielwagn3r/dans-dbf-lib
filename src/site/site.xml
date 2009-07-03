@@ -20,9 +20,9 @@
         </menu>
 
         <menu name="Sourceforge Project" >
-            <item name="Overview/Download" href="https://sourceforge.net/projects/dans-dbf-lib/" />
+            <item name="Overview/Download" href="http://sourceforge.net/projects/dans-dbf-lib/files" />
             <item name="Mailing List" href="./mail-lists.html" />
-            <item name="Issue Tracking" href="https://sourceforge.net/tracker/?group_id=258772" />
+            <item name="Issue Tracking" href="http://sourceforge.net/tracker/?group_id=258772" />
         </menu>
 
         <menu ref="reports" />
