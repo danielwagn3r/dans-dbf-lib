@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -143,8 +140,7 @@ class Memo
     /**
      * Reads a string of characters from memo file.
      *
-     * @param aBlockIndex blocknumber  where the
-     *          string of characters starts
+     * @param aBlockIndex blocknumber where the string of characters starts
      *
      */
     byte[] readMemo(final int aBlockIndex)
@@ -176,10 +172,10 @@ class Memo
             case DBASE_4:
             case DBASE_5:
             case FOXPRO_26:
-                /* at the beginning of each memo there is a header of 8 bytes.
-                 * 4 first bytes: dBase - FFFF0800h, FoxPro - type of data (text/general/picture)
-                 * 4 last bytes: dBase  - offset to the end of memo (length of data + 8)
-                 *               FoxPro - length of data
+                /*
+                 * at the beginning of each memo there is a header of 8 bytes. 4 first bytes: dBase -
+                 * FFFF0800h, FoxPro - type of data (text/general/picture) 4 last bytes: dBase - offset
+                 * to the end of memo (length of data + 8) FoxPro - length of data
                  */
                 raf.skipBytes(4);
 
@@ -324,8 +320,8 @@ class Memo
         if (version == Version.DBASE_4 || version == Version.DBASE_5)
         {
             /*
-             * Meaning of the following bytes not clear.  These values in all .dbt files
-             * that we have seen have the following values.  In dBaseIV and V.
+             * Meaning of the following bytes not clear. These values in all .dbt files that we have
+             * seen have the following values. In dBaseIV and V.
              */
             raf.writeByte(0x00);
             raf.writeByte(0x00);
@@ -333,7 +329,7 @@ class Memo
             raf.writeByte(0x01);
 
             /*
-             * Write the block size.  In dBaseIV and V.
+             * Write the block size. In dBaseIV and V.
              */
             raf.writeShort(Util.changeEndianness((short) blockLength));
         }

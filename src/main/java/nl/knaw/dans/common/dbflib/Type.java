@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -23,12 +20,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Enumeration of the field types available in an xBase database.  xBase types are
- * mapped to Java types as specified in the enumarated constant descriptions below.
+ * Enumeration of the field types available in an xBase database. xBase types are mapped to Java
+ * types as specified in the enumarated constant descriptions below.
  * <p>
- * <b>Note on NUMBER and FLOAT values:</b>  In dBase III NUMBER and in dbBase IV
- * FLOAT values are represented internally as floating point values.  When parsed
- * by Java they may have slight rounding errors.
+ * <b>Note on NUMBER and FLOAT values:</b> In dBase III NUMBER and in dbBase IV FLOAT values are
+ * represented internally as floating point values. When parsed by Java they may have slight
+ * rounding errors.
  *
  * @author Jan van Mansum
  * @author Vesa Åkerman
@@ -52,8 +49,9 @@ public enum Type
      */
     LOGICAL('L', 1), 
     /**
-     * Date value, mapped to <tt>java.util.Date</tt>.  Note that in xBase the date does <em>not</em> have a
-     * time component.  The time related fields of <tt>java.util.Date</tt> are therefore set to 0.
+     * Date value, mapped to <tt>java.util.Date</tt>. Note that in xBase the date does <em>not</em>
+     * have a time component. The time related fields of <tt>java.util.Date</tt> are therefore set
+     * to 0.
      */
     DATE('D', 8), 
     /**

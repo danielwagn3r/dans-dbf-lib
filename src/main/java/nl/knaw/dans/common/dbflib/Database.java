@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -27,11 +24,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Represents an xBase database.  An xBase database is a directory containing table
- * files (.DBF files) and supporting files like memo (.DBT) or index (.NDX) files.
- * This class allows you to work with the database without having to open the
- * lower level files directly.  However, it is still possible to open individual tables
- * directly through the {@link Table} class.
+ * Represents an xBase database. An xBase database is a directory containing table files (.DBF
+ * files) and supporting files like memo (.DBT) or index (.NDX) files. This class allows you to work
+ * with the database without having to open the lower level files directly. However, it is still
+ * possible to open individual tables directly through the {@link Table} class.
  *
  * @author Jan van Mansum
  * @author Vesa Åkerman
@@ -43,19 +39,21 @@ public class Database
     private final Version version;
 
     /**
-     * Creates a new Database object.  A file representing the database directory
-     * must be provided.  If the directory does not exist, it is created.  If the
-     * file represents a regular file and not a directory, throws an <tt>IllegalArgumentException</tt>.
+     * Creates a new Database object. A file representing the database directory must be provided.
+     * If the directory does not exist, it is created. If the file represents a regular file and not
+     * a directory, throws an <tt>IllegalArgumentException</tt>.
      * <p>
-     * All tables that exist in the database directory are added as <tt>Table</tt> objects and can be
-     * retrieved with {@link #getTable(java.lang.String) }.
-     * </p><p>
-     * The parameter <tt>aVersion</tt> does not trigger any validation on an existing database but is
-     * merely used to specify the version of newly added tables.  It is therefore the responsibilty
-     * of the caller to ensure that the correct version is specified.
+     * All tables that exist in the database directory are added as <tt>Table</tt> objects and can
+     * be retrieved with {@link #getTable(java.lang.String) }.
      * </p>
+     * <p>
+     * The parameter <tt>aVersion</tt> does not trigger any validation on an existing database but
+     * is merely used to specify the version of newly added tables. It is therefore the
+     * responsibilty of the caller to ensure that the correct version is specified.
+     * </p>
+     *
      * @param aDatabaseDirectory a <tt>java.io.File</tt> object pointing to the directory containing
-     *   the database
+     *            the database
      * @param aVersion the version of xBase to use for new tables
      */
     public Database(final File aDatabaseDirectory, final Version aVersion)
@@ -85,18 +83,18 @@ public class Database
     }
 
     /**
-      * Returns an unmodifiable <tt>java.util.Set</tt> of table names.
-      *
-      * @return a <tt>java.util.Set</tt> of <tt>Table</tt> objects.
-      */
+     * Returns an unmodifiable <tt>java.util.Set</tt> of table names.
+     *
+     * @return a <tt>java.util.Set</tt> of <tt>Table</tt> objects.
+     */
     public Set<String> getTableNames()
     {
         return Collections.unmodifiableSet(tableMap.keySet());
     }
 
     /**
-     * Returns the <tt>Table</tt> object with the specified name or <tt>null</tt>
-     * if it has not been added yet.
+     * Returns the <tt>Table</tt> object with the specified name or <tt>null</tt> if it has not been
+     * added yet.
      *
      * @param aName the name of the table, including extension
      * @return a <tt>Table</tt> object
@@ -107,12 +105,12 @@ public class Database
     }
 
     /**
-     * Adds a new {@link Table} object to the set of <tt>Table</tt>s maintained
-     * by this <tt>Database</tt> object and returns it.  If a <tt>Table</tt>
-     * object with <tt>aName</tt> already exists, it is returned.
+     * Adds a new {@link Table} object to the set of <tt>Table</tt>s maintained by this
+     * <tt>Database</tt> object and returns it. If a <tt>Table</tt> object with <tt>aName</tt>
+     * already exists, it is returned.
      * <p>
-     * Note that the actual table file (the .DBF file) may or may not exists.  To
-     * create a new table on disk, see {@link Table#open(nl.knaw.dans.common.dbflib.IfNonExistent) }
+     * Note that the actual table file (the .DBF file) may or may not exists. To create a new table
+     * on disk, see {@link Table#open(nl.knaw.dans.common.dbflib.IfNonExistent) }
      *
      * @param aName the name of the table
      *
@@ -146,11 +144,11 @@ public class Database
     }
 
     /**
-     * Removes a {@link Table} object from the list of <tt>Table</tt> objects maintained
-     * by this <tt>Database</tt> object.
+     * Removes a {@link Table} object from the list of <tt>Table</tt> objects maintained by this
+     * <tt>Database</tt> object.
      * <p>
-     * Note that the actual table file (the .DBF file) is not deleted by removing the
-     * table object.  To delete a file on disk, see {@link Table#delete() }.
+     * Note that the actual table file (the .DBF file) is not deleted by removing the table object.
+     * To delete a file on disk, see {@link Table#delete() }.
      *
      * @param aName the name of the table to remove
      */
@@ -160,11 +158,11 @@ public class Database
     }
 
     /**
-     * Removes a {@link Table} object from the list of <tt>Table</tt> objects maintained
-     * by this <tt>Database</tt> object.
+     * Removes a {@link Table} object from the list of <tt>Table</tt> objects maintained by this
+     * <tt>Database</tt> object.
      * <p>
-     * Note that the actual table file (the .DBF file) is not deleted by removing the
-     * table object.  To delete a file on disk, see {@link Table#delete() }.
+     * Note that the actual table file (the .DBF file) is not deleted by removing the table object.
+     * To delete a file on disk, see {@link Table#delete() }.
      *
      * @param aTable the table to remove
      */

@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -36,9 +33,8 @@ public class Field
     private final DataValidator validator;
 
     /**
-     * Creates a new Field object.  If the specified type has a fixed size and
-     * decimal count, they are used. otherwise size is initialized to 1 and decimal
-     * count to 0.
+     * Creates a new Field object. If the specified type has a fixed size and decimal count, they
+     * are used. otherwise size is initialized to 1 and decimal count to 0.
      *
      * @param aName the name of the field
      * @param aType the type of the field
@@ -49,7 +45,7 @@ public class Field
     }
 
     /**
-     * Creates a new Field object.  Decimal count is initialized to 0.
+     * Creates a new Field object. Decimal count is initialized to 0.
      *
      * @param aName the name of the field
      * @param aType the type of the field
@@ -61,7 +57,7 @@ public class Field
     }
 
     /**
-     * Creates a new Field object.  <tt>aLength</tt> and <tt>aDecimalCount</tt> do not apply to all
+     * Creates a new Field object. <tt>aLength</tt> and <tt>aDecimalCount</tt> do not apply to all
      * field types.
      *
      * @param aName name of the field

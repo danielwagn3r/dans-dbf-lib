@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -38,8 +35,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Does roundtrip tests of the library, i.e. touches all the functionality, but does not
- * go very deep.
+ * Does roundtrip tests of the library, i.e. touches all the functionality, but does not go very
+ * deep.
  *
  * @author Jan van Mansum
  * @author Vesa Åkerman
@@ -60,7 +57,7 @@ public class TestRoundTrip
     }
 
     /**
-     * A short roundtrip of the library.  Covers:
+     * A short roundtrip of the library. Covers:
      * <ul>
      * <li>Opening a database</li>
      * <li>Retrieving the table names</li>
@@ -161,9 +158,10 @@ public class TestRoundTrip
             assertEquals("String data 02",
                          r1.getStringValue("STRFIELD").trim());
 
-            /* in Clipper 'false' value can be given as an empty field, and the method
-            * called here returns then 'null' as the return value
-            */
+            /*
+             * in Clipper 'false' value can be given as an empty field, and the method called here
+             * returns then 'null' as the return value
+             */
             if (version == Version.CLIPPER_5)
             {
                 assertEquals(null,
@@ -200,9 +198,10 @@ public class TestRoundTrip
             assertEquals("Full5678901234567890123456789012345678901234567890",
                          r3.getStringValue("STRFIELD").trim());
 
-            /* in Clipper 'false' value can be given as an empty field, and the method
-            * called here returns then 'null' as the return value
-            */
+            /*
+             * in Clipper 'false' value can be given as an empty field, and the method called here
+             * returns then 'null' as the return value
+             */
             if (version == Version.CLIPPER_5)
             {
                 assertEquals(null,
@@ -312,9 +311,10 @@ public class TestRoundTrip
 
         ignoredRangesDbf.addRange(0x161, 0x16a); // idem
 
-        /* in Clipper5 there is so much garbage in the header area that from
-        * the field definitions on all the data is skipped
-        */
+        /*
+         * in Clipper5 there is so much garbage in the header area that from the field definitions
+         * on all the data is skipped
+         */
         if (version == Version.CLIPPER_5)
         {
             ignoredRangesDbf.addRange(0x20, 0xdf); // reserved/garbage

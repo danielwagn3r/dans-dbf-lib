@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -86,8 +83,7 @@ public class TestTableExceptions
     // TODO: Would it not be more appropriate to open the memo on table.open and throw a
     // CorruptedTableException right there if the DBT is not found?
     /**
-     * Tests that a <tt>RuntimeException</tt> is thrown when the DBT of a DBF file
-     * is missing.
+     * Tests that a <tt>RuntimeException</tt> is thrown when the DBT of a DBF file is missing.
      *
      * @throws IOException not expected
      * @throws CorruptedTableException not expected
@@ -110,6 +106,12 @@ public class TestTableExceptions
         }
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws CorruptedTableException DOCUMENT ME!
+     */
     @Test(expected = RuntimeException.class)
     public void emptyMemoFile()
                        throws IOException, CorruptedTableException
@@ -128,6 +130,12 @@ public class TestTableExceptions
         }
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws CorruptedTableException DOCUMENT ME!
+     */
     @Test(expected = RuntimeException.class)
     public void corruptedMemoFilePointer()
                                   throws IOException, CorruptedTableException
@@ -146,6 +154,9 @@ public class TestTableExceptions
         }
     }
 
+    /**
+     * DOCUMENT ME!
+     */
     @Test(expected = IllegalArgumentException.class)
     public void directoryIsFile()
     {
@@ -153,6 +164,12 @@ public class TestTableExceptions
         new Database(databaseDirectory, Version.DBASE_3);
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test(expected = InvalidFieldLengthException.class)
     public void writeTooLongField()
                            throws IOException, DbfLibException
@@ -180,7 +197,7 @@ public class TestTableExceptions
     }
 
     /**
-     * In this test no exception is expected.  Goal of this test is simply to test that 'addRecord'
+     * In this test no exception is expected. Goal of this test is simply to test that 'addRecord'
      * method with parameters of field values goes through (this method is not tested in any of the
      * other unit tests)
      */

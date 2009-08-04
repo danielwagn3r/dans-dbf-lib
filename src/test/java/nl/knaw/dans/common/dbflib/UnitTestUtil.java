@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -46,7 +43,8 @@ class UnitTestUtil
 
     /**
      * Takes a record iterator and a field name and creates a list of the records sorted by the
-     * field specified by the field name.  The type of this field must implement <tt>java.lang.Comparable</tt>.
+     * field specified by the field name. The type of this field must implement
+     * <tt>java.lang.Comparable</tt>.
      *
      * @param aRecordIterator a record iterator
      * @param aFieldName a field name
@@ -65,6 +63,7 @@ class UnitTestUtil
         Collections.sort(recordList,
                          new Comparator<Record>()
             {
+                @SuppressWarnings("unchecked")
                 public int compare(Record r1, Record r2)
                 {
                     Comparable c1 = (Comparable) r1.getTypedValue(aFieldName);
@@ -93,8 +92,8 @@ class UnitTestUtil
     }
 
     /**
-     * Compares two files ignoring the specified byte ranges.  Returns the offset of the first
-     * byte that is different between the two files, or -1 if the files where the same.
+     * Compares two files ignoring the specified byte ranges. Returns the offset of the first byte
+     * that is different between the two files, or -1 if the files where the same.
      *
      * @param aFile1 the first file
      * @param aFile2 the second file
@@ -139,8 +138,8 @@ class UnitTestUtil
     }
 
     /**
-     * Removes the file represented by <code>aFile</code>. If the file is a directory
-     * removes the directory and all the files and subdirectories it contains.
+     * Removes the file represented by <code>aFile</code>. If the file is a directory removes the
+     * directory and all the files and subdirectories it contains.
      *
      * @param aFile the file to remove
      */
@@ -168,10 +167,9 @@ class UnitTestUtil
     }
 
     /**
-     * Recreates the directory specified by <code>aDirectory</code>. If the directory exists
-     * it is deleted first. The result is always that <code>aDirectory</code> is empty.
-     * If the parent directories of <code>aDirectory</code> do not exist they are first
-     * created.
+     * Recreates the directory specified by <code>aDirectory</code>. If the directory exists it is
+     * deleted first. The result is always that <code>aDirectory</code> is empty. If the parent
+     * directories of <code>aDirectory</code> do not exist they are first created.
      *
      * @param aDirectory the directory to recreate
      * @return the directory created
@@ -191,12 +189,12 @@ class UnitTestUtil
     }
 
     /**
-     * Performs a test in which a DBF is copied by reading it and writing it using the Table class, after
-     * which a byte by byte comparision of the . DBF files and .DBT files (.FPT files in FoxPro) is done.
-     * Ranges of bytes to be ignored when comparing the files can be provided.
+     * Performs a test in which a DBF is copied by reading it and writing it using the Table class,
+     * after which a byte by byte comparision of the . DBF files and .DBT files (.FPT files in
+     * FoxPro) is done. Ranges of bytes to be ignored when comparing the files can be provided.
      *
-     * @param aSubDir the sub-directory of src/test/resources/ to find the source file and of target/test-output to put the
-     *      copied file
+     * @param aSubDir the sub-directory of src/test/resources/ to find the source file and of
+     *            target/test-output to put the copied file
      * @param aTableBaseName the base name of the table
      * @param aIgnoredRangesDbf ranges to ignore when comparing the DBFs
      * @param aIgnoredRangesDbt ranges to ignore when comparing the DBTs (FPT in FoxPro)

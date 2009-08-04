@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -32,6 +29,11 @@ public class TestNumberFormatValidator
     private final DataValidator validator_5_1 = new NumberFormatValidator(new Field("test", Type.NUMBER, 5, 1));
     private final DataValidator validator_5_0 = new NumberFormatValidator(new Field("test", Type.NUMBER, 5, 0));
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test
     public void shouldAcceptNumberStringOfCorrectFormat()
                                                  throws DbfLibException
@@ -52,6 +54,11 @@ public class TestNumberFormatValidator
         validator_5_0.validate("-2345"); // max length, with sign
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectNumberStringOfTooManyDecimals()
                                                    throws DbfLibException
@@ -59,6 +66,11 @@ public class TestNumberFormatValidator
         validator_5_2.validate("1.345");
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectNumberStringOfDecimalsWhereNoneExpected()
         throws DbfLibException
@@ -66,6 +78,11 @@ public class TestNumberFormatValidator
         validator_5_0.validate("1.3");
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectNegativeNumberStringOfDecimalsWhereNoneExpected()
         throws DbfLibException
@@ -73,6 +90,11 @@ public class TestNumberFormatValidator
         validator_5_0.validate("-1.3");
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectNumberStringOfTooFewDecimals()
                                                   throws DbfLibException
@@ -80,6 +102,11 @@ public class TestNumberFormatValidator
         validator_5_2.validate("1.3");
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectBoolean()
                              throws DbfLibException
@@ -87,6 +114,11 @@ public class TestNumberFormatValidator
         validator_5_2.validate(Boolean.TRUE);
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test
     public void shouldAcceptNumberThatFits()
                                     throws DbfLibException
@@ -107,6 +139,11 @@ public class TestNumberFormatValidator
         validator_5_0.validate(-2345.34567890); // max number of int digits with sign
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test(expected = ValueTooLargeException.class)
     public void shouldRejectNumberWithTooManyIntDigits()
                                                 throws DbfLibException
@@ -114,6 +151,11 @@ public class TestNumberFormatValidator
         validator_5_2.validate(123.34567890); // max number of int digits
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test(expected = ValueTooLargeException.class)
     public void shouldRejectNumberWithTooManyIntDigitsWithSign()
         throws DbfLibException
@@ -121,6 +163,11 @@ public class TestNumberFormatValidator
         validator_5_2.validate(-23.34567890); // max number of int digits
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectDate()
                           throws DbfLibException
@@ -128,6 +175,11 @@ public class TestNumberFormatValidator
         validator_5_2.validate(Util.createDate(2009, 5, 29));
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectByteArray()
                                throws DbfLibException

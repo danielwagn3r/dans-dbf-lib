@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -70,7 +67,7 @@ public class NumberValue
             {
                 return Integer.parseInt(stringValue);
             } /*
-            * Longer values MAY need a Long.  To be on the safe side, we always use Long here.
+            * Longer values MAY need a Long. To be on the safe side, we always use Long here.
             * Long can accomodate at least 18 digits.
             *
             * Long.MAX_VALUE = 9 223 372 036 854 775 807
@@ -88,8 +85,8 @@ public class NumberValue
         }
 
         /*
-         * Not sure yet what number of digits is safe to parse a value into a double.
-         * 14 seems to be reasonably safe, but this needs to be proved.
+         * Not sure yet what number of digits is safe to parse a value into a double. 14 seems to be
+         * reasonably safe, but this needs to be proved.
          */
         if (stringValue.length() < 14)
         {

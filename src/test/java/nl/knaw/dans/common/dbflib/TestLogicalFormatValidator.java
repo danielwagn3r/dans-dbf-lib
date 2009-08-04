@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -30,6 +27,11 @@ public class TestLogicalFormatValidator
 {
     private final DataValidator validator = new LogicalFormatValidator(new Field("test", Type.LOGICAL));
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test
     public void shouldAcceptStringWithYNTF_or_Space()
                                              throws DbfLibException
@@ -41,6 +43,11 @@ public class TestLogicalFormatValidator
         validator.validate(" ");
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectStringWithA()
                                  throws DbfLibException
@@ -48,6 +55,11 @@ public class TestLogicalFormatValidator
         validator.validate("A");
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectTooLargeValue()
                                    throws DbfLibException
@@ -55,6 +67,11 @@ public class TestLogicalFormatValidator
         validator.validate("True");
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test
     public void shouldAcceptBoolean()
                              throws DbfLibException
@@ -63,6 +80,11 @@ public class TestLogicalFormatValidator
         validator.validate(Boolean.FALSE);
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectNumber()
                             throws DbfLibException
@@ -70,6 +92,11 @@ public class TestLogicalFormatValidator
         validator.validate(123);
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectDate()
                           throws DbfLibException
@@ -77,6 +104,11 @@ public class TestLogicalFormatValidator
         validator.validate(Util.createDate(2009, 5, 29));
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectByteArray()
                                throws DbfLibException

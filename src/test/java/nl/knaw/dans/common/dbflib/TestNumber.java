@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -55,8 +52,8 @@ public class TestNumber
     }
 
     /**
-     * No Clipper5, because 'Numeric' field in Clipper5 behaves
-     * like 'Float' field in dBaseIV and dBaseV.
+     * No Clipper5, because 'Numeric' field in Clipper5 behaves like 'Float' field in dBaseIV and
+     * dBaseV.
      */
     @Parameters
     public static Collection<Object[]> data()
@@ -228,6 +225,12 @@ public class TestNumber
         }
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws DbfLibException DOCUMENT ME!
+     */
     @Test
     public void writing_maximal_and_minimal_values()
                                             throws IOException, DbfLibException
@@ -236,7 +239,9 @@ public class TestNumber
         ignoredRanges.addRange(0x01, 0x03); // modified date
         ignoredRanges.addRange(0x1d, 0x1d); // language driver
         ignoredRanges.addRange(0x1e, 0x1f); // reserved
-        ignoredRanges.addRange(0x23, 0x2a); // ignore garbage after 0 terminator of field name string
+        ignoredRanges.addRange(0x23, 0x2a); // ignore garbage after 0 terminator of field name
+                                            // string
+
         ignoredRanges.addRange(0x2c, 0x2f); // field description "address in memory"
         ignoredRanges.addRange(0x4c, 0x4f); // idem
         ignoredRanges.addRange(0x6c, 0x6f); // idem

@@ -151,7 +151,7 @@ record and then add it, or use the method Table.addRecord.
 +------------------------------------------------------------------------------+
 
 // The hard way ...
-Map map = new HashMap<String, Value>();
+final Map<String, Value> map = new HashMap<String, Value>();
 map.put("NUMFLD", new NumberValue(17));
 map.put("LOGICFLD", new BooleanValue(true));
 map.put("CHARFLD", new StringValue("This is a new string"));

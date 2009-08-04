@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -31,8 +28,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
- * Represents a single table in a xBase database.  A table is represented by a single
- * .DBF file.  Some tables have an associated .DBT file to store memo field data.
+ * Represents a single table in a xBase database. A table is represented by a single .DBF file. Some
+ * tables have an associated .DBT file to store memo field data.
  *
  * @author Jan van Mansum
  * @author Vesa Åkerman
@@ -97,11 +94,11 @@ public class Table
     private RandomAccessFile raFile = null;
 
     /**
-     * Creates a new Table object.  A <tt>java.io.File</tt> object representing the .DBF file
-     * must be provided.  To read from or write to the table it must first be opened.
+     * Creates a new Table object. A <tt>java.io.File</tt> object representing the .DBF file must be
+     * provided. To read from or write to the table it must first be opened.
      *
-     * @param aTableFile a <tt>java.io.File</tt> object representing the .DBF file that
-     *      stores this table's data.
+     * @param aTableFile a <tt>java.io.File</tt> object representing the .DBF file that stores this
+     *            table's data.
      *
      * @see #open(nl.knaw.dans.common.dbflib.IfNonExistent)
      *
@@ -119,12 +116,12 @@ public class Table
     }
 
     /**
-     * Creates a new Table object.  In order to read from or write to the table it
-     * must first be opened.
+     * Creates a new Table object. In order to read from or write to the table it must first be
+     * opened.
      * <p>
-     * <b>Note:</b> if the .DBF file already exists <tt>aFields</tt> will be overwritten by the values
-     * in the existing file when opened.  To replace an existing table, first delete it and then create and
-     * open a new <tt>Table</tt> object.
+     * <b>Note:</b> if the .DBF file already exists <tt>aFields</tt> will be overwritten by the
+     * values in the existing file when opened. To replace an existing table, first delete it and
+     * then create and open a new <tt>Table</tt> object.
      *
      * @param aTableFile the .DBF file that contains the table data
      * @param aVersion the dBase version to support
@@ -157,8 +154,8 @@ public class Table
     }
 
     /**
-     * Opens the table for reading and writing.  Equivalent to
-     * {@link Table#open(nl.knaw.dans.common.dbflib.IfNonExistent)  Table.open(IfNonExistent.ERROR)}
+     * Opens the table for reading and writing. Equivalent to
+     * {@link Table#open(nl.knaw.dans.common.dbflib.IfNonExistent) Table.open(IfNonExistent.ERROR)}
      *
      * @throws IOException if the table file does not exist or could not be opened
      * @throws CorruptedTableException if the header of the table file was corrupt
@@ -221,7 +218,8 @@ public class Table
     /**
      * Closes and deletes the underlying table file and associated files.
      *
-     * @throws java.io.IOException if the table file or an associated file cannot be closed or deleted
+     * @throws java.io.IOException if the table file or an associated file cannot be closed or
+     *             deleted
      */
     public void delete()
                 throws IOException
@@ -236,9 +234,8 @@ public class Table
     }
 
     /**
-     * Returns the date on which this table was last modified.  Note that the hours, minutes,
-     * seconds and milliseconds fields are always set to zero.  Also, the date time
-     * is not normalized to UTC.
+     * Returns the date on which this table was last modified. Note that the hours, minutes, seconds
+     * and milliseconds fields are always set to zero. Also, the date time is not normalized to UTC.
      *
      * @return the last modified date of the table
      */
@@ -260,10 +257,10 @@ public class Table
     }
 
     /**
-     * Returns a <tt>java.util.List</tt> of {@link Field} objects, which provide
-     * a description of each field (column) in the table.  The order of the <tt>Field</tt>
-     * objects is guaranteed to be the same as the order of the fields in each record
-     * returned.  A new copy of the field list is returned on each call.
+     * Returns a <tt>java.util.List</tt> of {@link Field} objects, which provide a description of
+     * each field (column) in the table. The order of the <tt>Field</tt> objects is guaranteed to be
+     * the same as the order of the fields in each record returned. A new copy of the field list is
+     * returned on each call.
      *
      * @return the list of field objects.
      */
@@ -275,8 +272,7 @@ public class Table
     }
 
     /**
-     * Returns a <tt>Record</tt> iterator.  Note that, to use the iterator the table
-     * must be opened.
+     * Returns a <tt>Record</tt> iterator. Note that, to use the iterator the table must be opened.
      *
      * @return a <tt>Record</tt> iterator
      *
@@ -288,13 +284,14 @@ public class Table
     }
 
     /**
-     * Constructs and adds a record.  The fields values for the record must be provided
-     * as parameters in the same order that the fields are provided in the field list.
+     * Constructs and adds a record. The fields values for the record must be provided as parameters
+     * in the same order that the fields are provided in the field list.
      *
      * @throws IOException if the record could not be written to the database file
      * @throws CorruptedTableException if the table was corrupt
      * @throws ValueTooLargeException if a field value exceeds the length of its corresponding field
-     * @throws RecordTooLargeException if more field values are provided than there are field in this table
+     * @throws RecordTooLargeException if more field values are provided than there are field in
+     *             this table
      */
     public void addRecord(final Object... aFieldValue)
                    throws IOException, DbfLibException
@@ -463,8 +460,8 @@ public class Table
      *
      * @param aIfNonExistent what to do if the memo file doesn't exist. (Cannot be IGNORE.)
      * @throws java.io.IOException if the memo file could not be opened
-     * @throws nl.knaw.dans.common.dbflib.CorruptedTableException if the memo file could not be found or multiple
-     *   matches exist, or if it is corrupt
+     * @throws nl.knaw.dans.common.dbflib.CorruptedTableException if the memo file could not be
+     *             found or multiple matches exist, or if it is corrupt
      */
     private void openMemo(final IfNonExistent aIfNonExistent)
                    throws IOException, CorruptedTableException

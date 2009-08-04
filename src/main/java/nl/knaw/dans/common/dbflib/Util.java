@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -115,10 +112,9 @@ class Util
     }
 
     /**
-     * Given a .DBF file, returns the accompanying .DBT file (.FPT in FOxPro)
-     * or <tt>null</tt> if there is none.
-     * The base name of the two files must match case sensitively.  The case of the characters
-     * in the file names' respective extension does not matter.  However, if more than one
+     * Given a .DBF file, returns the accompanying .DBT file (.FPT in FOxPro) or <tt>null</tt> if
+     * there is none. The base name of the two files must match case sensitively. The case of the
+     * characters in the file names' respective extension does not matter. However, if more than one
      * matching file is found (e.g., xxx.Dbt and xxx.dBt and xxx.DBT) <tt>null</tt> is returned.
      *
      * @param aDbfFile the .DBF file
@@ -164,9 +160,9 @@ class Util
     }
 
     /**
-     * Writes a <tt>java.lang.String</tt> to a <tt>java.io.DataOutput</tt>.  The String is
-     * truncated if it exceeds <tt>aLength</tt>.  If it is shorter, the remaining bytes
-     * are filled with null characters.
+     * Writes a <tt>java.lang.String</tt> to a <tt>java.io.DataOutput</tt>. The String is truncated
+     * if it exceeds <tt>aLength</tt>. If it is shorter, the remaining bytes are filled with null
+     * characters.
      *
      * @param aDataOutput the <tt>java.io.DataOutput</tt> to write to
      * @param aString the String to write
@@ -240,9 +236,8 @@ class Util
     }
 
     /**
-     * Creates a Date object with the specfied value and the time fields set to zero.
-     * Note that month is zero-based.  The <tt>java.util.Calendar</tt> class has constants
-     * for all the months.
+     * Creates a Date object with the specfied value and the time fields set to zero. Note that
+     * month is zero-based. The <tt>java.util.Calendar</tt> class has constants for all the months.
      *
      * @param year the year
      * @param month zero-based month number

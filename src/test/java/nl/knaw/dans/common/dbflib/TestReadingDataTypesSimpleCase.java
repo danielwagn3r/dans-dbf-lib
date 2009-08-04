@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -49,6 +46,12 @@ public class TestReadingDataTypesSimpleCase
     private Record r2 = null;
     private Record r3 = null;
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     * @throws CorruptedTableException DOCUMENT ME!
+     */
     @Before
     public void setUp()
                throws IOException, CorruptedTableException
@@ -65,6 +68,11 @@ public class TestReadingDataTypesSimpleCase
         r3 = records.get(3);
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws IOException DOCUMENT ME!
+     */
     @After
     public void tearDown()
                   throws IOException
@@ -72,6 +80,13 @@ public class TestReadingDataTypesSimpleCase
         cars.close();
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws FileNotFoundException DOCUMENT ME!
+     * @throws IOException DOCUMENT ME!
+     * @throws CorruptedTableException DOCUMENT ME!
+     */
     @Test
     public void definitions()
                      throws FileNotFoundException, IOException, CorruptedTableException
@@ -125,6 +140,9 @@ public class TestReadingDataTypesSimpleCase
                      10);
     }
 
+    /**
+     * DOCUMENT ME!
+     */
     @Test
     public void number()
     {
@@ -147,6 +165,9 @@ public class TestReadingDataTypesSimpleCase
                      r3.getNumberValue("CC"));
     }
 
+    /**
+     * DOCUMENT ME!
+     */
     @Test
     public void character()
     {
@@ -160,6 +181,9 @@ public class TestReadingDataTypesSimpleCase
                      r3.getStringValue("NAME").toString().trim());
     }
 
+    /**
+     * DOCUMENT ME!
+     */
     @Test
     public void logical()
     {
@@ -173,6 +197,9 @@ public class TestReadingDataTypesSimpleCase
                      r3.getBooleanValue("SEDAN"));
     }
 
+    /**
+     * DOCUMENT ME!
+     */
     @Test
     public void date()
     {
@@ -186,6 +213,9 @@ public class TestReadingDataTypesSimpleCase
                      r3.getDateValue("PROD_DATE"));
     }
 
+    /**
+     * DOCUMENT ME!
+     */
     @Test
     public void memo()
     {

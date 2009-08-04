@@ -1,29 +1,26 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
 import java.util.regex.Pattern;
 
 /**
- * Validates that a Java Object can be serialized to a DBF NUMBER type field. Only
- * Number and String objects (within the field constraints) can be so serialized.
+ * Validates that a Java Object can be serialized to a DBF NUMBER type field. Only Number and String
+ * objects (within the field constraints) can be so serialized.
  *
  * @author Jan van Mansum
  */
@@ -69,10 +66,10 @@ class NumberFormatValidator
     /**
      * {@inheritDoc}
      *
-     * For a NUMBER or FLOAT field a <tt>Number</tt> or a <tt>String</tt> is acceptable.
-     * A <tt>String</tt> is only acceptable if it contains a valid number value, i.e.
-     * one that fits and contains exactly the number of digits after the decimal point
-     * as specified in the field definition.  Anything else is rejected.
+     * For a NUMBER or FLOAT field a <tt>Number</tt> or a <tt>String</tt> is acceptable. A
+     * <tt>String</tt> is only acceptable if it contains a valid number value, i.e. one that fits
+     * and contains exactly the number of digits after the decimal point as specified in the field
+     * definition. Anything else is rejected.
      */
     public void validate(final Object aTypedObject)
                   throws DbfLibException
@@ -82,8 +79,8 @@ class NumberFormatValidator
             final Number numberValue = (Number) aTypedObject;
 
             /*
-             * Check if the number will fit in the field.  Note that if the Number object contains more decimals than the field
-             * specification it will be rounded.
+             * Check if the number will fit in the field. Note that if the Number object contains
+             * more decimals than the field specification it will be rounded.
              */
             int nrPositionsForDecimals = field.getDecimalCount() == 0 ? 0 : field.getDecimalCount() + 1;
 

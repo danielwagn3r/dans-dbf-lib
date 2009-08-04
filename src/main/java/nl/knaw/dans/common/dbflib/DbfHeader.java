@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -37,7 +34,7 @@ import java.util.List;
 class DbfHeader
 {
     /*
-     *  Offsets from beginning of file.
+     * Offsets from beginning of file.
      */
     static final int OFFSET_VERSION = 0;
     static final int OFFSET_MODIFIED_DATE = 1;
@@ -87,8 +84,8 @@ class DbfHeader
     private static final int LENGTH_RESERVED_3 = OFFSET_FIELD_DESCRIPTORS - OFFSET_RESERVED_3;
 
     /*
-     * Maximum field lengths.
-     * Notice: version dependent maximum field lengths defined in the Version class
+     * Maximum field lengths. Notice: version dependent maximum field lengths defined in the Version
+     * class
      */
     private static final int MAX_LENGTH_FLOAT_FIELD = 20;
     private static final int MAX_LENGTH_LOGICAL_FIELD = 1;
@@ -122,10 +119,10 @@ class DbfHeader
         /*
          * In CLIPPER 5 there are two header terminator bytes, in dBase only one.
          *
-         * The length of the first general table info block is 32 and of the subsequent
-         * field descriptors is also 32.  The headerLength includes the table info block,
-         * field descriptors and the final terminator byte(s).  To find out how many
-         * terminator bytes there are we simply find the remainder after division by 32.
+         * The length of the first general table info block is 32 and of the subsequent field
+         * descriptors is also 32. The headerLength includes the table info block, field descriptors
+         * and the final terminator byte(s). To find out how many terminator bytes there are we
+         * simply find the remainder after division by 32.
          */
         version = Version.getVersion(versionByte, headerLength % 32);
 
@@ -197,16 +194,16 @@ class DbfHeader
                            throws IOException
     {
         /*
-           * The number of years in the last modified date is actually the number of
-           * years since 1900. (See also comment below.)
-           */
+         * The number of years in the last modified date is actually the number of years since 1900.
+         * (See also comment below.)
+         */
         int year = aDataInput.readByte() + 1900;
 
         /*
-         * DBase III+ (and presumable II) has a Year 2000 bug.  It stores the year
-         * as simply the last two digits of the actual year.  DBFs created after 1999
-         * will therefore have the wrong date.  To get around this, we add 100 for
-         * all DBFs seemingly created before 1980 (when dBase II was launched).
+         * DBase III+ (and presumable II) has a Year 2000 bug. It stores the year as simply the last
+         * two digits of the actual year. DBFs created after 1999 will therefore have the wrong
+         * date. To get around this, we add 100 for all DBFs seemingly created before 1980 (when
+         * dBase II was launched).
          */
         if (year < 1980)
         {
@@ -429,8 +426,8 @@ class DbfHeader
                        throws IOException
     {
         /*
-         * Name of the field, terminated with 00h.
-         * (in LENGTH_FIELD_NAME the terminating 00h byte is already taken in account)
+         * Name of the field, terminated with 00h. (in LENGTH_FIELD_NAME the terminating 00h byte is
+         * already taken in account)
          */
         Util.writeString(aDataOutput,
                          aField.getName(),
@@ -439,7 +436,7 @@ class DbfHeader
         aDataOutput.writeByte(aField.getType().getCode());
 
         /*
-         * Field data address.  Used only in FoxPro. In other cases fill with 00h
+         * Field data address. Used only in FoxPro. In other cases fill with 00h
          */
         aDataOutput.writeInt(0x00);
 
@@ -498,13 +495,11 @@ class DbfHeader
                     throws IOException
     {
         /*
-         * The number of years in the last modified date is actually the number of
-         * years since 1900.
-         * DBase III+ (and presumable II) has a Year 2000 bug.  It stores the year
-         * as simply the last two digits of the actual year.  DBFs created after 1999
-         * will therefore have the wrong date.
-         * To comply with this practise, we subtract 1900 from the given year if it is
-         * less than 2000, and 2000 if it is greater than or equal to 2000
+         * The number of years in the last modified date is actually the number of years since 1900.
+         * DBase III+ (and presumable II) has a Year 2000 bug. It stores the year as simply the last
+         * two digits of the actual year. DBFs created after 1999 will therefore have the wrong
+         * date. To comply with this practise, we subtract 1900 from the given year if it is less
+         * than 2000, and 2000 if it is greater than or equal to 2000
          */
         final Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR) - 1900;

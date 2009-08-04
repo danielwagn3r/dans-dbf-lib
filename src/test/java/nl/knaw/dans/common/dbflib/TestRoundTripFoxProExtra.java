@@ -1,21 +1,18 @@
 /*
- *  Copyright 2009
- *  Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
  *
- *  This file is part of DANS DBF Library.
+ * This file is part of DANS DBF Library.
  *
- *  DANS DBF Library is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ * DANS DBF Library is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version.
  *
- *  DANS DBF Library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * DANS DBF Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with DANS DBF Library.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with DANS DBF Library. If
+ * not, see <http://www.gnu.org/licenses/>.
  */
 package nl.knaw.dans.common.dbflib;
 
@@ -34,20 +31,19 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Does roundtrip tests of the library, i.e. touches all the functionality, but does not
- * go very deep.  This roundtrip is only for FoxPro.  The reason for adding this extra
- * roundtrip is that the other test files for Foxpro are files that are made with dBase
- * (memo file is converted to format that FoxPro uses).
- * To make sure to cover possible differences between the .dbf files created with dBase and
- * the files created with FoxPro, we have another roundtrip test, using files that are made
- * with FoxPro.
-
+ * Does roundtrip tests of the library, i.e. touches all the functionality, but does not go very
+ * deep. This roundtrip is only for FoxPro. The reason for adding this extra roundtrip is that the
+ * other test files for Foxpro are files that are made with dBase (memo file is converted to format
+ * that FoxPro uses). To make sure to cover possible differences between the .dbf files created with
+ * dBase and the files created with FoxPro, we have another roundtrip test, using files that are
+ * made with FoxPro.
+ *
  * @author Vesa Åkerman
  */
 public class TestRoundTripFoxProExtra
 {
     /**
-     * A short roundtrip of the library.  Covers:
+     * A short roundtrip of the library. Covers:
      * <ul>
      * <li>Opening a database</li>
      * <li>Retrieving the table names</li>
@@ -248,7 +244,8 @@ public class TestRoundTripFoxProExtra
         ignoredRangesDbt.addRange(0x00, 0x03); // different next available block
         ignoredRangesDbt.addRange(0x06, 0x07); // different block size
         ignoredRangesDbt.addRange(0x08, 0x0f); // file name not in original file
-        ignoredRangesDbt.addRange(0x240, 0x5ff); // because of different block sizes, comparison can be done only till first memo
+        ignoredRangesDbt.addRange(0x240, 0x5ff); // because of different block sizes, comparison can
+                                                 // be done only till first memo
 
         UnitTestUtil.doCopyAndCompareTest("foxpro26/foxprospecial", "FPROALL", Version.FOXPRO_26, ignoredRangesDbf,
                                           ignoredRangesDbt);
