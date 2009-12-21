@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -27,11 +27,6 @@ public class TestDateFormatValidator
 {
     private final DataValidator validator = new DateFormatValidator(new Field("test", Type.DATE));
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test
     public void shouldAcceptEightDigitString()
                                       throws DbfLibException
@@ -39,11 +34,6 @@ public class TestDateFormatValidator
         validator.validate("12345678");
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectEightDigitStringWithLeadingSpaces()
         throws DbfLibException
@@ -51,11 +41,6 @@ public class TestDateFormatValidator
         validator.validate(" 12345678");
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectEightDigitStringWithTrailingSpaces()
         throws DbfLibException
@@ -63,11 +48,6 @@ public class TestDateFormatValidator
         validator.validate("12345678 ");
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectSevenDigitString()
                                       throws DbfLibException
@@ -75,11 +55,6 @@ public class TestDateFormatValidator
         validator.validate("1234567");
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectNineDigitString()
                                      throws DbfLibException
@@ -87,11 +62,6 @@ public class TestDateFormatValidator
         validator.validate("123456789");
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectNotAllDigitString()
                                        throws DbfLibException
@@ -99,11 +69,6 @@ public class TestDateFormatValidator
         validator.validate("1234567a");
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectBoolean()
                              throws DbfLibException
@@ -111,11 +76,6 @@ public class TestDateFormatValidator
         validator.validate(true);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectNumber()
                             throws DbfLibException
@@ -123,11 +83,6 @@ public class TestDateFormatValidator
         validator.validate(20091011);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test
     public void shouldAcceptDate()
                           throws DbfLibException
@@ -135,11 +90,6 @@ public class TestDateFormatValidator
         validator.validate(Util.createDate(2009, 6, 4));
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectByteArray()
                                throws DbfLibException

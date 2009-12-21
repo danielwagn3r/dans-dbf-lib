@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -52,12 +52,6 @@ public class TestUsageExamples
     private static final String fileNameDbf = "MYTABLE.DBF";
     private static final String fileNameDbt = "MYTABLE.DBT";
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test
     public void test()
               throws IOException, DbfLibException

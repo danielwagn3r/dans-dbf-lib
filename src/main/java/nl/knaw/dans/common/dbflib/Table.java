@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -28,8 +28,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
- * Represents a single table in a xBase database. A table is represented by a single .DBF file. Some
- * tables have an associated .DBT file to store memo field data.
+ * Represents a single table in a xBase database. A table is represented by a single
+ * <code>.DBF</code> file. Some tables have an associated .DBT file to store memo field data.
  *
  * @author Jan van Mansum
  * @author Vesa Åkerman
@@ -56,13 +56,13 @@ public class Table
                 {
                     lastReadRecord = readRecord(recordCounter++);
                 }
-                catch (IOException ioe)
+                catch (final IOException ioException)
                 {
-                    throw new RuntimeException(ioe.getMessage(), ioe);
+                    throw new RuntimeException(ioException.getMessage(), ioException);
                 }
-                catch (CorruptedTableException cte)
+                catch (final CorruptedTableException corruptedTableException)
                 {
-                    throw new RuntimeException(cte.getMessage(), cte);
+                    throw new RuntimeException(corruptedTableException.getMessage(), corruptedTableException);
                 }
             }
 
@@ -94,57 +94,57 @@ public class Table
     private RandomAccessFile raFile = null;
 
     /**
-     * Creates a new Table object. A <tt>java.io.File</tt> object representing the .DBF file must be
-     * provided. To read from or write to the table it must first be opened.
+     * Creates a new Table object. A {@link File} object representing the <code>.DBF</code> file
+     * must be provided. To read from or write to the table it must first be opened.
      *
-     * @param aTableFile a <tt>java.io.File</tt> object representing the .DBF file that stores this
-     *            table's data.
+     * @param tableFile a <code>File</code.> object representing the <code>.DBF</code> file that
+     *            stores this table's data.
      *
-     * @see #open(nl.knaw.dans.common.dbflib.IfNonExistent)
+     * @see #open(IfNonExistent)
      *
-     * @throws IllegalArgumentException if <tt>aTableFiel</tt> is <tt>null</tt>
+     * @throws IllegalArgumentException if <code>tableFile </code> is <code>null</code>
      */
-    public Table(final File aTableFile)
+    public Table(final File tableFile)
           throws IllegalArgumentException
     {
-        if (aTableFile == null)
+        if (tableFile == null)
         {
             throw new IllegalArgumentException("Table file must not be null");
         }
 
-        tableFile = aTableFile;
+        this.tableFile = tableFile;
     }
 
     /**
      * Creates a new Table object. In order to read from or write to the table it must first be
      * opened.
      * <p>
-     * <b>Note:</b> if the .DBF file already exists <tt>aFields</tt> will be overwritten by the
-     * values in the existing file when opened. To replace an existing table, first delete it and
-     * then create and open a new <tt>Table</tt> object.
+     * <b>Note:</b> if the <code>.DBF</code> file already exists <code>aFields</code> will be
+     * overwritten by the values in the existing file when opened. To replace an existing table,
+     * first delete it and then create and open a new <code>Table</code> object.
      *
-     * @param aTableFile the .DBF file that contains the table data
-     * @param aVersion the dBase version to support
-     * @param aFields the fields to create if this is a new table
+     * @param tableFile the <code>.DBF</code> file that contains the table data
+     * @param version the dBase version to support
+     * @param fields the fields to create if this is a new table
      *
-     * @see #open(nl.knaw.dans.common.dbflib.IfNonExistent)
+     * @see #open(IfNonExistent)
      *
      * @throws IllegalArgumentException if <tt>aTableFiel</tt> is <tt>null</tt>
      */
-    public Table(final File aTableFile, final Version aVersion, final List<Field> aFields)
+    public Table(final File tableFile, final Version version, final List<Field> fields)
           throws InvalidFieldTypeException, InvalidFieldLengthException
     {
-        this(aTableFile);
-        header.setVersion(aVersion);
-        header.setHasMemo(hasMemo(aFields));
-        header.setFields(aFields);
+        this(tableFile);
+        header.setVersion(version);
+        header.setHasMemo(hasMemo(fields));
+        header.setFields(fields);
     }
 
-    private static boolean hasMemo(final List<Field> aFields)
+    private static boolean hasMemo(final List<Field> fields)
     {
-        for (final Field f : aFields)
+        for (final Field field : fields)
         {
-            if (f.getType() == Type.MEMO)
+            if (field.getType() == Type.MEMO)
             {
                 return true;
             }
@@ -154,8 +154,8 @@ public class Table
     }
 
     /**
-     * Opens the table for reading and writing. Equivalent to
-     * {@link Table#open(nl.knaw.dans.common.dbflib.IfNonExistent) Table.open(IfNonExistent.ERROR)}
+     * Opens the table for reading and writing. Equivalent to {@link Table#open(IfNonExistent)
+     * Table.open(IfNonExistent.ERROR)}
      *
      * @throws IOException if the table file does not exist or could not be opened
      * @throws CorruptedTableException if the header of the table file was corrupt
@@ -169,12 +169,12 @@ public class Table
     /**
      * Opens the table for reading and writing.
      *
-     * @param aIfNonExistent what to do if the table file does not exist yet
+     * @param ifNonExistent what to do if the table file does not exist yet
      *
-     * @throws java.io.IOException if the table does not exist or could be opened
+     * @throws IOException if the table does not exist or could be opened
      * @throws CorruptedTableException if the header of the table file was corrupt
      */
-    public void open(final IfNonExistent aIfNonExistent)
+    public void open(final IfNonExistent ifNonExistent)
               throws IOException, CorruptedTableException
     {
         if (tableFile.exists())
@@ -182,12 +182,12 @@ public class Table
             raFile = new RandomAccessFile(tableFile, "rw");
             header.readAll(raFile);
         }
-        else if (aIfNonExistent.isCreate())
+        else if (ifNonExistent.isCreate())
         {
             raFile = new RandomAccessFile(tableFile, "rw");
             header.writeAll(raFile);
         }
-        else if (aIfNonExistent.isError())
+        else if (ifNonExistent.isError())
         {
             throw new FileNotFoundException("Input file " + tableFile + " not found");
         }
@@ -218,8 +218,7 @@ public class Table
     /**
      * Closes and deletes the underlying table file and associated files.
      *
-     * @throws java.io.IOException if the table file or an associated file cannot be closed or
-     *             deleted
+     * @throws IOException if the table file or an associated file cannot be closed or deleted
      */
     public void delete()
                 throws IOException
@@ -257,9 +256,9 @@ public class Table
     }
 
     /**
-     * Returns a <tt>java.util.List</tt> of {@link Field} objects, which provide a description of
-     * each field (column) in the table. The order of the <tt>Field</tt> objects is guaranteed to be
-     * the same as the order of the fields in each record returned. A new copy of the field list is
+     * Returns a {@link List} of {@link Field} objects, which provide a description of each field
+     * (column) in the table. The order of the <code>Field</code> objects is guaranteed to be the
+     * same as the order of the fields in each record returned. A new copy of the field list is
      * returned on each call.
      *
      * @return the list of field objects.
@@ -272,9 +271,9 @@ public class Table
     }
 
     /**
-     * Returns a <tt>Record</tt> iterator. Note that, to use the iterator the table must be opened.
+     * Returns a {@link Record} iterator. Note that, to use the iterator the table must be opened.
      *
-     * @return a <tt>Record</tt> iterator
+     * @return a <code>Record</code> iterator
      *
      * @see Record
      */
@@ -293,19 +292,19 @@ public class Table
      * @throws RecordTooLargeException if more field values are provided than there are field in
      *             this table
      */
-    public void addRecord(final Object... aFieldValue)
+    public void addRecord(final Object... fieldValues)
                    throws IOException, DbfLibException
     {
-        if (aFieldValue.length > header.getFields().size())
+        if (fieldValues.length > header.getFields().size())
         {
-            throw new RecordTooLargeException("Trying to add " + aFieldValue.length + " fields while there are only "
+            throw new RecordTooLargeException("Trying to add " + fieldValues.length + " fields while there are only "
                                               + header.getFields().size() + " defined in the table file");
         }
 
         final Map<String, Value> map = new HashMap<String, Value>();
         final Iterator<Field> fieldIterator = header.getFields().iterator();
 
-        for (final Object fieldValue : aFieldValue)
+        for (final Object fieldValue : fieldValues)
         {
             final Field field = fieldIterator.next();
 
@@ -316,27 +315,27 @@ public class Table
         addRecord(new Record(map));
     }
 
-    private Value createValueObject(final Object aValue)
+    private Value createValueObject(final Object value)
     {
-        if (aValue instanceof Number)
+        if (value instanceof Number)
         {
-            return new NumberValue((Number) aValue);
+            return new NumberValue((Number) value);
         }
-        else if (aValue instanceof String)
+        else if (value instanceof String)
         {
-            return new StringValue((String) aValue);
+            return new StringValue((String) value);
         }
-        else if (aValue instanceof Boolean)
+        else if (value instanceof Boolean)
         {
-            return new BooleanValue((Boolean) aValue);
+            return new BooleanValue((Boolean) value);
         }
-        else if (aValue instanceof Date)
+        else if (value instanceof Date)
         {
-            return new DateValue((Date) aValue);
+            return new DateValue((Date) value);
         }
-        else if (aValue instanceof byte[])
+        else if (value instanceof byte[])
         {
-            return new ByteArrayValue((byte[]) aValue);
+            return new ByteArrayValue((byte[]) value);
         }
 
         return null;
@@ -345,7 +344,7 @@ public class Table
     /**
      * Adds a record to this table.
      *
-     * @param aRecord the record to add.
+     * @param record the record to add.
      *
      * @throws IOException if the record could not be written to the database file
      * @throws CorruptedTableException if the table was corrupt
@@ -353,7 +352,7 @@ public class Table
      *
      * @see Record
      */
-    public void addRecord(final Record aRecord)
+    public void addRecord(final Record record)
                    throws IOException, DbfLibException
     {
         checkOpen();
@@ -363,7 +362,7 @@ public class Table
 
         for (final Field field : header.getFields())
         {
-            byte[] raw = aRecord.getRawValue(field);
+            byte[] raw = record.getRawValue(field);
 
             if (raw == null)
             {
@@ -372,7 +371,7 @@ public class Table
             }
             else if (field.getType() == Type.MEMO || field.getType() == Type.BINARY || field.getType() == Type.GENERAL)
             {
-                int index = writeMemo(raw);
+                final int index = writeMemo(raw);
 
                 if (header.getVersion() == Version.DBASE_4 || header.getVersion() == Version.DBASE_5)
                 {
@@ -391,19 +390,19 @@ public class Table
         writeRecordCount(header.getRecordCount() + 1);
     }
 
-    private int writeMemo(final byte[] aMemoText)
+    private int writeMemo(final byte[] memoText)
                    throws IOException, CorruptedTableException
     {
         ensureMemoOpened(IfNonExistent.CREATE);
 
-        return memo.writeMemo(aMemoText);
+        return memo.writeMemo(memoText);
     }
 
-    private void writeRecordCount(final int aRecordCount)
+    private void writeRecordCount(final int recordCount)
                            throws IOException
     {
         raFile.seek(DbfHeader.OFFSET_RECORD_COUNT);
-        header.setRecordCount(aRecordCount);
+        header.setRecordCount(recordCount);
         header.writeRecordCount(raFile);
     }
 
@@ -415,20 +414,20 @@ public class Table
         }
     }
 
-    private byte[] readMemo(final String aMemoIndex)
+    private byte[] readMemo(final String memoIndex)
                      throws IOException, CorruptedTableException
     {
         ensureMemoOpened(IfNonExistent.ERROR);
 
-        if (aMemoIndex.trim().isEmpty())
+        if (memoIndex.trim().isEmpty())
         {
             return null;
         }
 
-        return memo.readMemo(Integer.parseInt(aMemoIndex.trim()));
+        return memo.readMemo(Integer.parseInt(memoIndex.trim()));
     }
 
-    private void ensureMemoOpened(final IfNonExistent aIfNonExistent)
+    private void ensureMemoOpened(final IfNonExistent ifNonExistent)
                            throws IOException, CorruptedTableException
     {
         if (memo != null)
@@ -436,7 +435,7 @@ public class Table
             return;
         }
 
-        openMemo(aIfNonExistent);
+        openMemo(ifNonExistent);
     }
 
     private void ensureMemoClosed()
@@ -458,12 +457,12 @@ public class Table
     /**
      * Opens the memo of this table.
      *
-     * @param aIfNonExistent what to do if the memo file doesn't exist. (Cannot be IGNORE.)
-     * @throws java.io.IOException if the memo file could not be opened
-     * @throws nl.knaw.dans.common.dbflib.CorruptedTableException if the memo file could not be
-     *             found or multiple matches exist, or if it is corrupt
+     * @param ifNonExistent what to do if the memo file does not exist. (Cannot be IGNORE.)
+     * @throws IOException if the memo file could not be opened
+     * @throws CorruptedTableException if the memo file could not be found or multiple matches
+     *             exist, or if it is corrupt
      */
-    private void openMemo(final IfNonExistent aIfNonExistent)
+    private void openMemo(final IfNonExistent ifNonExistent)
                    throws IOException, CorruptedTableException
     {
         File memoFile = Util.getMemoFile(tableFile,
@@ -473,12 +472,12 @@ public class Table
         {
             final String extension = (header.getVersion() == Version.FOXPRO_26 ? ".fpt" : ".dbt");
 
-            if (aIfNonExistent.isError())
+            if (ifNonExistent.isError())
             {
                 throw new CorruptedTableException("Could not find file '" + Util.stripExtension(tableFile.getPath())
                                                   + extension + "' (or multiple matches for the file)");
             }
-            else if (aIfNonExistent.isCreate())
+            else if (ifNonExistent.isCreate())
             {
                 final String tableFilePath = tableFile.getPath();
                 memoFile = new File(tableFilePath.substring(0, tableFilePath.length() - ".dbf".length()) + extension);
@@ -492,15 +491,15 @@ public class Table
         memo =
             new Memo(memoFile,
                      header.getVersion());
-        memo.open(aIfNonExistent);
+        memo.open(ifNonExistent);
     }
 
-    private Record readRecord(final int aIndex)
+    private Record readRecord(final int index)
                        throws IOException, CorruptedTableException
     {
-        raFile.seek(header.getLength() + (aIndex * header.getRecordLength()));
+        raFile.seek(header.getLength() + (index * header.getRecordLength()));
 
-        byte firstByteOfRecord = raFile.readByte();
+        final byte firstByteOfRecord = raFile.readByte();
 
         while (firstByteOfRecord == MARKER_RECORD_DELETED)
         {
@@ -524,31 +523,33 @@ public class Table
                 case NUMBER:
                 case FLOAT:
                     recordValues.put(field.getName(),
-                                     new NumberValue(rawData));
+                                     new NumberValue(field, rawData));
 
                     break;
 
                 case CHARACTER:
                     recordValues.put(field.getName(),
-                                     new StringValue(rawData));
+                                     new StringValue(field, rawData));
 
                     break;
 
                 case LOGICAL:
                     recordValues.put(field.getName(),
-                                     new BooleanValue(rawData));
+                                     new BooleanValue(field, rawData));
 
                     break;
 
                 case DATE:
                     recordValues.put(field.getName(),
-                                     new DateValue(rawData));
+                                     new DateValue(field, rawData));
 
                     break;
 
                 case MEMO:
+
+                    final byte[] memoTextBytes = readMemo(new String(rawData));
                     recordValues.put(field.getName(),
-                                     new StringValue(readMemo(new String(rawData))));
+                                     memoTextBytes == null ? null : new StringValue(field, memoTextBytes));
 
                     break;
 

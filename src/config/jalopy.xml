@@ -175,10 +175,10 @@
 				</check>
 				<fieldsShort>false</fieldsShort>
 				<generate>
-					<class>1</class>
-					<constructor>1</constructor>
-					<field>1</field>
-					<method>1</method>
+					<class>0</class>
+					<constructor>0</constructor>
+					<field>0</field>
+					<method>0</method>
 				</generate>
 				<parseComments>false</parseComments>
 				<parseDescription>false</parseDescription>

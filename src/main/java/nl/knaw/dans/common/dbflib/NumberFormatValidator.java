@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -29,10 +29,10 @@ class NumberFormatValidator
 {
     private final Pattern stringPattern;
 
-    NumberFormatValidator(final Field aField)
+    NumberFormatValidator(final Field field)
     {
-        super(aField);
-        assert aField.getType() == Type.NUMBER || aField.getType() == Type.FLOAT : "Can only be validator for NUMBER or FLOAT fields";
+        super(field);
+        assert field.getType() == Type.NUMBER || field.getType() == Type.FLOAT : "Can only be validator for NUMBER or FLOAT fields";
 
         /*
          * Build the pattern that the data must comply to if it is a String.
@@ -57,32 +57,32 @@ class NumberFormatValidator
             withSignAlternative = "\\-\\d{1," + (beforeDecimalPointLength - 1) + "}|";
         }
 
-        String withoutSignAlternative = "\\d{1," + beforeDecimalPointLength + "}";
-        String patternString = "(" + withSignAlternative + withoutSignAlternative + ")" + decimalPartPattern;
+        final String withoutSignAlternative = "\\d{1," + beforeDecimalPointLength + "}";
+        final String patternString = "(" + withSignAlternative + withoutSignAlternative + ")" + decimalPartPattern;
 
         stringPattern = Pattern.compile(patternString);
     }
 
     /**
      * {@inheritDoc}
-     *
-     * For a NUMBER or FLOAT field a <tt>Number</tt> or a <tt>String</tt> is acceptable. A
-     * <tt>String</tt> is only acceptable if it contains a valid number value, i.e. one that fits
-     * and contains exactly the number of digits after the decimal point as specified in the field
-     * definition. Anything else is rejected.
+     * <p>
+     * For a NUMBER or FLOAT field a {@link Number} or a {@link String} is acceptable. A
+     * <code>String</code> is only acceptable if it contains a valid number value, i.e. one that
+     * fits and contains exactly the number of digits after the decimal point as specified in the
+     * field definition. Anything else is rejected.
      */
-    public void validate(final Object aTypedObject)
+    public void validate(final Object typedObject)
                   throws DbfLibException
     {
-        if (aTypedObject instanceof Number)
+        if (typedObject instanceof Number)
         {
-            final Number numberValue = (Number) aTypedObject;
+            final Number numberValue = (Number) typedObject;
 
             /*
              * Check if the number will fit in the field. Note that if the Number object contains
              * more decimals than the field specification it will be rounded.
              */
-            int nrPositionsForDecimals = field.getDecimalCount() == 0 ? 0 : field.getDecimalCount() + 1;
+            final int nrPositionsForDecimals = field.getDecimalCount() == 0 ? 0 : field.getDecimalCount() + 1;
 
             if (Util.getSignWidth(numberValue) + Util.getNumberOfIntDigits(numberValue) > field.getLength()
                     - nrPositionsForDecimals)
@@ -94,9 +94,9 @@ class NumberFormatValidator
             return;
         }
 
-        if (aTypedObject instanceof String)
+        if (typedObject instanceof String)
         {
-            String stringValue = (String) aTypedObject;
+            String stringValue = (String) typedObject;
             stringValue = stringValue.trim();
 
             if (! stringPattern.matcher(stringValue).matches())
@@ -108,7 +108,7 @@ class NumberFormatValidator
             return;
         }
 
-        throw new DataMismatchException("Cannot write objects of type '" + aTypedObject.getClass().getName()
+        throw new DataMismatchException("Cannot write objects of type '" + typedObject.getClass().getName()
                                         + "' to a NUMBER or FLOAT field");
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -27,11 +27,6 @@ public class TestLogicalFormatValidator
 {
     private final DataValidator validator = new LogicalFormatValidator(new Field("test", Type.LOGICAL));
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test
     public void shouldAcceptStringWithYNTF_or_Space()
                                              throws DbfLibException
@@ -43,11 +38,6 @@ public class TestLogicalFormatValidator
         validator.validate(" ");
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectStringWithA()
                                  throws DbfLibException
@@ -55,11 +45,6 @@ public class TestLogicalFormatValidator
         validator.validate("A");
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectTooLargeValue()
                                    throws DbfLibException
@@ -67,11 +52,6 @@ public class TestLogicalFormatValidator
         validator.validate("True");
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test
     public void shouldAcceptBoolean()
                              throws DbfLibException
@@ -80,11 +60,6 @@ public class TestLogicalFormatValidator
         validator.validate(Boolean.FALSE);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectNumber()
                             throws DbfLibException
@@ -92,11 +67,6 @@ public class TestLogicalFormatValidator
         validator.validate(123);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectDate()
                           throws DbfLibException
@@ -104,11 +74,6 @@ public class TestLogicalFormatValidator
         validator.validate(Util.createDate(2009, 5, 29));
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectByteArray()
                                throws DbfLibException

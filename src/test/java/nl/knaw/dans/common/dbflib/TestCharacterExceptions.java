@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -52,14 +52,6 @@ public class TestCharacterExceptions
         super(aVersion, aVersionDirectory);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     * @throws InvalidFieldTypeException DOCUMENT ME!
-     * @throws InvalidFieldLengthException DOCUMENT ME!
-     */
     @Before
     public void setUp()
                throws IOException, CorruptedTableException, InvalidFieldTypeException, InvalidFieldLengthException
@@ -77,11 +69,6 @@ public class TestCharacterExceptions
         table.open(IfNonExistent.CREATE);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
     @After
     public void tearDown()
                   throws IOException
@@ -89,12 +76,6 @@ public class TestCharacterExceptions
         table.close();
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test
     public void fitsComfortably()
                          throws IOException, DbfLibException
@@ -102,12 +83,6 @@ public class TestCharacterExceptions
         table.addRecord("Less than 20", "This is not at all long");
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test
     public void fitsExactly()
                      throws IOException, DbfLibException
@@ -118,12 +93,6 @@ public class TestCharacterExceptions
                         + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx!!!");
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = ValueTooLargeException.class)
     public void firstFieldDoesNotFit()
                               throws IOException, DbfLibException
@@ -131,12 +100,6 @@ public class TestCharacterExceptions
         table.addRecord("This is more than 20 characters", "This long field is ok");
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = ValueTooLargeException.class)
     public void secondFieldDoesNotFit()
                                throws IOException, DbfLibException

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -27,35 +27,35 @@ class DataFormatValidatorFactory
     static final DataValidator doNothingValidator =
         new DataValidator()
         {
-            public void validate(Object aTypedObject)
+            public void validate(Object typedObject)
                           throws DbfLibException
             {
             }
         };
 
-    static DataValidator createValidator(final Field aField)
+    static DataValidator createValidator(final Field field)
     {
-        switch (aField.getType())
+        switch (field.getType())
         {
             case BINARY:
             case GENERAL:
                 return doNothingValidator;
 
             case CHARACTER:
-                return new CharacterFormatValidator(aField);
+                return new CharacterFormatValidator(field);
 
             case DATE:
-                return new DateFormatValidator(aField);
+                return new DateFormatValidator(field);
 
             case FLOAT:
             case NUMBER:
-                return new NumberFormatValidator(aField);
+                return new NumberFormatValidator(field);
 
             case LOGICAL:
-                return new LogicalFormatValidator(aField);
+                return new LogicalFormatValidator(field);
 
             case MEMO:
-                return new MemoFormatValidator(aField);
+                return new MemoFormatValidator(field);
 
             default:
                 assert false : "Programming error: Not all Types handled";

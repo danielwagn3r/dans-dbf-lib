@@ -35,14 +35,6 @@ public class TestNumberExceptions
         super(aVersion, aVersionDirectory);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     * @throws InvalidFieldTypeException DOCUMENT ME!
-     * @throws InvalidFieldLengthException DOCUMENT ME!
-     */
     @Before
     public void setUp()
                throws IOException, CorruptedTableException, InvalidFieldTypeException, InvalidFieldLengthException
@@ -60,11 +52,6 @@ public class TestNumberExceptions
         table.open(IfNonExistent.CREATE);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
     @After
     public void tearDown()
                   throws IOException
@@ -72,12 +59,6 @@ public class TestNumberExceptions
         table.close();
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = ValueTooLargeException.class)
     public void firstValueTooLarge()
                             throws IOException, DbfLibException
@@ -85,12 +66,6 @@ public class TestNumberExceptions
         table.addRecord(123456);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = ValueTooLargeException.class)
     public void secondValueTooLarge()
                              throws IOException, DbfLibException
@@ -98,14 +73,6 @@ public class TestNumberExceptions
         table.addRecord(0, 123.45);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     * @throws InvalidFieldTypeException DOCUMENT ME!
-     * @throws InvalidFieldLengthException DOCUMENT ME!
-     */
     @Test(expected = InvalidFieldLengthException.class)
     public void tooLongNumberField()
                             throws IOException,

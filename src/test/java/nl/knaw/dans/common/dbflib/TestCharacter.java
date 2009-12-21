@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -48,12 +48,6 @@ public class TestCharacter
         super(aVersion, aVersionDirectory);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     */
     @Test
     public void readCharacter()
                        throws IOException, CorruptedTableException
@@ -95,12 +89,6 @@ public class TestCharacter
         }
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test
     public void writeCharacter()
                         throws IOException, DbfLibException

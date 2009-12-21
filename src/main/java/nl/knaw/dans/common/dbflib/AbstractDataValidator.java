@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -18,7 +18,7 @@ package nl.knaw.dans.common.dbflib;
 
 
 /**
- * Abstract base class for <tt>DataValidator</tt> implementations. Stores the connected field.
+ * Abstract base class for {@link DataValidator} implementations. Stores the connected field.
  *
  * @author Jan van Mansum
  */
@@ -27,8 +27,8 @@ abstract class AbstractDataValidator
 {
     protected final Field field;
 
-    protected AbstractDataValidator(final Field aField)
+    protected AbstractDataValidator(final Field field)
     {
-        field = aField;
+        this.field = field;
     }
 }

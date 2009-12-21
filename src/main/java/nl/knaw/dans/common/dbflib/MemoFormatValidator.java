@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -19,35 +19,34 @@ package nl.knaw.dans.common.dbflib;
 import java.util.Date;
 
 /**
- *
  * @author Jan van Mansum
  */
 class MemoFormatValidator
     extends AbstractDataValidator
 {
-    MemoFormatValidator(final Field aField)
+    MemoFormatValidator(final Field field)
     {
-        super(aField);
-        assert aField.getType() == Type.MEMO : "Can only be validator for MEMO fields";
+        super(field);
+        assert field.getType() == Type.MEMO : "Can only be validator for MEMO fields";
     }
 
     /**
      * {@inheritDoc}
-     *
-     * For a MEMO field values of types <tt>String</tt>, <tt>Boolean</tt>, <tt>java.util.Date</tt>
-     * and <tt>Number</tt> are acceptable.
+     * <p>
+     * For a MEMO field values of types {@link String}, {@link Boolean}, {@link Date} and
+     * {@link Number} are acceptable.
      */
-    public void validate(Object aTypedObject)
+    public void validate(final Object typedObject)
                   throws DbfLibException
     {
-        if (aTypedObject instanceof String
-                || aTypedObject instanceof Boolean
-                || aTypedObject instanceof Date
-                || aTypedObject instanceof Number)
+        if (typedObject instanceof String
+                || typedObject instanceof Boolean
+                || typedObject instanceof Date
+                || typedObject instanceof Number)
         {
             return;
         }
 
-        throw new DataMismatchException("Cannot write value of type " + aTypedObject.getClass().getName());
+        throw new DataMismatchException("Cannot write value of type " + typedObject.getClass().getName());
     }
 }

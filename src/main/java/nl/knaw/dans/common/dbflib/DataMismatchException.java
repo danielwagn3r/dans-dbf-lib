@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -19,18 +19,20 @@ package nl.knaw.dans.common.dbflib;
 
 /**
  * Thrown to indicate that the data provided cannot be written to the database. The data was
- * provided as a Java object of incompatible type (for instance a <tt>Boolean</tt> object to a DATE
- * type field) or the format of the data was wrong (for instance a <tt>String</tt> object to a
- * NUMBER type field, which is allowed, but the <tt>String</tt> contains "1a", that is, it is not a
- * valid number.
+ * provided as a Java object of incompatible type (for instance a {@link Boolean} object to a DATE
+ * type field) or the format of the data was wrong (for instance a {@link String} object to a NUMBER
+ * type field, which is allowed, but the <code>String</code> contains <code>"1a"</code>, that is, it
+ * is not a valid number.
  *
  * @author Jan van Mansum
  */
 public class DataMismatchException
     extends DbfLibException
 {
-    DataMismatchException(final String aMessage)
+    private static final long serialVersionUID = 6304059179012791413L;
+
+    DataMismatchException(final String message)
     {
-        super(aMessage);
+        super(message);
     }
 }

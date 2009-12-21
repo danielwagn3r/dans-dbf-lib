@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -72,14 +72,6 @@ public class TestFloatExceptions
         return Arrays.asList(testParameters);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     * @throws InvalidFieldTypeException DOCUMENT ME!
-     * @throws InvalidFieldLengthException DOCUMENT ME!
-     */
     @Before
     public void setUp()
                throws IOException, CorruptedTableException, InvalidFieldTypeException, InvalidFieldLengthException
@@ -98,11 +90,6 @@ public class TestFloatExceptions
         table.open(IfNonExistent.CREATE);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
     @After
     public void tearDown()
                   throws IOException
@@ -110,12 +97,6 @@ public class TestFloatExceptions
         table.close();
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = ValueTooLargeException.class)
     public void tooBigIntegerValue()
                             throws IOException, DbfLibException
@@ -125,12 +106,6 @@ public class TestFloatExceptions
                         0.0);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = ValueTooLargeException.class)
     public void tooBigDecimalValue()
                             throws IOException, DbfLibException

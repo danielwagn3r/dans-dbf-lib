@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -27,33 +27,33 @@ class CharacterFormatValidator
     /**
      * Creates a new CharacterFormatValidator object.
      *
-     * @param aField the field for which to do validation
+     * @param field the field for which to do validation
      */
-    public CharacterFormatValidator(final Field aField)
+    public CharacterFormatValidator(final Field field)
     {
-        super(aField);
-        assert aField.getType() == Type.CHARACTER : "Can only be validator for CHARACTER fields";
+        super(field);
+        assert field.getType() == Type.CHARACTER : "Can only be validator for CHARACTER fields";
     }
 
     /**
      * {@inheritDoc}
      *
-     * For a CHARACTER field are acceptable: <tt>String</tt>, <tt>Number</tt>,
-     * <tt>java.util.Date</tt> and <tt>Boolean</tt> values.
+     * For a CHARACTER field are acceptable: {@link String}, {@link Number},
+     * {@link Date} and {@link Boolean} values.
      */
-    public void validate(final Object aTypedObject)
+    public void validate(final Object typedObject)
                   throws DbfLibException
     {
-        if (aTypedObject instanceof String || aTypedObject instanceof Number)
+        if (typedObject instanceof String || typedObject instanceof Number)
         {
-            if (aTypedObject.toString().length() > field.getLength())
+            if (typedObject.toString().length() > field.getLength())
             {
                 throw new ValueTooLargeException("Value too large to it in field");
             }
 
             return;
         }
-        else if (aTypedObject instanceof Date)
+        else if (typedObject instanceof Date)
         {
             if (field.getLength() < Type.DATE.getLength())
             {
@@ -62,11 +62,11 @@ class CharacterFormatValidator
 
             return;
         }
-        else if (aTypedObject instanceof Boolean)
+        else if (typedObject instanceof Boolean)
         {
             return;
         }
 
-        throw new DataMismatchException("Cannot add value of type " + aTypedObject.getClass().getName());
+        throw new DataMismatchException("Cannot add value of type " + typedObject.getClass().getName());
     }
 }

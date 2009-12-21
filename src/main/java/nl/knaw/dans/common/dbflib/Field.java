@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -29,49 +29,47 @@ public class Field
     private final Type type;
     private final int length;
     private final int decimalCount;
-    private final String formatString;
     private final DataValidator validator;
 
     /**
      * Creates a new Field object. If the specified type has a fixed size and decimal count, they
      * are used. otherwise size is initialized to 1 and decimal count to 0.
      *
-     * @param aName the name of the field
-     * @param aType the type of the field
+     * @param name the name of the field
+     * @param type the type of the field
      */
-    public Field(final String aName, final Type aType)
+    public Field(final String name, final Type type)
     {
-        this(aName, aType, 1, 0);
+        this(name, type, 1, 0);
     }
 
     /**
      * Creates a new Field object. Decimal count is initialized to 0.
      *
-     * @param aName the name of the field
-     * @param aType the type of the field
-     * @param aLength the length of the field
+     * @param name the name of the field
+     * @param type the type of the field
+     * @param length the length of the field
      */
-    public Field(final String aName, final Type aType, final int aLength)
+    public Field(final String name, final Type type, final int length)
     {
-        this(aName, aType, aLength, 0);
+        this(name, type, length, 0);
     }
 
     /**
-     * Creates a new Field object. <tt>aLength</tt> and <tt>aDecimalCount</tt> do not apply to all
-     * field types.
+     * Creates a new Field object. <code>length</code> and <code>decimalCount</code> do not apply to
+     * all field types.
      *
-     * @param aName name of the field
-     * @param aType the type of the field
-     * @param aLength the length of the field
-     * @param aDecimalCount the decimal count of the field.
+     * @param name name of the field
+     * @param type the type of the field
+     * @param length the length of the field
+     * @param decimalCount the decimal count of the field.
      */
-    public Field(final String aName, final Type aType, final int aLength, final int aDecimalCount)
+    public Field(final String name, final Type type, final int length, final int decimalCount)
     {
-        name = aName;
-        type = aType;
-        length = aType.getLength() == -1 ? aLength : aType.getLength();
-        decimalCount = aDecimalCount;
-        formatString = "%" + length + (decimalCount == 0 ? "d" : "." + decimalCount + "f");
+        this.name = name;
+        this.type = type;
+        this.length = type.getLength() == -1 ? length : type.getLength();
+        this.decimalCount = decimalCount;
         validator = DataFormatValidatorFactory.createValidator(this);
     }
 
@@ -98,7 +96,7 @@ public class Field
     /**
      * Returns the length of the field, or -1 if not applicable
      *
-     * @return the lenght of the field
+     * @return the length of the field
      */
     public int getLength()
     {
@@ -108,24 +106,30 @@ public class Field
     /**
      * Returns the decimal count of the field, or -1 if not applicable
      *
-     * @return the lenght of the field
+     * @return the decimal count of the field
      */
     public int getDecimalCount()
     {
         return decimalCount;
     }
 
-    /*
-     * Used internally to format numbers.
-     */
-    String getFormatString()
-    {
-        return formatString;
-    }
-
     void validateTypedValue(final Object aTypedValue)
                      throws DbfLibException
     {
         validator.validate(aTypedValue);
+    }
+
+    @Override
+    public boolean equals(final Object other)
+    {
+        if (other instanceof Field)
+        {
+            final Field otherField = (Field) other;
+
+            return decimalCount == otherField.decimalCount && length == otherField.length
+                   && name.equals(otherField.name) && type == otherField.type;
+        }
+
+        return false;
     }
 }

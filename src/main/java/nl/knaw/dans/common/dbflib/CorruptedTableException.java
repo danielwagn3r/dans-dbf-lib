@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -26,8 +26,10 @@ package nl.knaw.dans.common.dbflib;
 public class CorruptedTableException
     extends DbfLibException
 {
-    CorruptedTableException(final String aMessage)
+    private static final long serialVersionUID = -5679884913272499565L;
+
+    CorruptedTableException(final String message)
     {
-        super(aMessage);
+        super(message);
     }
 }

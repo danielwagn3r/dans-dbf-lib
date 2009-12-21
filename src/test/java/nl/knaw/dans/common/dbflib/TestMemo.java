@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -49,13 +49,6 @@ public class TestMemo
         super(aVersion, aVersionDirectory);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws FileNotFoundException DOCUMENT ME!
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     */
     @Test
     public void readMemo()
                   throws FileNotFoundException, IOException, CorruptedTableException
@@ -91,12 +84,6 @@ public class TestMemo
         }
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test
     public void writeMemo()
                    throws IOException, DbfLibException

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -106,12 +106,6 @@ public class TestTableExceptions
         }
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     */
     @Test(expected = RuntimeException.class)
     public void emptyMemoFile()
                        throws IOException, CorruptedTableException
@@ -130,12 +124,6 @@ public class TestTableExceptions
         }
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     */
     @Test(expected = RuntimeException.class)
     public void corruptedMemoFilePointer()
                                   throws IOException, CorruptedTableException
@@ -154,9 +142,6 @@ public class TestTableExceptions
         }
     }
 
-    /**
-     * DOCUMENT ME!
-     */
     @Test(expected = IllegalArgumentException.class)
     public void directoryIsFile()
     {
@@ -164,12 +149,6 @@ public class TestTableExceptions
         new Database(databaseDirectory, Version.DBASE_3);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = InvalidFieldLengthException.class)
     public void writeTooLongField()
                            throws IOException, DbfLibException

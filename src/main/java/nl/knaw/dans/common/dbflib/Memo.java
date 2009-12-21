@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -54,28 +54,29 @@ class Memo
     private RandomAccessFile raf = null;
     private int nextAvailableBlock = 0;
     private int blockLength = DEFAULT_LENGTH_MEMO_BLOCK;
-    private Version version;
+    private final Version version;
 
     /**
-     * Creates a new <tt>Memo</tt> object.
+     * Creates a new <code>Memo</code> object.
      *
-     * @param aMemoFile the underlying .DBT file
+     * @param memoFile the underlying .DBT file
+     * @param version the version of DBF to use
      *
-     * @throws IllegalArgumentException if <tt>aMemoFile</tt> is <tt>null</tt>
+     * @throws IllegalArgumentException if <code>memoFile</code> is <code>null</code>
      */
-    Memo(final File aMemoFile, final Version aVersion)
+    Memo(final File memoFile, final Version version)
         throws IllegalArgumentException
     {
-        if (aMemoFile == null)
+        if (memoFile == null)
         {
             throw new IllegalArgumentException("Memo file must not be null");
         }
 
-        memoFile = aMemoFile;
-        version = aVersion;
+        this.memoFile = memoFile;
+        this.version = version;
     }
 
-    void open(final IfNonExistent aIfNonExistent)
+    void open(final IfNonExistent ifNonExistent)
        throws IOException
     {
         if (memoFile.exists())
@@ -88,7 +89,7 @@ class Memo
                 blockLength = raf.readInt();
             }
         }
-        else if (aIfNonExistent.isCreate())
+        else if (ifNonExistent.isCreate())
         {
             raf = new RandomAccessFile(memoFile, "rw");
 
@@ -103,7 +104,7 @@ class Memo
 
             writeMemoHeader();
         }
-        else if (aIfNonExistent.isError())
+        else if (ifNonExistent.isError())
         {
             throw new FileNotFoundException("Cannot find memo file");
         }
@@ -112,7 +113,7 @@ class Memo
     /**
      * Closes the memo file for reading and writing.
      *
-     * @throws java.io.IOException if the file cannot be closed
+     * @throws IOException if the file cannot be closed
      */
     void close()
         throws IOException
@@ -128,7 +129,7 @@ class Memo
     /**
      * Closes and deletes the underlying memo file.
      *
-     * @throws java.io.IOException if the file cannot be closed.
+     * @throws IOException if the file cannot be closed.
      */
     void delete()
          throws IOException
@@ -140,17 +141,17 @@ class Memo
     /**
      * Reads a string of characters from memo file.
      *
-     * @param aBlockIndex blocknumber where the string of characters starts
+     * @param blockIndex block number where the string of characters starts
      *
      */
-    byte[] readMemo(final int aBlockIndex)
+    byte[] readMemo(final int blockIndex)
              throws IOException, CorruptedTableException
     {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         int memoLength = 0;
         int c = 0;
 
-        raf.seek(aBlockIndex * blockLength);
+        raf.seek(blockIndex * blockLength);
 
         switch (version)
         {
@@ -212,11 +213,11 @@ class Memo
     /**
      * Writes a string of characters to memo file.
      */
-    int writeMemo(final byte[] aMemoBytes)
+    int writeMemo(final byte[] memoBytes)
            throws IOException
     {
         final int nrBytesToWrite =
-            aMemoBytes.length + version.getMemoFieldEndMarkerLength() + version.getMemoDataOffset();
+            memoBytes.length + version.getMemoFieldEndMarkerLength() + version.getMemoDataOffset();
         int nrBlocksToWrite = nrBytesToWrite / blockLength + 1;
         int nrSpacesToPadLastBlock = blockLength - nrBytesToWrite % blockLength;
 
@@ -239,15 +240,15 @@ class Memo
         if (version == Version.DBASE_4 || version == Version.DBASE_5)
         {
             raf.writeInt(0xffff0800);
-            raf.writeInt(Util.changeEndianness(aMemoBytes.length + version.getMemoDataOffset()));
+            raf.writeInt(Util.changeEndianness(memoBytes.length + version.getMemoDataOffset()));
         }
         else if (version == Version.FOXPRO_26)
         {
             raf.writeInt(1);
-            raf.writeInt(aMemoBytes.length);
+            raf.writeInt(memoBytes.length);
         }
 
-        raf.write(aMemoBytes); // Note: cuts off higher bytes, so assumes ASCII string
+        raf.write(memoBytes); // Note: cuts off higher bytes, so assumes ASCII string
 
         if (version.getMemoFieldEndMarkerLength() != 0)
         {

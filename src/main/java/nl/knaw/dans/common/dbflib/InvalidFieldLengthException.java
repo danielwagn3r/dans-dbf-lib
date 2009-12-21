@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -25,8 +25,10 @@ package nl.knaw.dans.common.dbflib;
 public class InvalidFieldLengthException
     extends DbfLibException
 {
-    InvalidFieldLengthException(final String aMessage)
+    private static final long serialVersionUID = 7225781028975258299L;
+
+    InvalidFieldLengthException(final String message)
     {
-        super(aMessage);
+        super(message);
     }
 }

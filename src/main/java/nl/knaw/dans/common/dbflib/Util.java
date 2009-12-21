@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -33,13 +33,15 @@ class Util
 
     private Util()
     {
-        // Disallow instantiation.
+        /*
+         *  Disallow instantiation.
+         */
     }
 
-    static int changeEndianness(final int aInteger)
+    static int changeEndianness(final int integerValue)
     {
         boolean isNegative = false;
-        int i = aInteger;
+        int i = integerValue;
 
         if (i < 0)
         {
@@ -54,23 +56,23 @@ class Util
             first |= 0x80;
         }
 
-        i = aInteger & 0x00ff0000;
+        i = integerValue & 0x00ff0000;
 
         int second = i >>> 16;
 
-        i = aInteger & 0x0000ff00;
+        i = integerValue & 0x0000ff00;
 
         int third = i >>> 8;
 
-        int fourth = aInteger & 0x000000ff;
+        int fourth = integerValue & 0x000000ff;
 
         return (fourth << 24) + (third << 16) + (second << 8) + first;
     }
 
-    static short changeEndianness(short aShort)
+    static short changeEndianness(short shortValue)
     {
         boolean isNegative = false;
-        short s = aShort;
+        short s = shortValue;
 
         if (s < 0)
         {
@@ -90,25 +92,25 @@ class Util
         return (short) ((second << 8) + first);
     }
 
-    static int changeEndiannessUnsignedShort(final int aInteger)
+    static int changeEndiannessUnsignedShort(final int integerValue)
     {
-        int third = (aInteger & 0x0000ff00) >>> 8;
+        int third = (integerValue & 0x0000ff00) >>> 8;
 
-        int fourth = aInteger & 0x000000ff;
+        int fourth = integerValue & 0x000000ff;
 
         return (fourth << 8) + third;
     }
 
-    static String stripExtension(final String aFileName)
+    static String stripExtension(final String fileName)
     {
-        int pointIndex = aFileName.lastIndexOf('.');
+        int pointIndex = fileName.lastIndexOf('.');
 
-        if (pointIndex == -1 || pointIndex == 0 || pointIndex == aFileName.length() - 1)
+        if (pointIndex == -1 || pointIndex == 0 || pointIndex == fileName.length() - 1)
         {
-            return aFileName;
+            return fileName;
         }
 
-        return aFileName.substring(0, pointIndex);
+        return fileName.substring(0, pointIndex);
     }
 
     /**
@@ -117,19 +119,19 @@ class Util
      * characters in the file names' respective extension does not matter. However, if more than one
      * matching file is found (e.g., xxx.Dbt and xxx.dBt and xxx.DBT) <tt>null</tt> is returned.
      *
-     * @param aDbfFile the .DBF file
+     * @param dbfFile the .DBF file
      * @return .DBT file or .FPT file
      */
-    static File getMemoFile(final File aDbfFile, final Version aVersion)
+    static File getMemoFile(final File dbfFile, final Version version)
     {
-        if (! aDbfFile.exists())
+        if (! dbfFile.exists())
         {
             return null;
         }
 
         final String extension;
 
-        if (aVersion == Version.FOXPRO_26)
+        if (version == Version.FOXPRO_26)
         {
             extension = ".fpt";
         }
@@ -138,9 +140,9 @@ class Util
             extension = ".dbt";
         }
 
-        final String parentDirName = aDbfFile.getParent();
+        final String parentDirName = dbfFile.getParent();
         final File parentDir = new File(parentDirName);
-        final String dbfBaseName = stripExtension(aDbfFile.getName());
+        final String dbfBaseName = stripExtension(dbfFile.getName());
 
         final String[] candidates =
             parentDir.list(new FilenameFilter()
@@ -164,39 +166,39 @@ class Util
      * if it exceeds <tt>aLength</tt>. If it is shorter, the remaining bytes are filled with null
      * characters.
      *
-     * @param aDataOutput the <tt>java.io.DataOutput</tt> to write to
-     * @param aString the String to write
-     * @param aLength the maximum length of the string
+     * @param dataOutput the <tt>java.io.DataOutput</tt> to write to
+     * @param string the String to write
+     * @param length the maximum length of the string
      * @throws java.io.IOException
      */
-    static void writeString(final DataOutput aDataOutput, final String aString, final int aLength)
+    static void writeString(final DataOutput dataOutput, final String string, final int length)
                      throws IOException
     {
-        char[] charArray = new char[aLength + 1];
-        int lengthString = aString.length();
+        char[] charArray = new char[length + 1];
+        int lengthString = string.length();
         int i = 0;
 
-        charArray = aString.toCharArray();
+        charArray = string.toCharArray();
 
-        for (i = 0; (i < aLength) && (i < lengthString); i++)
+        for (i = 0; (i < length) && (i < lengthString); i++)
         {
-            aDataOutput.writeByte(charArray[i]);
+            dataOutput.writeByte(charArray[i]);
         }
 
-        for (; i < aLength; i++)
+        for (; i < length; i++)
         {
-            aDataOutput.writeByte(0x00);
+            dataOutput.writeByte(0x00);
         }
     }
 
-    static String readString(final DataInput aDataInput, final int aLength)
+    static String readString(final DataInput dataInput, final int length)
                       throws IOException
     {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         int c = 0;
         int read = 1; // at least one byte will be read
 
-        while (((c = aDataInput.readByte()) != 0) && read < aLength)
+        while (((c = dataInput.readByte()) != 0) && read < length)
         {
             bos.write(c);
             ++read;
@@ -207,19 +209,19 @@ class Util
             bos.write(c);
         }
 
-        aDataInput.skipBytes(aLength - read);
+        dataInput.skipBytes(length - read);
 
         return new String(bos.toByteArray());
     }
 
-    static byte[] readStringBytes(final DataInput aDataInput, final int aLength)
+    static byte[] readStringBytes(final DataInput dataInput, final int length)
                            throws IOException
     {
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         int c = 0;
         int read = 1; // at least one byte will be read
 
-        while (((c = aDataInput.readByte()) != 0) && read < aLength)
+        while (((c = dataInput.readByte()) != 0) && read < length)
         {
             bos.write(c);
             ++read;
@@ -230,7 +232,7 @@ class Util
             bos.write(c);
         }
 
-        aDataInput.skipBytes(aLength - read);
+        dataInput.skipBytes(length - read);
 
         return bos.toByteArray();
     }
@@ -268,18 +270,18 @@ class Util
     /**
      * Returns the number of digits before the decimal point in a number.
      *
-     * @param aNumber the number
+     * @param number the number
      * @return the number of digits
      */
-    static int getNumberOfIntDigits(final Number aNumber)
+    static int getNumberOfIntDigits(final Number number)
     {
-        if (aNumber instanceof Float
-                || aNumber instanceof Double
-                || aNumber instanceof Short
-                || aNumber instanceof Integer
-                || aNumber instanceof Long)
+        if (number instanceof Float
+                || number instanceof Double
+                || number instanceof Short
+                || number instanceof Integer
+                || number instanceof Long)
         {
-            long longValue = aNumber.longValue();
+            long longValue = number.longValue();
 
             if (longValue == 0)
             {
@@ -291,14 +293,14 @@ class Util
 
         BigInteger bi = null;
 
-        if (aNumber instanceof BigDecimal)
+        if (number instanceof BigDecimal)
         {
-            bi = ((BigDecimal) aNumber).toBigInteger();
+            bi = ((BigDecimal) number).toBigInteger();
         }
 
-        if (aNumber instanceof BigInteger)
+        if (number instanceof BigInteger)
         {
-            bi = (BigInteger) aNumber;
+            bi = (BigInteger) number;
         }
 
         return bi.abs().toString().length();
@@ -307,41 +309,41 @@ class Util
     /**
      * Returns the width in positions of the sign of <tt>aInteger</tt>.
      *
-     * @param aNumber
+     * @param number
      * @return 1 if <tt>aInteger</tt> is negative, 0 otherwise
      *
      */
-    static int getSignWidth(Number aNumber)
+    static int getSignWidth(Number number)
     {
-        if (aNumber instanceof Float
-                || aNumber instanceof Double
-                || aNumber instanceof Short
-                || aNumber instanceof Integer
-                || aNumber instanceof Long)
+        if (number instanceof Float
+                || number instanceof Double
+                || number instanceof Short
+                || number instanceof Integer
+                || number instanceof Long)
         {
-            return aNumber.longValue() < 0 ? 1 : 0;
+            return number.longValue() < 0 ? 1 : 0;
         }
 
-        if (aNumber instanceof BigDecimal)
+        if (number instanceof BigDecimal)
         {
-            return ((BigDecimal) aNumber).signum() == -1 ? 1 : 0;
+            return ((BigDecimal) number).signum() == -1 ? 1 : 0;
         }
 
-        if (aNumber instanceof BigInteger)
+        if (number instanceof BigInteger)
         {
-            return ((BigInteger) aNumber).signum() == -1 ? 1 : 0;
+            return ((BigInteger) number).signum() == -1 ? 1 : 0;
         }
 
         throw new IllegalArgumentException("Unsupported Number type");
     }
 
-    static byte[] repeat(byte aByte, int aTimes)
+    static byte[] repeat(byte byteValue, int times)
     {
-        byte[] result = new byte[aTimes];
+        byte[] result = new byte[times];
 
         for (int i = 0; i < result.length; ++i)
         {
-            result[i] = aByte;
+            result[i] = byteValue;
         }
 
         return result;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -16,12 +16,13 @@
  */
 package nl.knaw.dans.common.dbflib;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Enumeration of the field types available in an xBase database. xBase types are mapped to Java
- * types as specified in the enumarated constant descriptions below.
+ * types as specified in the enumerated constant descriptions below.
  * <p>
  * <b>Note on NUMBER and FLOAT values:</b> In dBase III NUMBER and in dbBase IV FLOAT values are
  * represented internally as floating point values. When parsed by Java they may have slight
@@ -33,41 +34,40 @@ import java.util.Map;
 public enum Type
 {
     /**
-     * Numeric value, mapped to <tt>java.lang.Number</tt> subclass.
+     * Numeric value, mapped to a {@link Number} subclass.
      */
     NUMBER('N'),
     /**
-     * Float value, mapped to <tt>java.lang.Number</tt> subclass.
+     * Float value, mapped to a {@link Number} subclass.
      */
     FLOAT('F'), 
     /**
-     * String values, mapped to <tt>java.lang.String</tt>.
+     * String values, mapped to {@link String}.
      */
     CHARACTER('C'), 
     /**
-     * Logical, or boolean value, mapped to <tt>java.lang.Boolean</tt>.
+     * Logical, or boolean value, mapped to {@link Boolean}
      */
     LOGICAL('L', 1), 
     /**
-     * Date value, mapped to <tt>java.util.Date</tt>. Note that in xBase the date does <em>not</em>
-     * have a time component. The time related fields of <tt>java.util.Date</tt> are therefore set
-     * to 0.
+     * Date value, mapped to {@link Date}. Note that in xBase the date does <em>not</em> have a time
+     * component. The time related fields of <code>java.util.Date</code> are therefore set to 0.
      */
     DATE('D', 8), 
     /**
-     * A String value (without length limitations), mapped to <tt>java.lang.String</tt>.
+     * A String value (without length limitations), mapped to {@link String}
      */
     MEMO('M', 10), 
-    /*
-     * A binary value (without length limitations), mapped to <tt>byte[]</tt>.
+    /**
+     * A binary value (without length limitations), mapped to <code>byte[]</code>.
      */
     GENERAL('G', 10), 
-    /*
-     * A binary value (without length limitations), mapped to <tt>byte[]</tt>.
+    /**
+     * A binary value (without length limitations), mapped to <code>byte[]</code>.
      */
     PICTURE('P', 10), 
-    /*
-     * A binary value (without length limitations), mapped to <tt>byte[]</tt>.
+    /**
+     * A binary value (without length limitations), mapped to <code>byte[]</code>.
      */
     BINARY('B', 10);
     // Fields
@@ -80,22 +80,22 @@ public enum Type
         /*
          * Maps the type characters from the .DBF file to type enum constants.
          */
-        for (Type t : Type.values())
+        for (Type type : Type.values())
         {
-            typeMap.put(t.getCode(),
-                        t);
+            typeMap.put(type.getCode(),
+                        type);
         }
     }
 
-    Type(final char aCode)
+    Type(final char code)
     {
-        this(aCode, -1);
+        this(code, -1);
     }
 
-    Type(final char aCode, final int aLength)
+    Type(final char code, final int length)
     {
-        code = aCode;
-        length = aLength;
+        this.code = code;
+        this.length = length;
     }
 
     char getCode()
@@ -103,9 +103,9 @@ public enum Type
         return code;
     }
 
-    static Type getTypeByCode(final char aCode)
+    static Type getTypeByCode(final char code)
     {
-        return typeMap.get(aCode);
+        return typeMap.get(code);
     }
 
     int getLength()

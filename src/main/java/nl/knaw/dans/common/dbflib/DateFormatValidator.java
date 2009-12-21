@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -27,42 +27,42 @@ class DateFormatValidator
 {
     private final Pattern datePattern = Pattern.compile("\\d{8,8}");
 
-    DateFormatValidator(final Field aField)
+    DateFormatValidator(final Field field)
     {
-        super(aField);
-        assert aField.getType() == Type.DATE : "Can only be validator for DATE fields";
+        super(field);
+        assert field.getType() == Type.DATE : "Can only be validator for DATE fields";
     }
 
     /**
      * {@inheritDoc}
      *
-     * For DATE fields <tt>java.util.Date</tt> and <tt>String</tt> objects are acceptable.
-     * <tt>String</tt> objects are trimmed before validating them and only the format of the date is
-     * checked, not whether the date itself is valid (e.g., 20090229 will be accepted, even though
-     * it is invalid).
+     * For DATE fields {@link Date} and {@link String} objects are acceptable. <code>String</code>
+     * objects are trimmed before validating them and only the format of the date is checked, not
+     * whether the date itself is valid (e.g., 20090229 will be accepted, even though it is
+     * invalid).
      */
-    public void validate(Object aTypedObject)
+    public void validate(final Object typedObject)
                   throws DbfLibException
     {
-        if (aTypedObject instanceof Date)
+        if (typedObject instanceof Date)
         {
             return;
         }
 
-        if (aTypedObject instanceof String)
+        if (typedObject instanceof String)
         {
-            final String dateString = (String) aTypedObject;
+            final String dateString = (String) typedObject;
 
             if (! datePattern.matcher(dateString).matches())
             {
-                throw new DataMismatchException("'" + aTypedObject
+                throw new DataMismatchException("'" + typedObject
                                                 + " is not in the correct date format for DBF (YYYYMMDD)");
             }
 
             return;
         }
 
-        throw new DataMismatchException("Cannot write objects of type '" + aTypedObject.getClass().getName()
+        throw new DataMismatchException("Cannot write objects of type '" + typedObject.getClass().getName()
                                         + "' to a DATE field");
     }
 }

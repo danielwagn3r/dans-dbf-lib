@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -34,8 +34,10 @@ package nl.knaw.dans.common.dbflib;
 public class ValueTooLargeException
     extends DbfLibException
 {
-    ValueTooLargeException(final String aMessage)
+    private static final long serialVersionUID = -9205029469017433931L;
+
+    ValueTooLargeException(final String message)
     {
-        super(aMessage);
+        super(message);
     }
 }

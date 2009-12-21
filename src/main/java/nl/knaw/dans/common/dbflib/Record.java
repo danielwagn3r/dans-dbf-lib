@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Represents a record in a table. A record basically maps a <tt>String</tt> key to a value object
+ * Represents a record in a table. A record basically maps a {@link String} key to a value object
  * for a specified row in a table. The type of the value object depends on the field type. To find
  * out which DBF types map to which Java types, see {@link Type}.
  * <p>
@@ -35,12 +35,13 @@ public class Record
     private final Map<String, Value> valueMap;
 
     /**
-     * Creates a new Record object. <tt>aValueMap</tt> must specify the values for the fields in the
-     * record. The concrete <tt>Value</tt> subclasses must be compatible with the corresponding DBF
-     * field types, otherwise {@link DataMismatchException} is thrown when trying to add the record.
+     * Creates a new Record object. <code>aValueMap</code> must specify the values for the fields in
+     * the record. The concrete <code>Value</code> subclasses must be compatible with the
+     * corresponding DBF field types, otherwise {@link DataMismatchException} is thrown when trying
+     * to add the record.
      * <p>
-     * The following is a table of the <tt>Value</tt> subclasses, the DBF field types and the result
-     * of passing the one as a value for the other:
+     * The following is a table of the <code>Value</code> subclasses, the DBF field types and the
+     * result of passing the one as a value for the other:
      *
      * <table border="1" cellpadding="4">
      * <tr>
@@ -118,47 +119,47 @@ public class Record
      * </table>
      * )<sup>*</sup> DataMismatchException
      *
-     * @param aValueMap the mapping from field name to field value
+     * @param valueMap the mapping from field name to field value
      */
-    public Record(final Map<String, Value> aValueMap)
+    public Record(final Map<String, Value> valueMap)
     {
-        valueMap = aValueMap;
+        this.valueMap = valueMap;
     }
 
     /**
      * Returns the raw field value. The raw field value is the bytes as stored in the DBF file. If
-     * the value is empty <tt>null</tt> or a series of ASCII spaces may be returned.
+     * the value is empty <code>null</code> or a series of ASCII spaces may be returned.
      *
-     * @param aField the field for which to get the raw value
+     * @param field the field for which to get the raw value
      *
      * @return a byte array
      *
-     * @throws ValueTooLargeException if the value was too large to be read
+     * @throws DbfLibException if the value was too large to be read
      */
-    public byte[] getRawValue(final Field aField)
+    public byte[] getRawValue(final Field field)
                        throws DbfLibException
     {
-        final Value v = valueMap.get(aField.getName());
+        final Value v = valueMap.get(field.getName());
 
         if (v == null)
         {
             return null;
         }
 
-        return v.getRawValue(aField);
+        return v.getRawValue(field);
     }
 
     /**
      * Returns the value as a Java object. The type of Java object returned depends on the field
      * type in the xBase database. See {@link Type} for the mapping between the two.
      *
-     * @param aFieldName the field for which to get the value
+     * @param fieldName the field for which to get the value
      *
      * @return a Java object
      */
-    public Object getTypedValue(final String aFieldName)
+    public Object getTypedValue(final String fieldName)
     {
-        final Value v = valueMap.get(aFieldName);
+        final Value v = valueMap.get(fieldName);
 
         if (v == null)
         {
@@ -169,20 +170,21 @@ public class Record
     }
 
     /**
-     * Returns the value of the specified field as a <tt>Number</tt>. The exact class used depends
-     * on the size of the corresponding {@link Field} and its <tt>decimalCount</tt> property. If
-     * <tt>decimalCount</tt> is zero an integral type is returned, otherwise a fractional type.
-     * Depending on the size <tt>java.lang.Integer</tt>, <tt>java.lang.Long</tt> or
-     * <tt>java.math.BigInteger</tt> is used as an integral type. For non-integral types the classes
-     * used are either <tt>java.lang.Double</tt> or <tt>java.math.BigDecimal</tt>.
+     * Returns the value of the specified field as a {@link Number}. The exact subclass of
+     * <code>Number</code> used depends on the size of the corresponding {@link Field} and its
+     * <code>decimalCount</code> property. If <code>decimalCount</code> is zero an integral type is
+     * returned, otherwise a fractional type. Depending on the size <code>java.lang.Integer</code>,
+     * <code>java.lang.Long</code> or <code>java.math.BigInteger</code> is used as an integral type.
+     * For non-integral types the classes used are either <code>java.lang.Double</code> or
+     * <code>java.math.BigDecimal</code>.
      * <p>
      * It is not necessary to know the exact type used. You can use the conversion methods on the
-     * <tt>java.lang.Number</tt> class to convert the value before using it. (E.g.,
-     * <tt>Number.intValue()</tt>.) Of course you do need to know whether the value will fit in the
-     * chosen type. Note that comparisons may fail if you do not first convert the values. For
-     * instance if you compare the a <tt>java.math.BigInteger</tt> with a <tt>long</tt> using the
-     * <tt>equals</tt> method, <tt>false</tt> will be returned even if the values represent the same
-     * logical value.
+     * <code>java.lang.Number</code> class to convert the value before using it. (E.g.,
+     * <code>Number.intValue()</code>.) Of course you do need to know whether the value will fit in
+     * the chosen type. Note that comparisons may fail if you do not first convert the values. For
+     * instance if you compare the a <code>java.math.BigInteger</code> with a <code>long</code>
+     * using the <code>equals</code> method, <code>false</code> will be returned even if the values
+     * represent the same logical value.
      * <p>
      * Example:
      *
@@ -215,48 +217,48 @@ public class Record
      *
      * </pre>
      *
-     * @param aFieldName the name of the field with numerical data
+     * @param fieldName the name of the field with numerical data
      *
-     * @return a <tt>java.lang.Number</tt> object
+     * @return a {@link Number} object
      */
-    public Number getNumberValue(final String aFieldName)
+    public Number getNumberValue(final String fieldName)
     {
-        return (Number) getTypedValue(aFieldName);
+        return (Number) getTypedValue(fieldName);
     }
 
     /**
-     * Returns the specified value as a <tt>java.lang.String</tt> object.
+     * Returns the specified value as a <code>java.lang.String</code> object.
      *
-     * @param aFieldName the name of the field with character data
+     * @param fieldName the name of the field with character data
      *
-     * @return a <tt>java.lang.String</tt> object
+     * @return a {@link String} object
      */
-    public String getStringValue(final String aFieldName)
+    public String getStringValue(final String fieldName)
     {
-        return (String) getTypedValue(aFieldName);
+        return (String) getTypedValue(fieldName);
     }
 
     /**
-     * Returns the specified value as a <tt>java.lang.Boolean</tt> object.
+     * Returns the specified value as a {@link Boolean} object.
      *
-     * @param aFieldName the name of the field with logical data
+     * @param fieldName the name of the field with logical data
      *
-     * @return a <tt>java.lang.Boolean</tt> object
+     * @return a {@link Boolean} object
      */
-    public Boolean getBooleanValue(final String aFieldName)
+    public Boolean getBooleanValue(final String fieldName)
     {
-        return (Boolean) getTypedValue(aFieldName);
+        return (Boolean) getTypedValue(fieldName);
     }
 
     /**
-     * Returns the specified value as a <tt>java.util.Date</tt> object.
+     * Returns the specified value as a {@link Date} object.
      *
-     * @param aFieldName the name of the field with date data
+     * @param fieldName the name of the field with date data
      *
-     * @return a <tt>java.util.Date</tt> object
+     * @return a {@link Date} object
      */
-    public Date getDateValue(final String aFieldName)
+    public Date getDateValue(final String fieldName)
     {
-        return (Date) getTypedValue(aFieldName);
+        return (Date) getTypedValue(fieldName);
     }
 }

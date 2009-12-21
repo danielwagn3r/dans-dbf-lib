@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -23,7 +23,10 @@ import java.math.BigInteger;
 import java.util.Locale;
 
 /**
- * Represents a number value in a record.
+ * Represents a number value in a record. If the <code>NumberValue</code> was initialized with a raw
+ * value (by the library), it will return a typed value that is a subclass of {@link Number} and is
+ * large enough to accommodate the value. It will try to be economical when doing this. For instance
+ * it will choose an {@link Integer} over a {@link Long} if possible.
  *
  * @author Jan van Mansum
  */
@@ -33,51 +36,52 @@ public class NumberValue
     /**
      * Creates a new NumberValue object.
      *
-     * @param aNumber a number
+     * @param number a number
      */
-    public NumberValue(final Number aNumber)
+    public NumberValue(final Number number)
     {
-        super(aNumber);
+        super(number);
     }
 
-    NumberValue(final byte[] aRaw)
+    NumberValue(final Field field, final byte[] rawValue)
     {
-        super(aRaw);
+        super(field, rawValue);
     }
 
     @Override
-    protected Object doGetTypedValue()
+    protected Object doGetTypedValue(final byte[] rawValue)
     {
-        final String stringValue = new String(raw).trim();
+        /*
+         * Values less than 10 digits long can always be represented by an Integer, because
+         * Integer.MAX_VALUE = 2 147 483 647. Note that numbers of length equal to
+         * MAX_LENGTH_INTEGER are NOT represented by an integer, because they MAY be too large.
+         */
+        final int MAX_LENGTH_INTEGER = new Integer(Integer.MAX_VALUE).toString().length();
+
+        /*
+         * Analogous to MAX_LENGTH_INTEGER.
+         */
+        final int MAX_LENGTH_LONG = new Long(Long.MAX_VALUE).toString().length();
+
+        final String stringValue = new String(rawValue).trim();
 
         if (stringValue.isEmpty() || stringValue.equals("."))
         {
             return null;
         }
 
-        int decimalPointIndex = stringValue.indexOf('.');
+        final int decimalPointIndex = stringValue.indexOf('.');
 
         if (decimalPointIndex == -1)
         {
-            /*
-             * Values less than 10 digits long can always be represented in an Integer, because
-             * Integer.MAX_VALUE = 2 147 483 647 ...
-             */
-            if (stringValue.length() < 10)
+            if (stringValue.length() < MAX_LENGTH_INTEGER)
             {
                 return Integer.parseInt(stringValue);
-            } /*
-            * Longer values MAY need a Long. To be on the safe side, we always use Long here.
-            * Long can accomodate at least 18 digits.
-            *
-            * Long.MAX_VALUE = 9 223 372 036 854 775 807
-            */
-            else if (stringValue.length() < 19)
+            }
+            else if (stringValue.length() < MAX_LENGTH_LONG)
             {
                 return Long.parseLong(stringValue);
-            } /*
-            * If all else fails, use a BigInteger.
-            */
+            }
             else
             {
                 return new BigInteger(stringValue);
@@ -86,7 +90,7 @@ public class NumberValue
 
         /*
          * Not sure yet what number of digits is safe to parse a value into a double. 14 seems to be
-         * reasonably safe, but this needs to be proved.
+         * reasonably safe, but this needs to be proved.aField
          */
         if (stringValue.length() < 14)
         {
@@ -100,35 +104,78 @@ public class NumberValue
     }
 
     @Override
-    protected byte[] doGetRawValue(final Field aField)
+    protected byte[] doGetRawValue(final Field field)
     {
-        final Number numberValue = (Number) typed;
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        final Number number = (Number) typed;
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         try
         {
             byte[] bytes = null;
 
-            if (aField.getType() == Type.NUMBER || aField.getType() == Type.FLOAT)
+            if (field.getType() == Type.NUMBER || field.getType() == Type.FLOAT)
             {
-                bytes =
-                    String.format(Locale.US,
-                                  aField.getFormatString(),
-                                  numberValue).getBytes();
+                bytes = formatNumber(number, field).getBytes();
             }
             else
             {
                 bytes = typed.toString().getBytes();
             }
 
-            bos.write(bytes);
-            bos.write(Util.repeat((byte) 0x00, aField.getLength() - bytes.length));
+            byteArrayOutputStream.write(bytes);
+            byteArrayOutputStream.write(Util.repeat((byte) 0x00, field.getLength() - bytes.length));
         }
-        catch (IOException ex)
+        catch (final IOException ioException)
         {
             assert false : "Programming error: writing to ByteOutputStream should never cause and IOException";
+
+            throw new RuntimeException(ioException);
         }
 
-        return bos.toByteArray();
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    private static Number convertIntegralToFractional(final Number integralNumber)
+    {
+        if (integralNumber instanceof BigInteger)
+        {
+            return new BigDecimal((BigInteger) integralNumber);
+        }
+
+        return integralNumber.doubleValue();
+    }
+
+    private static Number convertFractionalToIntegral(final Number fractionalNumber)
+    {
+        return Math.round(fractionalNumber.doubleValue());
+    }
+
+    private static boolean isIntegralNumber(final Number number)
+    {
+        return number instanceof Byte || number instanceof Short || number instanceof Integer || number instanceof Long
+               || number instanceof BigInteger;
+    }
+
+    private static String formatNumber(final Number number, final Field field)
+    {
+        final String formatString =
+            "%" + field.getLength() + (field.getDecimalCount() == 0 ? "d" : "." + field.getDecimalCount() + "f");
+
+        Number num = number;
+
+        if (field.getDecimalCount() > 0 && isIntegralNumber(number))
+        {
+            num = convertIntegralToFractional(number);
+        }
+
+        if (field.getDecimalCount() == 0 && ! isIntegralNumber(number))
+        {
+            num = convertFractionalToIntegral(number);
+        }
+
+        /*
+         * Use the US Locale to force the use of a decimal point rather than a decimal comma.
+         */
+        return String.format(Locale.US, formatString, num);
     }
 }

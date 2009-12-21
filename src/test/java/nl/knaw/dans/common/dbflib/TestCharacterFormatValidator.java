@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -29,11 +29,6 @@ public class TestCharacterFormatValidator
     private final DataValidator validator7 = new CharacterFormatValidator(new Field("test7", Type.CHARACTER, 7));
     private final DataValidator validator8 = new CharacterFormatValidator(new Field("test8", Type.CHARACTER, 8));
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test
     public void shouldAcceptShortString()
                                  throws DbfLibException
@@ -43,11 +38,6 @@ public class TestCharacterFormatValidator
         validator5.validate("12345");
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = ValueTooLargeException.class)
     public void shouldRejectTooLargeString()
                                     throws DbfLibException
@@ -55,11 +45,6 @@ public class TestCharacterFormatValidator
         validator5.validate("123456");
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test
     public void shouldAcceptBoolean()
                              throws DbfLibException
@@ -68,11 +53,6 @@ public class TestCharacterFormatValidator
         validator5.validate(Boolean.FALSE);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test
     public void shouldAcceptShortNumber()
                                  throws DbfLibException
@@ -83,11 +63,6 @@ public class TestCharacterFormatValidator
         validator5.validate(123.4);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = ValueTooLargeException.class)
     public void shouldRejectLongInteger()
                                  throws DbfLibException
@@ -95,11 +70,6 @@ public class TestCharacterFormatValidator
         validator5.validate(123456);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = ValueTooLargeException.class)
     public void shouldRejectLongDouble()
                                 throws DbfLibException
@@ -107,11 +77,6 @@ public class TestCharacterFormatValidator
         validator5.validate(1234.5);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = ValueTooLargeException.class)
     public void shouldRejectDateFor7CharField()
                                        throws DbfLibException
@@ -119,11 +84,6 @@ public class TestCharacterFormatValidator
         validator7.validate(Util.createDate(2009, 05, 29));
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test
     public void shouldAcceptDateFor8CharField()
                                        throws DbfLibException
@@ -131,11 +91,6 @@ public class TestCharacterFormatValidator
         validator8.validate(Util.createDate(2009, 05, 29));
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws DbfLibException DOCUMENT ME!
-     */
     @Test(expected = DataMismatchException.class)
     public void shouldRejectByteArray()
                                throws DbfLibException

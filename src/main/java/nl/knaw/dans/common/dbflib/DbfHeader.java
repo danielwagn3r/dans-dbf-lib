@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -108,13 +108,13 @@ class DbfHeader
     private Date lastModifiedDate;
     private boolean hasMemo;
 
-    void readAll(final DataInput aDataInput)
+    void readAll(final DataInput dataInput)
           throws IOException, CorruptedTableException
     {
-        readVersionByte(aDataInput);
-        readModifiedDate(aDataInput);
-        readRecordCount(aDataInput);
-        readHeaderLength(aDataInput);
+        readVersionByte(dataInput);
+        readModifiedDate(dataInput);
+        readRecordCount(dataInput);
+        readHeaderLength(dataInput);
 
         /*
          * In CLIPPER 5 there are two header terminator bytes, in dBase only one.
@@ -126,9 +126,9 @@ class DbfHeader
          */
         version = Version.getVersion(versionByte, headerLength % 32);
 
-        readRecordLength(aDataInput);
-        aDataInput.skipBytes(LENGTH_TABLE_HEADER_AFTER_RECORD_COUNT);
-        readFieldDescriptors(aDataInput,
+        readRecordLength(dataInput);
+        dataInput.skipBytes(LENGTH_TABLE_HEADER_AFTER_RECORD_COUNT);
+        readFieldDescriptors(dataInput,
                              getFieldCount());
     }
 
@@ -147,9 +147,9 @@ class DbfHeader
         return recordLength;
     }
 
-    void setHasMemo(final boolean aHasMemo)
+    void setHasMemo(final boolean hasMemo)
     {
-        hasMemo = aHasMemo;
+        this.hasMemo = hasMemo;
     }
 
     private void calculateRecordLength()
@@ -184,20 +184,20 @@ class DbfHeader
         return (int) nrBytesFieldDescriptorArray / LENGTH_FIELD_DESCRIPTOR;
     }
 
-    private void readHeaderLength(final DataInput aDataInput)
+    private void readHeaderLength(final DataInput dataInput)
                            throws IOException
     {
-        headerLength = Util.changeEndianness((short) aDataInput.readUnsignedShort());
+        headerLength = Util.changeEndianness((short) dataInput.readUnsignedShort());
     }
 
-    private void readModifiedDate(final DataInput aDataInput)
+    private void readModifiedDate(final DataInput dataInput)
                            throws IOException
     {
         /*
          * The number of years in the last modified date is actually the number of years since 1900.
          * (See also comment below.)
          */
-        int year = aDataInput.readByte() + 1900;
+        int year = dataInput.readByte() + 1900;
 
         /*
          * DBase III+ (and presumable II) has a Year 2000 bug. It stores the year as simply the last
@@ -210,10 +210,10 @@ class DbfHeader
             year += 100;
         }
 
-        int month = aDataInput.readByte();
-        int day = aDataInput.readByte();
+        final int month = dataInput.readByte();
+        final int day = dataInput.readByte();
 
-        Calendar cal = Calendar.getInstance();
+        final Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONDAY, month - 1 /* Calendar's months are zero-based */        );
         cal.set(Calendar.DAY_OF_MONTH, day);
@@ -225,42 +225,42 @@ class DbfHeader
         lastModifiedDate = cal.getTime();
     }
 
-    private void readRecordLength(final DataInput aDataInput)
+    private void readRecordLength(final DataInput dataInput)
                            throws IOException
     {
-        recordLength = Util.changeEndianness((short) aDataInput.readUnsignedShort());
+        recordLength = Util.changeEndianness((short) dataInput.readUnsignedShort());
     }
 
-    void readFieldDescriptors(final DataInput aDataInput, final int aFieldCount)
+    void readFieldDescriptors(final DataInput dataInput, final int fieldCount)
                        throws IOException
     {
-        for (int i = 0; i < aFieldCount; ++i)
+        for (int i = 0; i < fieldCount; ++i)
         {
-            fields.add(readField(aDataInput));
+            fields.add(readField(dataInput));
         }
     }
 
-    private Field readField(final DataInput aDataInput)
+    private Field readField(final DataInput dataInput)
                      throws IOException
     {
         int length = 0;
         int decimalCount = 0;
 
-        final String name = Util.readString(aDataInput, LENGTH_FIELD_NAME);
-        final char typeChar = (char) aDataInput.readByte();
-        aDataInput.skipBytes(LENGTH_FIELD_DATA_ADDRESS);
+        final String name = Util.readString(dataInput, LENGTH_FIELD_NAME);
+        final char typeChar = (char) dataInput.readByte();
+        dataInput.skipBytes(LENGTH_FIELD_DATA_ADDRESS);
 
         if (version == Version.CLIPPER_5 && typeChar == Type.CHARACTER.getCode())
         {
-            length = Util.changeEndiannessUnsignedShort(aDataInput.readUnsignedShort());
+            length = Util.changeEndiannessUnsignedShort(dataInput.readUnsignedShort());
         }
         else
         {
-            length = aDataInput.readUnsignedByte();
-            decimalCount = aDataInput.readUnsignedByte();
+            length = dataInput.readUnsignedByte();
+            decimalCount = dataInput.readUnsignedByte();
         }
 
-        aDataInput.skipBytes(LENGTH_FIELD_DESCR_AFTER_DECIMAL_COUNT);
+        dataInput.skipBytes(LENGTH_FIELD_DESCR_AFTER_DECIMAL_COUNT);
 
         return new Field(name,
                          Type.getTypeByCode(typeChar),
@@ -268,52 +268,52 @@ class DbfHeader
                          decimalCount);
     }
 
-    void readVersionByte(final DataInput aDataInput)
+    void readVersionByte(final DataInput dataInput)
                   throws IOException
     {
-        versionByte = aDataInput.readUnsignedByte();
+        versionByte = dataInput.readUnsignedByte();
     }
 
-    void readRecordCount(final DataInput aDataInput)
+    void readRecordCount(final DataInput dataInput)
                   throws IOException
     {
-        recordCount = Util.changeEndianness(aDataInput.readInt());
+        recordCount = Util.changeEndianness(dataInput.readInt());
     }
 
-    void writeAll(final DataOutput aDataOutput)
+    void writeAll(final DataOutput dataOutput)
            throws IOException
     {
-        writeVersion(aDataOutput);
-        writeModifiedDate(aDataOutput);
-        writeRecordCount(aDataOutput);
-        writeHeaderLength(aDataOutput);
-        writeRecordLength(aDataOutput);
-        writeZeros(aDataOutput, LENGTH_RESERVED_1);
-        writeIncompleteTransaction(aDataOutput);
-        writeEncryptionFlag(aDataOutput);
-        writeFreeRecordThread(aDataOutput);
-        writeZeros(aDataOutput, LENGTH_RESERVED_2);
-        writeMdxFlag(aDataOutput);
-        writeLanguageDriver(aDataOutput);
-        writeZeros(aDataOutput, LENGTH_RESERVED_3);
-        writeFieldDescriptors(aDataOutput);
+        writeVersion(dataOutput);
+        writeModifiedDate(dataOutput);
+        writeRecordCount(dataOutput);
+        writeHeaderLength(dataOutput);
+        writeRecordLength(dataOutput);
+        writeZeros(dataOutput, LENGTH_RESERVED_1);
+        writeIncompleteTransaction(dataOutput);
+        writeEncryptionFlag(dataOutput);
+        writeFreeRecordThread(dataOutput);
+        writeZeros(dataOutput, LENGTH_RESERVED_2);
+        writeMdxFlag(dataOutput);
+        writeLanguageDriver(dataOutput);
+        writeZeros(dataOutput, LENGTH_RESERVED_3);
+        writeFieldDescriptors(dataOutput);
     }
 
-    void setFields(final List<Field> aFieldList)
+    void setFields(final List<Field> fieldList)
             throws InvalidFieldTypeException, InvalidFieldLengthException
     {
-        fields = aFieldList;
+        fields = fieldList;
         checkFieldValidity(fields);
         calculateRecordLength();
         calculateHeaderLength();
     }
 
-    void checkFieldValidity(List<Field> aFieldList)
+    void checkFieldValidity(final List<Field> fieldList)
                      throws InvalidFieldTypeException, InvalidFieldLengthException
     {
         boolean invalidLength = false;
 
-        for (Field field : aFieldList)
+        for (final Field field : fieldList)
         {
             if (! version.fieldTypes.contains(field.getType()))
             {
@@ -385,14 +385,14 @@ class DbfHeader
         }
     }
 
-    void setVersion(final Version aVersion)
+    void setVersion(final Version version)
     {
-        version = aVersion;
+        this.version = version;
     }
 
-    void setRecordCount(int aRecordCount)
+    void setRecordCount(final int recordCount)
     {
-        recordCount = aRecordCount;
+        this.recordCount = recordCount;
     }
 
     List<Field> getFields()
@@ -410,88 +410,88 @@ class DbfHeader
         return recordCount;
     }
 
-    void writeEncryptionFlag(final DataOutput aDataOutput)
+    void writeEncryptionFlag(final DataOutput dataOutput)
                       throws IOException
     {
-        aDataOutput.writeByte(0x00); // not supported yet
+        dataOutput.writeByte(0x00); // not supported yet
     }
 
-    void writeIncompleteTransaction(final DataOutput aDataOutput)
+    void writeIncompleteTransaction(final DataOutput dataOutput)
                              throws IOException
     {
-        aDataOutput.writeByte(0x00); // not supported yet
+        dataOutput.writeByte(0x00); // not supported yet
     }
 
-    void writeFieldDescriptor(final DataOutput aDataOutput, Field aField)
+    void writeFieldDescriptor(final DataOutput dataOutput, final Field field)
                        throws IOException
     {
         /*
          * Name of the field, terminated with 00h. (in LENGTH_FIELD_NAME the terminating 00h byte is
          * already taken in account)
          */
-        Util.writeString(aDataOutput,
-                         aField.getName(),
+        Util.writeString(dataOutput,
+                         field.getName(),
                          LENGTH_FIELD_NAME - 1);
-        aDataOutput.writeByte(0x00);
-        aDataOutput.writeByte(aField.getType().getCode());
+        dataOutput.writeByte(0x00);
+        dataOutput.writeByte(field.getType().getCode());
 
         /*
          * Field data address. Used only in FoxPro. In other cases fill with 00h
          */
-        aDataOutput.writeInt(0x00);
+        dataOutput.writeInt(0x00);
 
-        aDataOutput.writeByte(aField.getLength());
-        aDataOutput.writeByte(aField.getDecimalCount());
-        aDataOutput.writeByte(0x00);
-        aDataOutput.writeByte(0x00);
+        dataOutput.writeByte(field.getLength());
+        dataOutput.writeByte(field.getDecimalCount());
+        dataOutput.writeByte(0x00);
+        dataOutput.writeByte(0x00);
 
         /*
          * Work area ID
          */
-        aDataOutput.writeByte(0x01);
+        dataOutput.writeByte(0x01);
 
         for (int i = 0; i < (LENGTH_FIELD_DESCRIPTOR - OFFSET_WORK_AREA_ID - 1); i++)
         {
-            aDataOutput.writeByte(0x00);
+            dataOutput.writeByte(0x00);
         }
     }
 
-    void writeFieldDescriptors(final DataOutput aDataOutput)
+    void writeFieldDescriptors(final DataOutput dataOutput)
                         throws IOException
     {
         for (final Field field : fields)
         {
-            writeFieldDescriptor(aDataOutput, field);
+            writeFieldDescriptor(dataOutput, field);
         }
 
-        aDataOutput.writeByte(FIELD_DESCRIPTOR_ARRAY_TERMINATOR);
+        dataOutput.writeByte(FIELD_DESCRIPTOR_ARRAY_TERMINATOR);
     }
 
-    void writeFreeRecordThread(final DataOutput aDataOutput)
+    void writeFreeRecordThread(final DataOutput dataOutput)
                         throws IOException
     {
-        writeZeros(aDataOutput, 4);
+        writeZeros(dataOutput, 4);
     }
 
-    void writeHeaderLength(final DataOutput aDataOutput)
+    void writeHeaderLength(final DataOutput dataOutput)
                     throws IOException
     {
-        aDataOutput.writeShort(Util.changeEndianness(headerLength));
+        dataOutput.writeShort(Util.changeEndianness(headerLength));
     }
 
-    void writeLanguageDriver(final DataOutput aDataOutput)
+    void writeLanguageDriver(final DataOutput dataOutput)
                       throws IOException
     {
-        writeZeros(aDataOutput, 1);
+        writeZeros(dataOutput, 1);
     }
 
-    void writeMdxFlag(final DataOutput aDataOutput)
+    void writeMdxFlag(final DataOutput dataOutput)
                throws IOException
     {
-        writeZeros(aDataOutput, 1);
+        writeZeros(dataOutput, 1);
     }
 
-    void writeModifiedDate(final DataOutput aDataOutput)
+    void writeModifiedDate(final DataOutput dataOutput)
                     throws IOException
     {
         /*
@@ -509,40 +509,40 @@ class DbfHeader
             year -= 100;
         }
 
-        int month = cal.get(Calendar.MONTH) + 1;
-        int day = cal.get(Calendar.DAY_OF_MONTH);
+        final int month = cal.get(Calendar.MONTH) + 1;
+        final int day = cal.get(Calendar.DAY_OF_MONTH);
 
-        aDataOutput.writeByte(year);
-        aDataOutput.writeByte(month);
-        aDataOutput.writeByte(day);
+        dataOutput.writeByte(year);
+        dataOutput.writeByte(month);
+        dataOutput.writeByte(day);
 
         lastModifiedDate = Util.createDate(year, month, day);
     }
 
-    void writeRecordCount(final DataOutput aDataOutput)
+    void writeRecordCount(final DataOutput dataOutput)
                    throws IOException
     {
-        aDataOutput.writeInt(Util.changeEndianness(recordCount));
+        dataOutput.writeInt(Util.changeEndianness(recordCount));
     }
 
-    void writeRecordLength(final DataOutput aDataOutput)
+    void writeRecordLength(final DataOutput dataOutput)
                     throws IOException
     {
-        aDataOutput.writeShort(Util.changeEndianness(recordLength));
+        dataOutput.writeShort(Util.changeEndianness(recordLength));
     }
 
-    void writeVersion(final DataOutput aDataOutput)
+    void writeVersion(final DataOutput dataOutput)
                throws IOException
     {
-        aDataOutput.writeByte(Version.getVersionByte(version, hasMemo));
+        dataOutput.writeByte(Version.getVersionByte(version, hasMemo));
     }
 
-    void writeZeros(final DataOutput aDataOutput, int n)
+    void writeZeros(final DataOutput dataOutput, final int n)
              throws IOException
     {
         for (int i = 0; i < n; ++i)
         {
-            aDataOutput.writeByte(0);
+            dataOutput.writeByte(0);
         }
     }
 }

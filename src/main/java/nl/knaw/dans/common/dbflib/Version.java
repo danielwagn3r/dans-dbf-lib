@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -82,20 +82,20 @@ public enum Version
     private final int memoFieldEndMarkerLength;
     final List<Type> fieldTypes = new ArrayList<Type>();
 
-    Version(final int aMaxLengthCharField, final int aMaxLengthNumberField, final int aLengthHeaderTerminator,
-            final int aMemoDataOffset, final int aMemoFieldEndMarker, final int aMemoFieldEndMarkerLength,
-            final Type[] aFieldTypes)
+    Version(final int maxLengthCharField, final int maxLengthNumberField, final int lengthHeaderTerminator,
+            final int memoDataOffset, final int memoFieldEndMarker, final int memoFieldEndMarkerLength,
+            final Type[] fieldTypes)
     {
-        maxLengthCharField = aMaxLengthCharField;
-        maxLengthNumberField = aMaxLengthNumberField;
-        lengthHeaderTerminator = aLengthHeaderTerminator;
-        memoDataOffset = aMemoDataOffset;
-        memoFieldEndMarker = aMemoFieldEndMarker;
-        memoFieldEndMarkerLength = aMemoFieldEndMarkerLength;
+        this.maxLengthCharField = maxLengthCharField;
+        this.maxLengthNumberField = maxLengthNumberField;
+        this.lengthHeaderTerminator = lengthHeaderTerminator;
+        this.memoDataOffset = memoDataOffset;
+        this.memoFieldEndMarker = memoFieldEndMarker;
+        this.memoFieldEndMarkerLength = memoFieldEndMarkerLength;
 
-        for (Type type : aFieldTypes)
+        for (final Type type : fieldTypes)
         {
-            fieldTypes.add(type);
+            this.fieldTypes.add(type);
         }
     }
 
@@ -129,11 +129,11 @@ public enum Version
         return memoFieldEndMarkerLength;
     }
 
-    static int getVersionByte(Version aVersion, boolean aHasMemo)
+    static int getVersionByte(final Version version, final boolean hasMemo)
     {
-        if (aVersion == DBASE_3 || aVersion == CLIPPER_5)
+        if (version == DBASE_3 || version == CLIPPER_5)
         {
-            if (aHasMemo)
+            if (hasMemo)
             {
                 return 0x83;
             }
@@ -142,9 +142,9 @@ public enum Version
                 return 0x03;
             }
         }
-        else if (aVersion == DBASE_4 || aVersion == DBASE_5)
+        else if (version == DBASE_4 || version == DBASE_5)
         {
-            if (aHasMemo)
+            if (hasMemo)
             {
                 return 0x8B;
             }
@@ -153,9 +153,9 @@ public enum Version
                 return 0x03;
             }
         }
-        else if (aVersion == FOXPRO_26)
+        else if (version == FOXPRO_26)
         {
-            if (aHasMemo)
+            if (hasMemo)
             {
                 return 0xF5;
             }
@@ -168,17 +168,17 @@ public enum Version
         return 0;
     }
 
-    static Version getVersion(final int aVersionByte, final int aLengthHeaderTerminator)
+    static Version getVersion(final int versionByte, final int lengthHeaderTerminator)
     {
-        if (aLengthHeaderTerminator == 2)
+        if (lengthHeaderTerminator == 2)
         {
             return CLIPPER_5;
         }
-        else if (aVersionByte == 0x83)
+        else if (versionByte == 0x83)
         {
             return DBASE_3;
         }
-        else if (aVersionByte == 0xF5)
+        else if (versionByte == 0xF5)
         {
             return FOXPRO_26;
         }

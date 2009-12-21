@@ -1,58 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>nl.knaw.dans.common</groupId>
-    <artifactId>dans-dbf-lib</artifactId>
-    <name>DANS DBF Library</name>
-    <!--version>1.0.0-beta-03</version-->
-    <version>1.0.0-SNAPSHOT</version>
-    <url>http://dans-dbf-lib.sourceforge.net/</url>
-    <inceptionYear>2009</inceptionYear>
-    <organization>
-        <name>DANS</name>
-        <url>http://www.dans.knaw.nl/en</url>
-    </organization>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>nl.knaw.dans.common</groupId>
+	<artifactId>dans-dbf-lib</artifactId>
+	<name>DANS DBF Library</name>
+	<!-- version>1.0.0-beta-03</version -->
+	<version>1.0.0-SNAPSHOT</version>
+	<url>http://dans-dbf-lib.sourceforge.net/</url>
+	<inceptionYear>2009</inceptionYear>
+	<organization>
+		<name>DANS</name>
+		<url>http://www.dans.knaw.nl/en</url>
+	</organization>
 
-    <mailingLists>
-        <mailingList>
-            <archive>https://sourceforge.net/mailarchive/forum.php?forum_name=dans-dbf-lib-users</archive>
-            <name>dans-dbf-lib-users</name>
-            <post>dans-dbf-lib-users@lists.sourceforge.net</post>
-            <subscribe>https://lists.sourceforge.net/lists/listinfo/dans-dbf-lib-users</subscribe>
-            <unsubscribe>https://lists.sourceforge.net/lists/listinfo/dans-dbf-lib-users</unsubscribe>
-        </mailingList>
-    </mailingLists>
+	<mailingLists>
+		<mailingList>
+			<archive>https://sourceforge.net/mailarchive/forum.php?forum_name=dans-dbf-lib-users</archive>
+			<name>dans-dbf-lib-users</name>
+			<post>dans-dbf-lib-users@lists.sourceforge.net</post>
+			<subscribe>https://lists.sourceforge.net/lists/listinfo/dans-dbf-lib-users</subscribe>
+			<unsubscribe>https://lists.sourceforge.net/lists/listinfo/dans-dbf-lib-users</unsubscribe>
+		</mailingList>
+	</mailingLists>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-    <developers>
-        <developer>
-            <name>Jan van Mansum</name>
-            <id>jan-van-mansum</id>
-            <organization>DANS</organization>
-            <organizationUrl>http://www.dans.knaw.nl</organizationUrl>
-            <roles>
-                <role>Lead Developer</role>
-            </roles>
-            <timezone>+1</timezone>
-        </developer>
-        <developer>
-            <name>Vesa Akerman</name>
-            <id>vesa-akerman</id>
-            <organization>DANS</organization>
-            <organizationUrl>http://www.dans.knaw.nl</organizationUrl>
-            <roles>
-                <role>Developer</role>
-            </roles>
-            <timezone>+1</timezone>
-        </developer>
-    </developers>
+	<developers>
+		<developer>
+			<name>Jan van Mansum</name>
+			<id>jan-van-mansum</id>
+			<organization>DANS</organization>
+			<organizationUrl>http://www.dans.knaw.nl</organizationUrl>
+			<roles>
+				<role>Lead Developer</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<name>Vesa Akerman</name>
+			<id>vesa-akerman</id>
+			<organization>DANS</organization>
+			<organizationUrl>http://www.dans.knaw.nl</organizationUrl>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
 
-    <issueManagement>
-        <system>Tracker</system>
-        <url>https://sourceforge.net/tracker/?group_id=258772&amp;atid=1127258</url>
+	<issueManagement>
+		<system>Tracker</system>
+		<url>https://sourceforge.net/tracker/?group_id=258772&amp;atid=1127258</url>
     </issueManagement>
 
     <licenses>

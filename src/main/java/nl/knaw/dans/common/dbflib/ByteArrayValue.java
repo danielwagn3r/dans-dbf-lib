@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -26,25 +26,28 @@ public class ByteArrayValue
     extends Value
 {
     /**
-     * Creates a new ByteArrayValue object.
+     * Creates a new <code>ByteArrayValue</code> object.
      *
-     * @param aBinaryValue the byte array value
+     * @param byteArrayValue the byte array value
      */
-    public ByteArrayValue(final byte[] aBinaryValue)
+    public ByteArrayValue(final byte[] byteArrayValue)
     {
-        super(aBinaryValue);
+        super((Object) byteArrayValue);
     }
 
     @Override
-    protected Object doGetTypedValue()
+    protected Object doGetTypedValue(final byte[] rawValue)
     {
-        return raw;
+        return rawValue;
     }
 
     @Override
-    protected byte[] doGetRawValue(Field aField)
+    protected byte[] doGetRawValue(final Field field)
                             throws ValueTooLargeException
     {
-        return raw;
+        /*
+         * The 'typed' value IS a byte[] in this particular subclass.
+         */
+        return (byte[]) typed;
     }
 }

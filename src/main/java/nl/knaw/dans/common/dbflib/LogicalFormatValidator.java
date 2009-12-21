@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -19,7 +19,6 @@ package nl.knaw.dans.common.dbflib;
 import java.util.regex.Pattern;
 
 /**
- *
  * @author Jan van Mansum
  */
 class LogicalFormatValidator
@@ -27,30 +26,30 @@ class LogicalFormatValidator
 {
     private static final Pattern booleanPattern = Pattern.compile("[YNTF ]");
 
-    LogicalFormatValidator(final Field aField)
+    LogicalFormatValidator(final Field field)
     {
-        super(aField);
-        assert aField.getType() == Type.LOGICAL : "Can only be validator for LOGICAL fields";
+        super(field);
+        assert field.getType() == Type.LOGICAL : "Can only be validator for LOGICAL fields";
     }
 
     /**
      * {@inheritDoc}
-     *
-     * For a LOGICAL field a <tt>Boolean</tt>, or a <tt>String</tt> is acceptable. A <tt>String</tt>
-     * is acceptable only if it contains one of Y, N, T, F. The String may contain leading and
-     * trailing spaces.
+     * <p>
+     * For a LOGICAL field a {@link Boolean}, or a {@link String} is acceptable. A
+     * <code>String</code> is acceptable only if it contains one of Y, N, T, F. The String must not
+     * contain leading or trailing spaces.
      */
-    public void validate(final Object aTypedObject)
+    public void validate(final Object typedObject)
                   throws DbfLibException
     {
-        if (aTypedObject instanceof Boolean)
+        if (typedObject instanceof Boolean)
         {
             return;
         }
 
-        if (aTypedObject instanceof String)
+        if (typedObject instanceof String)
         {
-            final String booleanString = (String) aTypedObject;
+            final String booleanString = (String) typedObject;
 
             if (! booleanPattern.matcher(booleanString).matches())
             {
@@ -60,7 +59,7 @@ class LogicalFormatValidator
             return;
         }
 
-        throw new DataMismatchException("Cannot write objects of type '" + aTypedObject.getClass().getName()
+        throw new DataMismatchException("Cannot write objects of type '" + typedObject.getClass().getName()
                                         + "' to a LOGICAL field");
     }
 }

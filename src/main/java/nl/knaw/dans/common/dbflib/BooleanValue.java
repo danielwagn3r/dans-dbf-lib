@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -26,24 +26,24 @@ public class BooleanValue
     extends Value
 {
     /**
-     * Creates a new BooleanValue object.
+     * Creates a new <code>BooleanValue</code> object.
      *
-     * @param aBooleanValue a boolean
+     * @param booleanValue a boolean
      */
-    public BooleanValue(final Boolean aBooleanValue)
+    public BooleanValue(final Boolean booleanValue)
     {
-        super(aBooleanValue);
+        super(booleanValue);
     }
 
-    BooleanValue(final byte[] aRawValue)
+    BooleanValue(final Field field, final byte[] rawValue)
     {
-        super(aRawValue);
+        super(field, rawValue);
     }
 
     @Override
-    protected Object doGetTypedValue()
+    protected Object doGetTypedValue(final byte[] rawValue)
     {
-        char c = (char) raw[0];
+        char c = (char) rawValue[0];
 
         if (c == ' ')
         {
@@ -54,7 +54,7 @@ public class BooleanValue
     }
 
     @Override
-    protected byte[] doGetRawValue(final Field aField)
+    protected byte[] doGetRawValue(final Field field)
                             throws ValueTooLargeException
     {
         if (Boolean.TRUE.equals(typed))

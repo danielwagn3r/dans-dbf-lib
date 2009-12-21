@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -32,63 +32,65 @@ public class StringValue
     /**
      * Creates a new StringValue object.
      *
-     * @param aStringValue aString
+     * @param stringValue aString
      */
-    public StringValue(final String aStringValue)
+    public StringValue(final String stringValue)
     {
-        super(aStringValue);
+        super(stringValue);
     }
 
-    StringValue(final byte[] aRawValue)
+    StringValue(final Field field, final byte[] rawValue)
     {
-        super(aRawValue);
+        super(field, rawValue);
     }
 
     @Override
-    protected Object doGetTypedValue()
+    protected Object doGetTypedValue(final byte[] rawValue)
     {
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream(raw.length);
+        final ByteArrayOutputStream bos = new ByteArrayOutputStream(rawValue.length);
 
-        for (int i = 0; i < raw.length; ++i)
+        for (int i = 0; i < rawValue.length; ++i)
         {
-            if (raw[i] == (byte) 0x8d && raw[++i] == (byte) 0x0a)
+            if (rawValue[i] == (byte) 0x8d && rawValue[++i] == (byte) 0x0a)
             {
                 continue;
             }
 
-            bos.write(raw[i]);
+            bos.write(rawValue[i]);
         }
 
         return new String(bos.toByteArray());
     }
 
     @Override
-    protected byte[] doGetRawValue(final Field aField)
+    protected byte[] doGetRawValue(final Field field)
                             throws ValueTooLargeException
     {
-        final int fieldLength = aField.getLength();
+        final int fieldLength = field.getLength();
         final byte[] stringBytes = ((String) typed).getBytes();
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream(fieldLength);
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(fieldLength);
 
         try
         {
-            bos.write(stringBytes);
+            byteArrayOutputStream.write(stringBytes);
 
             /*
              * Memo data has no maximum length, so we cannot fill up the rest of the field with
              * zero's, as with the other fields. The maximum length of the memo field refers to the
              * DBT entry pointer length in the DBF.
              */
-            if (aField.getType() != Type.MEMO)
+            if (field.getType() != Type.MEMO)
             {
-                bos.write(Util.repeat((byte) 0x00, fieldLength - stringBytes.length));
+                byteArrayOutputStream.write(Util.repeat((byte) 0x00, fieldLength - stringBytes.length));
             }
         }
-        catch (IOException ex)
+        catch (final IOException ioException)
         {
             assert false : "Writing to ByteArrayOutputStream should not cause an IOException";
+
+            throw new RuntimeException(ioException);
         }
 
-        return bos.toByteArray();
+        return byteArrayOutputStream.toByteArray();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -52,28 +52,28 @@ public class Database
      * responsibilty of the caller to ensure that the correct version is specified.
      * </p>
      *
-     * @param aDatabaseDirectory a <tt>java.io.File</tt> object pointing to the directory containing
+     * @param databaseDirectory a <tt>java.io.File</tt> object pointing to the directory containing
      *            the database
-     * @param aVersion the version of xBase to use for new tables
+     * @param version the version of xBase to use for new tables
      */
-    public Database(final File aDatabaseDirectory, final Version aVersion)
+    public Database(final File databaseDirectory, final Version version)
     {
-        if (aDatabaseDirectory == null || aDatabaseDirectory.isFile())
+        if (databaseDirectory == null || databaseDirectory.isFile())
         {
             throw new IllegalArgumentException("Database must be a directory ");
         }
 
-        if (! aDatabaseDirectory.exists())
+        if (! databaseDirectory.exists())
         {
-            aDatabaseDirectory.mkdirs();
+            databaseDirectory.mkdirs();
         }
 
-        databaseDirectory = aDatabaseDirectory;
-        version = aVersion;
+        this.databaseDirectory = databaseDirectory;
+        this.version = version;
 
-        final String[] fileNames = aDatabaseDirectory.list();
+        final String[] fileNames = databaseDirectory.list();
 
-        for (String fileName : fileNames)
+        for (final String fileName : fileNames)
         {
             if (fileName.toLowerCase().endsWith(".dbf") && (fileName.length() > ".dbf".length()))
             {
@@ -83,9 +83,9 @@ public class Database
     }
 
     /**
-     * Returns an unmodifiable <tt>java.util.Set</tt> of table names.
+     * Returns an unmodifiable {@link Set} of table names.
      *
-     * @return a <tt>java.util.Set</tt> of <tt>Table</tt> objects.
+     * @return a {@link Set} of <code>Table</code> names.
      */
     public Set<String> getTableNames()
     {
@@ -93,81 +93,81 @@ public class Database
     }
 
     /**
-     * Returns the <tt>Table</tt> object with the specified name or <tt>null</tt> if it has not been
-     * added yet.
+     * Returns the {@link Table} object with the specified name or <code>null</code> if it has not
+     * been added yet.
      *
-     * @param aName the name of the table, including extension
-     * @return a <tt>Table</tt> object
+     * @param name the name of the table, including extension
+     * @return a {@link Table} object
      */
-    public Table getTable(final String aName)
+    public Table getTable(final String name)
     {
-        return tableMap.get(aName);
+        return tableMap.get(name);
     }
 
     /**
-     * Adds a new {@link Table} object to the set of <tt>Table</tt>s maintained by this
-     * <tt>Database</tt> object and returns it. If a <tt>Table</tt> object with <tt>aName</tt>
-     * already exists, it is returned.
+     * Adds a new {@link Table} object to the set of <code>Table</code>s maintained by this
+     * <code>Database</code> object and returns it. If a <code>Table</code> object with
+     * <code>name</code> already exists, it is returned.
      * <p>
-     * Note that the actual table file (the .DBF file) may or may not exists. To create a new table
-     * on disk, see {@link Table#open(nl.knaw.dans.common.dbflib.IfNonExistent) }
+     * Note that the actual table file (the <code>.DBF</code> file) may or may not exists. To create
+     * a new table on disk, see {@link Table#open(IfNonExistent)}.
      *
-     * @param aName the name of the table
+     * @param name the name of the table
      *
-     * @return a <tt>Table</tt> object
+     * @return a <code>Table</code> object
      */
-    public Table addTable(final String aName, final List<Field> aFields)
+    public Table addTable(final String name, final List<Field> fields)
                    throws InvalidFieldTypeException, InvalidFieldLengthException
     {
-        Table table = tableMap.get(aName);
+        Table table = tableMap.get(name);
 
         if (table == null)
         {
-            table = new Table(new File(databaseDirectory, aName),
+            table = new Table(new File(databaseDirectory, name),
                               version,
-                              aFields);
-            tableMap.put(aName, table);
+                              fields);
+            tableMap.put(name, table);
         }
 
         return table;
     }
 
-    private void addTable(final String aName)
+    private void addTable(final String name)
     {
-        Table table = tableMap.get(aName);
+        Table table = tableMap.get(name);
 
         if (table == null)
         {
-            table = new Table(new File(databaseDirectory, aName));
-            tableMap.put(aName, table);
+            table = new Table(new File(databaseDirectory, name));
+            tableMap.put(name, table);
         }
     }
 
     /**
-     * Removes a {@link Table} object from the list of <tt>Table</tt> objects maintained by this
-     * <tt>Database</tt> object.
+     * Removes a {@link Table} object from the list of <code>Table</code> objects maintained by this
+     * <code>Database</code> object.
      * <p>
-     * Note that the actual table file (the .DBF file) is not deleted by removing the table object.
-     * To delete a file on disk, see {@link Table#delete() }.
+     * Note that the actual table file (the <code>.DBF</code> file) is not deleted by removing the
+     * table object. To delete a file on disk, see {@link Table#delete()}.
      *
-     * @param aName the name of the table to remove
+     * @param name the name of the table to remove
      */
-    public void removeTable(final String aName)
+    public void removeTable(final String name)
     {
-        tableMap.remove(aName);
+        tableMap.remove(name);
     }
 
     /**
-     * Removes a {@link Table} object from the list of <tt>Table</tt> objects maintained by this
-     * <tt>Database</tt> object.
+     * Removes a {@link Table} object from the list of <code>Table</code> objects maintained by this
+     * <code>Database</code> object.
      * <p>
-     * Note that the actual table file (the .DBF file) is not deleted by removing the table object.
-     * To delete a file on disk, see {@link Table#delete() }.
+     * Note that the actual table file (the <code>.DBF</code> file) is not deleted by removing the
+     * table object. To delete a file on disk, see {@link Table#delete()}.
      *
-     * @param aTable the table to remove
+     * @param table the table to remove
      */
-    public void removeTable(final Table aTable)
+    public void removeTable(final Table table)
     {
-        tableMap.remove(aTable.getName());
+        tableMap.remove(table.getName());
     }
 }

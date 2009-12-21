@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -16,27 +16,28 @@
  */
 package nl.knaw.dans.common.dbflib;
 
+import java.util.Date;
 
 /**
  * Validates that the data specified is of the right type and format. What <em>is</em> the right
- * type and format depends on the implementing class. A <tt>DataValidator</tt> implementation is
- * tied to a specific field. It uses information about the type, length and decimal count of the
- * field to determine if the data to be validated can be written to such a field.
+ * type and format depends on the implementing class. A <code>DataValidator</code> implementation is
+ * tied to a specific field. It uses field's attributes (type, length and decimal count)to determine
+ * if the data to be validated can be written to such a field.
  *
  * @author Jan van Mansum
  */
 interface DataValidator
 {
     /**
-     * Returns normally if <tt>aTypedObject</tt> is of the right type and format, throws a
-     * <tt>DbfLibException</tt> otherwise. Reasons for rejecting an object include: it is of
-     * incompatible type (e.g., a <tt>java.util.Date</tt> object is passed into a LOGICAL data
+     * Returns normally if <code>typedObject</code> is of the right type and format, throws a
+     * {@link DbfLibException} otherwise. Reasons for rejecting an object include: it is of
+     * incompatible type (e.g., a {@link Date} object is passed into a LOGICAL data
      * validator, it is of the correct type but not of the correct format (e.g., a String is passed
      * to a CHARACTER data validator but the string is too long).
      *
-     * @param aTypedObject the object to be validated
-     * @throws nl.knaw.dans.common.dbflib.DbfLibException if the object is rejected
+     * @param typedObject the object to be validated
+     * @throws DbfLibException if the object is rejected
      */
-    void validate(Object aTypedObject)
+    void validate(Object typedObject)
            throws DbfLibException;
 }

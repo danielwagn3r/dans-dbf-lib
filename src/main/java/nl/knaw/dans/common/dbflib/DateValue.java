@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -37,24 +37,24 @@ public class DateValue
     /**
      * Creates a new DateValue object.
      *
-     * @param aDateValue a <tt>java.util.Date</tt> object
+     * @param dateValue a {@link Date} object
      */
-    public DateValue(final Date aDateValue)
+    public DateValue(final Date dateValue)
     {
-        super(aDateValue);
+        super(dateValue);
     }
 
-    DateValue(final byte[] aRawValue)
+    DateValue(final Field field, final byte[] rawValue)
     {
-        super(aRawValue);
+        super(field, rawValue);
     }
 
     @Override
-    protected Object doGetTypedValue()
+    protected Object doGetTypedValue(final byte[] rawValue)
     {
-        final String yearString = new String(raw, 0, 4);
-        final String monthString = new String(raw, 4, 2);
-        final String dayString = new String(raw, 6, 2);
+        final String yearString = new String(rawValue, 0, 4);
+        final String monthString = new String(rawValue, 4, 2);
+        final String dayString = new String(rawValue, 6, 2);
         final Calendar cal = Calendar.getInstance();
 
         if (yearString.trim().isEmpty())
@@ -80,20 +80,25 @@ public class DateValue
     }
 
     @Override
-    protected byte[] doGetRawValue(final Field aField)
+    protected byte[] doGetRawValue(final Field field)
                             throws ValueTooLargeException
     {
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream(RECORD_DATE_LENGTH);
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(RECORD_DATE_LENGTH);
 
         try
         {
-            bos.write(dateFormat.format(typed).getBytes());
+            byteArrayOutputStream.write(dateFormat.format(typed).getBytes());
         }
-        catch (IOException ex)
+        catch (final IOException ioException)
         {
             assert false : "Writing to ByteArrayOutputStream should not cause an IOException";
+
+            /*
+             * It should never happen, but if it does, we want to know about it.
+             */
+            throw new RuntimeException(ioException);
         }
 
-        return bos.toByteArray();
+        return byteArrayOutputStream.toByteArray();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Data Archiving and Networked Services (DANS), Netherlands.
+ * Copyright 2009-2010 Data Archiving and Networked Services (DANS), Netherlands.
  *
  * This file is part of DANS DBF Library.
  *
@@ -30,16 +30,6 @@ import java.util.List;
  */
 public class TestInvalidFieldType
 {
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws CorruptedTableException DOCUMENT ME!
-     * @throws InvalidFieldTypeException DOCUMENT ME!
-     * @throws InvalidFieldLengthException DOCUMENT ME!
-     * @throws ValueTooLargeException DOCUMENT ME!
-     * @throws RecordTooLargeException DOCUMENT ME!
-     */
     @Test(expected = InvalidFieldTypeException.class)
     public void floatTypeNotValid()
                            throws IOException,
