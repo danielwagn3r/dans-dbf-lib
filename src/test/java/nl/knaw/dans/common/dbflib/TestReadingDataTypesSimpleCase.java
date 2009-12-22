@@ -17,7 +17,7 @@
 package nl.knaw.dans.common.dbflib;
 
 import org.junit.After;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;

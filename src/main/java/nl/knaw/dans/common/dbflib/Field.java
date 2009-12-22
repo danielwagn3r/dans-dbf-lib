@@ -132,4 +132,14 @@ public class Field
 
         return false;
     }
+
+    @Override
+    public int hashCode()
+    {
+        /*
+         * Divide by 2 to avoid possible overflow. To reiterate equals/hashCode: hashCode determines
+         * the subsets, equals the exact equality. a equals b => a.hash == b.hash.
+         */
+        return name.hashCode() / 2 + type.hashCode() / 2;
+    }
 }

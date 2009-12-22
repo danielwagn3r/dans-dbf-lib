@@ -16,7 +16,6 @@
  */
 package nl.knaw.dans.common.dbflib;
 
-import java.util.Date;
 
 /**
  * Validates that the data specified is of the right type and format. What <em>is</em> the right
@@ -31,7 +30,7 @@ interface DataValidator
     /**
      * Returns normally if <code>typedObject</code> is of the right type and format, throws a
      * {@link DbfLibException} otherwise. Reasons for rejecting an object include: it is of
-     * incompatible type (e.g., a {@link Date} object is passed into a LOGICAL data
+     * incompatible type (e.g., a <code>java.util.Date</code> object is passed into a LOGICAL data
      * validator, it is of the correct type but not of the correct format (e.g., a String is passed
      * to a CHARACTER data validator but the string is too long).
      *

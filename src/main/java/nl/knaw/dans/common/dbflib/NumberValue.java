@@ -33,6 +33,18 @@ import java.util.Locale;
 public class NumberValue
     extends Value
 {
+    /*
+     * Values less than 10 digits long can always be represented by an Integer, because
+     * Integer.MAX_VALUE = 2 147 483 647. Note that numbers of length equal to
+     * MAX_LENGTH_INTEGER are NOT represented by an integer, because they MAY be too large.
+     */
+    private static final int MAX_LENGTH_INTEGER = Integer.valueOf(Integer.MAX_VALUE).toString().length();
+
+    /*
+     * Analogous to MAX_LENGTH_INTEGER.
+     */
+    private static final int MAX_LENGTH_LONG = Long.valueOf(Long.MAX_VALUE).toString().length();
+
     /**
      * Creates a new NumberValue object.
      *
@@ -51,18 +63,6 @@ public class NumberValue
     @Override
     protected Object doGetTypedValue(final byte[] rawValue)
     {
-        /*
-         * Values less than 10 digits long can always be represented by an Integer, because
-         * Integer.MAX_VALUE = 2 147 483 647. Note that numbers of length equal to
-         * MAX_LENGTH_INTEGER are NOT represented by an integer, because they MAY be too large.
-         */
-        final int MAX_LENGTH_INTEGER = new Integer(Integer.MAX_VALUE).toString().length();
-
-        /*
-         * Analogous to MAX_LENGTH_INTEGER.
-         */
-        final int MAX_LENGTH_LONG = new Long(Long.MAX_VALUE).toString().length();
-
         final String stringValue = new String(rawValue).trim();
 
         if (stringValue.isEmpty() || stringValue.equals("."))

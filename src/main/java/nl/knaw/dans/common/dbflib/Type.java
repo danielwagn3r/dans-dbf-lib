@@ -16,7 +16,6 @@
  */
 package nl.knaw.dans.common.dbflib;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,8 +49,9 @@ public enum Type
      */
     LOGICAL('L', 1), 
     /**
-     * Date value, mapped to {@link Date}. Note that in xBase the date does <em>not</em> have a time
-     * component. The time related fields of <code>java.util.Date</code> are therefore set to 0.
+     * Date value, mapped to <code>java.util.Date</code>. Note that in xBase the date does
+     * <em>not</em> have a time component. The time related fields of <code>java.util.Date</code>
+     * are therefore set to 0.
      */
     DATE('D', 8), 
     /**

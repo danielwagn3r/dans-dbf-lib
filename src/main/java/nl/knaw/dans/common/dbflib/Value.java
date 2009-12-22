@@ -26,7 +26,7 @@ package nl.knaw.dans.common.dbflib;
  * type that the concrete subclass refers to (e.g., <code>Boolean.TRUE</code>) or as the raw bytes
  * that are stored in the DBF file (e.g., <code>{(byte)'Y'}</code>). The raw value may depend on the
  * exact specifications (length, decimal count) of the field that is read from or written to. That
- * is way a {@link Field} instance must be specified when retrieving it.
+ * is why a {@link Field} instance must be specified when retrieving it.
  *
  * @author Jan van Mansum
  */
@@ -38,7 +38,8 @@ public abstract class Value
 
     /**
      * Constructs a <tt>Value</tt> object with the specified raw value. The subclass must take care
-     * of converting the raw value to a Java object by implementing {@link #doGetTypedValue() }.
+     * of converting the raw value to a Java object by implementing {@link #doGetTypedValue(byte[]) }
+     * .
      *
      * @param rawValue the bytes that constitute the raw value
      */
