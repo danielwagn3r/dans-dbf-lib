@@ -13,6 +13,12 @@ This library is used by DANS for the {{{http://mixed.dans.knaw.nl}MIXED Project}
 
 News
 
+* 22 December 2009. Beta 04.
+
+    This beta fixes a bug int the Value classes.  It was impossible to write a raw value read from 
+a database to a field with different specifications.  This violated the Value contract.
+
+
 * 3 July 2009.  DANS DataPerfect Library alpha 01.
 
     Although slightly off-topic, we are taking the opportunity to announce here
