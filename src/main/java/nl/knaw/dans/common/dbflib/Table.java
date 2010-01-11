@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -90,6 +91,7 @@ public class Table
 
     private final File tableFile;
     private final DbfHeader header = new DbfHeader();
+    private final String charsetName;
     private Memo memo = null;
     private RandomAccessFile raFile = null;
 
@@ -107,12 +109,22 @@ public class Table
     public Table(final File tableFile)
           throws IllegalArgumentException
     {
+        this(tableFile,
+             Charset.defaultCharset().name());
+    }
+
+    public Table(final File tableFile, final String charsetName)
+          throws IllegalArgumentException
+    {
         if (tableFile == null)
         {
             throw new IllegalArgumentException("Table file must not be null");
         }
 
         this.tableFile = tableFile;
+        this.charsetName = charsetName == null ? Charset.defaultCharset().name() : charsetName;
+
+        Charset.forName(this.charsetName);
     }
 
     /**
@@ -131,13 +143,20 @@ public class Table
      *
      * @throws IllegalArgumentException if <tt>aTableFiel</tt> is <tt>null</tt>
      */
-    public Table(final File tableFile, final Version version, final List<Field> fields)
+    public Table(final File tableFile, final Version version, final List<Field> fields, final String charsetName)
           throws InvalidFieldTypeException, InvalidFieldLengthException
     {
-        this(tableFile);
+        this(tableFile, charsetName);
         header.setVersion(version);
         header.setHasMemo(hasMemo(fields));
         header.setFields(fields);
+    }
+
+    public Table(final File tableFile, final Version version, final List<Field> fields)
+          throws InvalidFieldTypeException, InvalidFieldLengthException
+    {
+        this(tableFile, version, fields,
+             Charset.defaultCharset().name());
     }
 
     private static boolean hasMemo(final List<Field> fields)
@@ -323,7 +342,7 @@ public class Table
         }
         else if (value instanceof String)
         {
-            return new StringValue((String) value);
+            return new StringValue((String) value, charsetName);
         }
         else if (value instanceof Boolean)
         {
@@ -529,7 +548,7 @@ public class Table
 
                 case CHARACTER:
                     recordValues.put(field.getName(),
-                                     new StringValue(field, rawData));
+                                     new StringValue(field, rawData, charsetName));
 
                     break;
 
@@ -549,7 +568,7 @@ public class Table
 
                     final byte[] memoTextBytes = readMemo(new String(rawData));
                     recordValues.put(field.getName(),
-                                     memoTextBytes == null ? null : new StringValue(field, memoTextBytes));
+                                     memoTextBytes == null ? null : new StringValue(field, memoTextBytes, charsetName));
 
                     break;
 

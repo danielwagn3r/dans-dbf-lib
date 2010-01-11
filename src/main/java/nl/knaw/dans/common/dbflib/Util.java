@@ -22,6 +22,7 @@ import java.io.DataOutput;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
@@ -347,5 +348,29 @@ class Util
         }
 
         return result;
+    }
+
+    static String createString(final byte[] bytes, final String charsetName)
+    {
+        try
+        {
+            return new String(bytes, charsetName);
+        }
+        catch (final UnsupportedEncodingException unsupportedEncodingException)
+        {
+            throw new RuntimeException("Programming error: found unsupported charset too late");
+        }
+    }
+
+    static byte[] getStringBytes(final String string, final String charsetName)
+    {
+        try
+        {
+            return string.getBytes(charsetName);
+        }
+        catch (UnsupportedEncodingException unsupportedEncodingException)
+        {
+            throw new RuntimeException("Programming error: found unsupported charset too late");
+        }
     }
 }

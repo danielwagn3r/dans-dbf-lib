@@ -17,6 +17,7 @@
 package nl.knaw.dans.common.dbflib;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,13 @@ public class Database
     private final File databaseDirectory;
     private final Map<String, Table> tableMap = new HashMap<String, Table>();
     private final Version version;
+    private final String charsetName;
+
+    public Database(final File databaseDirectory, final Version version)
+    {
+        this(databaseDirectory, version,
+             Charset.defaultCharset().name());
+    }
 
     /**
      * Creates a new Database object. A file representing the database directory must be provided.
@@ -56,7 +64,7 @@ public class Database
      *            the database
      * @param version the version of xBase to use for new tables
      */
-    public Database(final File databaseDirectory, final Version version)
+    public Database(final File databaseDirectory, final Version version, final String charsetName)
     {
         if (databaseDirectory == null || databaseDirectory.isFile())
         {
@@ -70,6 +78,9 @@ public class Database
 
         this.databaseDirectory = databaseDirectory;
         this.version = version;
+        this.charsetName = charsetName == null ? Charset.defaultCharset().name() : charsetName;
+
+        Charset.forName(this.charsetName);
 
         final String[] fileNames = databaseDirectory.list();
 
@@ -138,7 +149,8 @@ public class Database
 
         if (table == null)
         {
-            table = new Table(new File(databaseDirectory, name));
+            table = new Table(new File(databaseDirectory, name),
+                              charsetName);
             tableMap.put(name, table);
         }
     }

@@ -34,7 +34,7 @@ public abstract class Value
 {
     private final byte[] originalRaw;
     private final Field originalField;
-    protected final Object typed;
+    protected Object typed;
 
     /**
      * Constructs a <tt>Value</tt> object with the specified raw value. The subclass must take care
@@ -47,7 +47,6 @@ public abstract class Value
     {
         this.originalField = originalField;
         this.originalRaw = rawValue;
-        typed = doGetTypedValue(rawValue);
     }
 
     /**
@@ -74,6 +73,11 @@ public abstract class Value
      */
     final Object getTypedValue()
     {
+        if (typed == null)
+        {
+            typed = doGetTypedValue(originalRaw);
+        }
+
         return typed;
     }
 

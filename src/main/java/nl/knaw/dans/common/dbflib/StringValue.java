@@ -18,6 +18,8 @@ package nl.knaw.dans.common.dbflib;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 /**
  * Represents a string value in a record (a CHARACTER or MEMO type field value).
@@ -27,21 +29,38 @@ import java.io.IOException;
 public class StringValue
     extends Value
 {
+    private final String charsetName;
     static final int MAX_CHARFIELD_LENGTH_DBASE = 253;
 
     /**
      * Creates a new StringValue object.
      *
      * @param stringValue aString
+     * @param charsetName the character set to use when encoding and decoding this string value
+     */
+    public StringValue(final String stringValue, final String charsetName)
+    {
+        super(stringValue);
+        this.charsetName = charsetName;
+
+        Charset.forName(charsetName);
+    }
+
+    /**
+     * Creates a new string value that uses the platform's default character set.
+     *
+     * @param stringValue
      */
     public StringValue(final String stringValue)
     {
-        super(stringValue);
+        this(stringValue,
+             Charset.defaultCharset().name());
     }
 
-    StringValue(final Field field, final byte[] rawValue)
+    StringValue(final Field field, final byte[] rawValue, final String charsetName)
     {
         super(field, rawValue);
+        this.charsetName = charsetName == null ? Charset.defaultCharset().name() : charsetName;
     }
 
     @Override
@@ -59,7 +78,8 @@ public class StringValue
             bos.write(rawValue[i]);
         }
 
-        return new String(bos.toByteArray());
+        return Util.createString(bos.toByteArray(),
+                                 charsetName);
     }
 
     @Override
@@ -67,7 +87,8 @@ public class StringValue
                             throws ValueTooLargeException
     {
         final int fieldLength = field.getLength();
-        final byte[] stringBytes = ((String) typed).getBytes();
+        byte[] stringBytes = Util.getStringBytes((String) typed, charsetName);
+
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(fieldLength);
 
         try
