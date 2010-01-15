@@ -40,6 +40,25 @@ public class Database
     private final Version version;
     private final String charsetName;
 
+    /**
+     * Creates a new Database object. A file representing the database directory must be provided.
+     * If the directory does not exist, it is created. If the file represents a regular file and not
+     * a directory, throws an <code>IllegalArgumentException</code>.
+     * <p>
+     * All tables that exist in the database directory are added as <code>Table</code> objects and can
+     * be retrieved with {@link #getTable(String)}.
+     * </p>
+     * <p>
+     * The parameter <code>version</code> does not trigger any validation on an existing database but
+     * is merely used to specify the version of newly added tables. It is therefore the
+     * responsibility of the caller to ensure that the correct version is specified.
+     * </p>
+     *
+     * @param databaseDirectory a <code>java.io.File</code> object pointing to the directory containing
+     *            the database
+     * @param version the version of xBase to use for new tables
+     *
+     */
     public Database(final File databaseDirectory, final Version version)
     {
         this(databaseDirectory, version,
@@ -49,20 +68,23 @@ public class Database
     /**
      * Creates a new Database object. A file representing the database directory must be provided.
      * If the directory does not exist, it is created. If the file represents a regular file and not
-     * a directory, throws an <tt>IllegalArgumentException</tt>.
+     * a directory, throws an <code>IllegalArgumentException</code>.
      * <p>
-     * All tables that exist in the database directory are added as <tt>Table</tt> objects and can
-     * be retrieved with {@link #getTable(java.lang.String) }.
+     * All tables that exist in the database directory are added as <code>Table</code> objects and can
+     * be retrieved with {@link #getTable(String)}.
      * </p>
      * <p>
-     * The parameter <tt>aVersion</tt> does not trigger any validation on an existing database but
+     * The parameter <code>version</code> does not trigger any validation on an existing database but
      * is merely used to specify the version of newly added tables. It is therefore the
-     * responsibilty of the caller to ensure that the correct version is specified.
+     * responsibility of the caller to ensure that the correct version is specified.
      * </p>
      *
-     * @param databaseDirectory a <tt>java.io.File</tt> object pointing to the directory containing
+     * @param databaseDirectory a <code>java.io.File</code> object pointing to the directory containing
      *            the database
      * @param version the version of xBase to use for new tables
+     * @param charsetName the name of the character set to use, if <code>null</code> will be set to
+     *            the platform's default charset.
+     *
      */
     public Database(final File databaseDirectory, final Version version, final String charsetName)
     {
@@ -80,6 +102,9 @@ public class Database
         this.version = version;
         this.charsetName = charsetName == null ? Charset.defaultCharset().name() : charsetName;
 
+        /*
+         * Provoke an exception if the charset is not found by the JRE.
+         */
         Charset.forName(this.charsetName);
 
         final String[] fileNames = databaseDirectory.list();
@@ -181,5 +206,16 @@ public class Database
     public void removeTable(final Table table)
     {
         tableMap.remove(table.getName());
+    }
+
+    /**
+     * Returns the name of the character set to use when reading from and writing to database files.
+     * This value can be overridden by the one specified through {@link #Table}'s constructor.
+     *
+     * @return the charset name
+     */
+    public String getCharsetName()
+    {
+        return charsetName;
     }
 }

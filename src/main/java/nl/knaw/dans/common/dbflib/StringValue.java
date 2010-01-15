@@ -18,7 +18,6 @@ package nl.knaw.dans.common.dbflib;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 /**

@@ -13,6 +13,16 @@ This library is used by DANS for the {{{http://mixed.dans.knaw.nl}MIXED Project}
 
 News
 
+* 15 January 2010.  Beta 05.
+    
+   Added constructors to <<<Database>>> and <<<Table>>> that take a character 
+set name.  The string provided here must be one of the strings returned by 
+<<<java.nio.charset.Charset.availableCharsets()>>>.  The specified character set
+will then be used to read and write CHARACTER and MEMO type values from and to
+the DBF files.  Note that, although there is now a <<<getCharsetName>>> on the 
+<<<Table>>> class, no detection of the character set used in existing databases
+is done.  This information must be provided by the calling program!
+
 * 22 December 2009. Beta 04.
 
     This beta fixes a bug int the Value classes.  It was impossible to write a raw value read from 

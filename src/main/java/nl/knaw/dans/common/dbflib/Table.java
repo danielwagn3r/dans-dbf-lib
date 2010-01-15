@@ -96,11 +96,13 @@ public class Table
     private RandomAccessFile raFile = null;
 
     /**
-     * Creates a new Table object. A {@link File} object representing the <code>.DBF</code> file
-     * must be provided. To read from or write to the table it must first be opened.
+     * Creates a new <code>Table</code> object. A {@link File} object representing the
+     * <code>.DBF</code> file must be provided. To read from or write to the table it must first be
+     * opened.
      *
-     * @param tableFile a <code>File</code.> object representing the <code>.DBF</code> file that
+     * @param tableFile a <code>File</code> object representing the <code>.DBF</code> file that
      *            stores this table's data.
+     * @param charsetName the charset to use for reading and writing this file
      *
      * @see #open(IfNonExistent)
      *
@@ -113,6 +115,18 @@ public class Table
              Charset.defaultCharset().name());
     }
 
+    /**
+     * Creates a new Table object. A {@link File} object representing the <code>.DBF</code> file
+     * must be provided. To read from or write to the table it must first be opened.
+     *
+     * @param tableFile a <code>File</code> object representing the <code>.DBF</code> file that
+     *            stores this table's data.
+     * @param charsetName the charset to use for reading and writing this file
+     *
+     * @see #open(IfNonExistent)
+     *
+     * @throws IllegalArgumentException if <code>tableFile </code> is <code>null</code>
+     */
     public Table(final File tableFile, final String charsetName)
           throws IllegalArgumentException
     {
@@ -138,6 +152,7 @@ public class Table
      * @param tableFile the <code>.DBF</code> file that contains the table data
      * @param version the dBase version to support
      * @param fields the fields to create if this is a new table
+     * @param charsetName the charset to use for reading and writing this file
      *
      * @see #open(IfNonExistent)
      *
@@ -590,11 +605,22 @@ public class Table
         return new Record(recordValues);
     }
 
+    /**
+     * Returns the name of the character set used to read and write from/to this table file.
+     *
+     * @return a charset name
+     */
     public String getCharsetName()
     {
         return charsetName;
     }
 
+    /**
+     * Returns the version of DBF use to write to the table file. For existing files, some detection
+     * is attempted by the library, but it should not be relied on to heavily.
+     *
+     * @return the version of DBF
+     */
     public Version getVersion()
     {
         return header.getVersion();
