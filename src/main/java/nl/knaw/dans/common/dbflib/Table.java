@@ -589,4 +589,14 @@ public class Table
 
         return new Record(recordValues);
     }
+    
+    public String getCharsetName()
+    {
+        return charsetName;
+    }
+    
+    public Version getVersion()
+    {
+        return header.getVersion();
+    }
 }
