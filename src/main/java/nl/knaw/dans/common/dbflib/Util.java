@@ -35,7 +35,7 @@ class Util
     private Util()
     {
         /*
-         *  Disallow instantiation.
+         * Disallow instantiation.
          */
     }
 
@@ -150,7 +150,8 @@ class Util
                 {
                     public boolean accept(File aDir, String aName)
                     {
-                        return dbfBaseName.equals(stripExtension(aName)) && (aName.toLowerCase().endsWith(extension));
+                        return dbfBaseName.equalsIgnoreCase(stripExtension(aName))
+                               && (aName.toLowerCase().endsWith(extension));
                     }
                 });
 
