@@ -13,6 +13,10 @@ This library is used by DANS for the {{{http://mixed.dans.knaw.nl}MIXED Project}
 
 News
 
+* 19 March 2010.  Beta 07.
+
+   "Deleted record" markers led to an infinite loop when reading records. 
+
 * 15 January 2010.  Beta 05.
     
    Added constructors to <<<Database>>> and <<<Table>>> that take a character 

@@ -210,7 +210,7 @@ public class Database
 
     /**
      * Returns the name of the character set to use when reading from and writing to database files.
-     * This value can be overridden by the one specified through {@link #Table}'s constructor.
+     * This value can be overridden by the one specified through {@link Table}'s constructor.
      *
      * @return the charset name
      */

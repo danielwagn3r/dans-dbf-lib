@@ -102,7 +102,6 @@ public class Table
      *
      * @param tableFile a <code>File</code> object representing the <code>.DBF</code> file that
      *            stores this table's data.
-     * @param charsetName the charset to use for reading and writing this file
      *
      * @see #open(IfNonExistent)
      *
