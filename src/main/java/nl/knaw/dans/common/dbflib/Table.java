@@ -533,11 +533,12 @@ public class Table
     {
         raFile.seek(header.getLength() + (index * header.getRecordLength()));
 
-        final byte firstByteOfRecord = raFile.readByte();
+        byte firstByteOfRecord = raFile.readByte();
 
         while (firstByteOfRecord == MARKER_RECORD_DELETED)
         {
             raFile.skipBytes(header.getRecordLength() - 1);
+            firstByteOfRecord = raFile.readByte();
         }
 
         if (firstByteOfRecord == MARKER_EOF)
