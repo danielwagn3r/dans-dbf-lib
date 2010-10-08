@@ -33,6 +33,7 @@ import java.util.Map;
 public class Record
 {
     private final Map<String, Value> valueMap;
+    private final boolean deleted;
 
     /**
      * Creates a new Record object. <code>aValueMap</code> must specify the values for the fields in
@@ -123,6 +124,12 @@ public class Record
      */
     public Record(final Map<String, Value> valueMap)
     {
+        this(false, valueMap);
+    }
+
+    Record(final boolean deleted, final Map<String, Value> valueMap)
+    {
+        this.deleted = deleted;
         this.valueMap = valueMap;
     }
 
@@ -260,5 +267,16 @@ public class Record
     public Date getDateValue(final String fieldName)
     {
         return (Date) getTypedValue(fieldName);
+    }
+
+    /**
+     * Returns whether the record is marked deleted in the database.  In the original dBase program
+     * this meant that the record was still visible but had a "deleted" flag.
+     *
+     * @return deleted status
+     */
+    public boolean isMarkedDeleted()
+    {
+        return deleted;
     }
 }

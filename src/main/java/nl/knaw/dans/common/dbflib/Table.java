@@ -44,48 +44,74 @@ public class Table
     private class RecordIterator
         implements Iterator<Record>
     {
+        private final boolean includeDeleted;
         private int recordCounter = 0;
-        private Record lastReadRecord = null;
+        private boolean currentElementDeleted = false;
+
+        RecordIterator(final boolean includeDeleted)
+        {
+            this.includeDeleted = includeDeleted;
+        }
 
         public boolean hasNext()
         {
-            checkOpen();
-
-            if (lastReadRecord == null && recordCounter < header.getRecordCount())
-            {
-                try
-                {
-                    lastReadRecord = readRecord(recordCounter++);
-                }
-                catch (final IOException ioException)
-                {
-                    throw new RuntimeException(ioException.getMessage(), ioException);
-                }
-                catch (final CorruptedTableException corruptedTableException)
-                {
-                    throw new RuntimeException(corruptedTableException.getMessage(), corruptedTableException);
-                }
-            }
-
-            return lastReadRecord != null;
+            return recordCounter < header.getRecordCount();
         }
 
         public Record next()
         {
-            if (hasNext())
+            if (! hasNext())
             {
-                final Record next = lastReadRecord;
-                lastReadRecord = null;
-
-                return next;
+                throw new NoSuchElementException();
             }
 
-            throw new NoSuchElementException();
+            checkOpen();
+
+            try
+            {
+                Record record;
+
+                do
+                {
+                    record = getRecordAt(recordCounter++);
+                }
+                 while (! includeDeleted && record.isMarkedDeleted());
+
+                currentElementDeleted = false;
+
+                return record;
+            }
+            catch (final IOException ioException)
+            {
+                throw new RuntimeException(ioException.getMessage(), ioException);
+            }
+            catch (final CorruptedTableException corruptedTableException)
+            {
+                throw new RuntimeException(corruptedTableException.getMessage(), corruptedTableException);
+            }
         }
 
         public void remove()
         {
-            throw new UnsupportedOperationException("Not supported yet.");
+            if (recordCounter == 0 || recordCounter >= header.getRecordCount())
+            {
+                throw new NoSuchElementException();
+            }
+
+            if (currentElementDeleted)
+            {
+                throw new RuntimeException("Current element already removed");
+            }
+
+            try
+            {
+                deleteRecordAt(recordCounter);
+                currentElementDeleted = true;
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -305,14 +331,29 @@ public class Table
 
     /**
      * Returns a {@link Record} iterator. Note that, to use the iterator the table must be opened.
+     * This iterator skips the records flagged as "deleted".
      *
      * @return a <code>Record</code> iterator
      *
      * @see Record
+     * @see #recordIterator(boolean)
      */
     public Iterator<Record> recordIterator()
     {
-        return new RecordIterator();
+        return recordIterator(false);
+    }
+
+    /**
+     * Returns a {@link Record} iterator. Note that, to use the iterator the table must be opened.
+     * If <code>includeDeleted</code> is <code>true</code>, records flagged as "deleted" are
+     * included in the iteration.
+     *
+     * @param includeDeleted if <code>true</code> deleted records are returned, otherwise not
+     * @return a <code>Record</code> iterator
+     */
+    public Iterator<Record> recordIterator(final boolean includeDeleted)
+    {
+        return new RecordIterator(includeDeleted);
     }
 
     /**
@@ -388,9 +429,17 @@ public class Table
     public void addRecord(final Record record)
                    throws IOException, DbfLibException
     {
-        checkOpen();
+        updateRecordAt(header.getRecordCount(),
+                       record);
+        raFile.writeByte(MARKER_EOF);
+        writeRecordCount(header.getRecordCount() + 1);
+    }
 
-        raFile.seek(header.getLength() + (header.getRecordCount() * header.getRecordLength()));
+    public void updateRecordAt(final int index, final Record record)
+                        throws IOException, DbfLibException
+    {
+        checkOpen();
+        jumpToRecordAt(index);
         raFile.writeByte(MARKER_RECORD_VALID);
 
         for (final Field field : header.getFields())
@@ -404,23 +453,28 @@ public class Table
             }
             else if (field.getType() == Type.MEMO || field.getType() == Type.BINARY || field.getType() == Type.GENERAL)
             {
-                final int index = writeMemo(raw);
+                final int i = writeMemo(raw);
 
                 if (header.getVersion() == Version.DBASE_4 || header.getVersion() == Version.DBASE_5)
                 {
-                    raw = String.format("%0" + field.getLength() + "d", index).getBytes();
+                    raw = String.format("%0" + field.getLength() + "d", i).getBytes();
                 }
                 else
                 {
-                    raw = String.format("%" + field.getLength() + "d", index).getBytes();
+                    raw = String.format("%" + field.getLength() + "d", i).getBytes();
                 }
             }
 
             raFile.write(raw);
         }
+    }
 
-        raFile.writeByte(MARKER_EOF);
-        writeRecordCount(header.getRecordCount() + 1);
+    public void deleteRecordAt(final int index)
+                        throws IOException
+    {
+        checkOpen();
+        jumpToRecordAt(index);
+        raFile.writeByte(MARKER_RECORD_DELETED);
     }
 
     private int writeMemo(final byte[] memoText)
@@ -527,22 +581,36 @@ public class Table
         memo.open(ifNonExistent);
     }
 
-    private Record readRecord(final int index)
+    /**
+     * Returns the record at index. If the index points to a record beyond the last a
+     * {@link NoSuchElementException} is thrown. Records marked as deleted <em>are</em> returned.
+     *
+     * @param index the zero-based index of the record
+     * @return a Record object
+     * @throws IOException
+     * @throws CorruptedTableException
+     */
+    public Record getRecordAt(final int index)
                        throws IOException, CorruptedTableException
     {
-        raFile.seek(header.getLength() + (index * header.getRecordLength()));
+        checkOpen();
+
+        if (index >= header.getRecordCount())
+        {
+            throw new NoSuchElementException(String.format("Invalid index: %d", index));
+        }
+
+        jumpToRecordAt(index);
 
         byte firstByteOfRecord = raFile.readByte();
 
-        while (firstByteOfRecord == MARKER_RECORD_DELETED)
-        {
-            raFile.skipBytes(header.getRecordLength() - 1);
-            firstByteOfRecord = raFile.readByte();
-        }
-
+        /*
+         * This should actually not be possible, as we already checked the index against the record
+         * count. Checking anyway to be on the safe side.
+         */
         if (firstByteOfRecord == MARKER_EOF)
         {
-            return null;
+            throw new NoSuchElementException(String.format("Invalid index: %d", index));
         }
 
         final Map<String, Value> recordValues = new HashMap<String, Value>();
@@ -596,13 +664,36 @@ public class Table
                     break;
 
                 default:
-                    assert false : "Programming error: not all data types handled.";
-
-                    return null;
+                    throw new RuntimeException("Not all types handled");
             }
         }
 
-        return new Record(recordValues);
+        return new Record(firstByteOfRecord == MARKER_RECORD_DELETED, recordValues);
+    }
+
+    /**
+     * Physically remove the records currently flagged as "deleted".
+     *
+     * @throws IOException
+     * @throws DbfLibException
+     */
+    public void pack()
+              throws IOException, DbfLibException
+    {
+        final Iterator<Record> iterator = recordIterator(false);
+
+        int i = 0;
+
+        while (iterator.hasNext())
+        {
+            updateRecordAt(i++,
+                           iterator.next());
+        }
+
+        writeRecordCount(i);
+        jumpToRecordAt(i);
+        raFile.write(MARKER_EOF);
+        raFile.setLength(raFile.getFilePointer());
     }
 
     /**
@@ -624,5 +715,25 @@ public class Table
     public Version getVersion()
     {
         return header.getVersion();
+    }
+
+    private void jumpToRecordAt(int index)
+                         throws IOException
+    {
+        raFile.seek(header.getLength() + (index * header.getRecordLength()));
+    }
+
+    /**
+     * Returns the record count. This number includes the records flagged as deleted. These records
+     * were visible in the original dBase program user interface, although with a visual indication
+     * that they were deleted.  To phyically removed them you need to call {@link #pack()}
+     *
+     * @return the record count
+     * @see #pack()
+     * @see Record#isMarkedDeleted()
+     */
+    public int getRecordCount()
+    {
+        return header.getRecordCount();
     }
 }
