@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import javax.management.RuntimeErrorException;
+
 /**
  * Represents a single table in a xBase database. A table is represented by a single
  * <code>.DBF</code> file. Some tables have an associated .DBT file to store memo field data.
@@ -45,7 +47,7 @@ public class Table
         implements Iterator<Record>
     {
         private final boolean includeDeleted;
-        private int recordCounter = 0;
+        private int recordCounter = -1;
         private boolean currentElementDeleted = false;
 
         RecordIterator(final boolean includeDeleted)
@@ -55,7 +57,36 @@ public class Table
 
         public boolean hasNext()
         {
-            return recordCounter < header.getRecordCount();
+            try
+            {
+                return recordCounter + 1 < header.getRecordCount()
+                       && (includeDeleted || ! followingRecordsAreAllDeleted());
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private boolean followingRecordsAreAllDeleted()
+                                               throws IOException
+        {
+            int index = recordCounter + 1;
+            byte b;
+
+            do
+            {
+                jumpToRecordAt(index++);
+                b = raFile.readByte();
+
+                if (b == MARKER_RECORD_VALID)
+                {
+                    return false;
+                }
+            }
+             while (index < header.getRecordCount() && b == MARKER_RECORD_DELETED);
+
+            return true;
         }
 
         public Record next()
@@ -73,7 +104,7 @@ public class Table
 
                 do
                 {
-                    record = getRecordAt(recordCounter++);
+                    record = getRecordAt(++recordCounter);
                 }
                  while (! includeDeleted && record.isMarkedDeleted());
 
