@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import javax.management.RuntimeErrorException;
-
 /**
  * Represents a single table in a xBase database. A table is represented by a single
  * <code>.DBF</code> file. Some tables have an associated .DBT file to store memo field data.
@@ -62,7 +60,7 @@ public class Table
                 return recordCounter + 1 < header.getRecordCount()
                        && (includeDeleted || ! followingRecordsAreAllDeleted());
             }
-            catch (IOException e)
+            catch (final IOException e)
             {
                 throw new RuntimeException(e);
             }
@@ -139,7 +137,7 @@ public class Table
                 deleteRecordAt(recordCounter);
                 currentElementDeleted = true;
             }
-            catch (IOException e)
+            catch (final IOException e)
             {
                 throw new RuntimeException(e);
             }
@@ -212,7 +210,8 @@ public class Table
      *
      * @see #open(IfNonExistent)
      *
-     * @throws IllegalArgumentException if <tt>aTableFiel</tt> is <tt>null</tt>
+     * @throws IllegalArgumentException if <tt>aTableField</tt> is <tt>null</tt>
+     * @throws InvalidFieldLengthException
      */
     public Table(final File tableFile, final Version version, final List<Field> fields, final String charsetName)
           throws InvalidFieldTypeException, InvalidFieldLengthException
@@ -223,6 +222,9 @@ public class Table
         header.setFields(fields);
     }
 
+    /**
+     * As {@link #Table(File, Version, List, String)} but uses the platform's default character set.
+     */
     public Table(final File tableFile, final Version version, final List<Field> fields)
           throws InvalidFieldTypeException, InvalidFieldLengthException
     {
@@ -500,6 +502,13 @@ public class Table
         }
     }
 
+    /**
+     * Flags the record at <code>index</code> as "deleted". To physically remove "deleted" records,
+     * a call to {@link #pack()} is necessary.
+     *
+     * @param index the index of the record to delete
+     * @throws IOException
+     */
     public void deleteRecordAt(final int index)
                         throws IOException
     {
@@ -614,7 +623,8 @@ public class Table
 
     /**
      * Returns the record at index. If the index points to a record beyond the last a
-     * {@link NoSuchElementException} is thrown. Records marked as deleted <em>are</em> returned.
+     * {@link NoSuchElementException} is thrown. Attention: records marked as deleted <em>are</em>
+     * returned.
      *
      * @param index the zero-based index of the record
      * @return a Record object
@@ -633,7 +643,7 @@ public class Table
 
         jumpToRecordAt(index);
 
-        byte firstByteOfRecord = raFile.readByte();
+        final byte firstByteOfRecord = raFile.readByte();
 
         /*
          * This should actually not be possible, as we already checked the index against the record
@@ -748,7 +758,7 @@ public class Table
         return header.getVersion();
     }
 
-    private void jumpToRecordAt(int index)
+    private void jumpToRecordAt(final int index)
                          throws IOException
     {
         raFile.seek(header.getLength() + (index * header.getRecordLength()));
@@ -757,7 +767,7 @@ public class Table
     /**
      * Returns the record count. This number includes the records flagged as deleted. These records
      * were visible in the original dBase program user interface, although with a visual indication
-     * that they were deleted.  To phyically removed them you need to call {@link #pack()}
+     * that they were deleted. To phyically removed them you need to call {@link #pack()}
      *
      * @return the record count
      * @see #pack()
