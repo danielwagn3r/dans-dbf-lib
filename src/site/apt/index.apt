@@ -13,6 +13,13 @@ This library is used by DANS for the {{{http://mixed.dans.knaw.nl}MIXED Project}
 
 News
 
+* 16 October 2010.  Beta 08.
+
+   With the help of Konrad Borowiecki added the possibility to delete records from the database.  
+As in the original dBase you must first flag the records as deleted (using the deleteRecordAt function) 
+and then remove them physically with a call to pack. Also with the help of Konrad added the function 
+updateRecordAt which modifies an existing record.
+
 * 19 March 2010.  Beta 07.
 
    "Deleted record" markers led to an infinite loop when reading records. 

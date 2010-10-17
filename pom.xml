@@ -6,7 +6,7 @@
 	<artifactId>dans-dbf-lib</artifactId>
 	<name>DANS DBF Library</name>
 	<!-- version>1.0.0-beta-07</version-->
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0-beta-08</version>
 	<url>http://dans-dbf-lib.sourceforge.net/</url>
 	<inceptionYear>2009</inceptionYear>
 	<organization>
@@ -193,8 +193,19 @@
         <site>
             <id>sourceforge-dans-dbf-lib</id>
             <name>Sourceforge Server</name>
-            <url>scp://shell.sourceforge.net:/home/groups/d/da/dans-dbf-lib/htdocs</url>
+            <url>file://${user.home}/Temp/dans-dbf-lib-site/</url>
         </site>
     </distributionManagement>
-   
+    <profiles>
+        <profile>
+            <id>production</id>
+            <distributionManagement>
+                <site>
+                    <id>sourceforge-dans-dbf-lib</id>
+                    <name>DANS DataPerfect Library SourceForge Site</name>
+                    <url>scp://shell.sourceforge.net:/home/groups/d/da/dans-dbf-lib/htdocs</url>
+                </site>
+            </distributionManagement>
+        </profile>
+    </profiles>
 </project>
