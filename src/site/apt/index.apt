@@ -13,6 +13,12 @@ This library is used by DANS for the {{{http://mixed.dans.knaw.nl}MIXED Project}
 
 News
 
+* 29 November 2010.  Beta 09.
+
+  Applied patch by Evgeniy Romanchenko which solved a the following bug.  The filtering of soft returns
+from a string value was broken.  A soft return is 0x8d followed by 0x0a.  However if a 0x8d appeared 
+by itself, it and the following character were also filtered, which is incorrect.
+
 * 16 October 2010.  Beta 08.
 
    With the help of Konrad Borowiecki added the possibility to delete records from the database.  

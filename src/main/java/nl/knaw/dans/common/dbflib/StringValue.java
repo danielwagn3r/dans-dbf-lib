@@ -69,8 +69,10 @@ public class StringValue
 
         for (int i = 0; i < rawValue.length; ++i)
         {
-            if (rawValue[i] == (byte) 0x8d && rawValue[++i] == (byte) 0x0a)
+            if (lookingAtSoftReturn(rawValue, i))
             {
+                ++i;
+
                 continue;
             }
 
@@ -81,12 +83,17 @@ public class StringValue
                                  charsetName);
     }
 
+    private static boolean lookingAtSoftReturn(final byte[] buffer, final int index)
+    {
+        return buffer[index] == (byte) 0x8d && buffer[index + 1] == (byte) 0x0a;
+    }
+
     @Override
     protected byte[] doGetRawValue(final Field field)
                             throws ValueTooLargeException
     {
         final int fieldLength = field.getLength();
-        byte[] stringBytes = Util.getStringBytes((String) typed, charsetName);
+        final byte[] stringBytes = Util.getStringBytes((String) typed, charsetName);
 
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(fieldLength);
 
