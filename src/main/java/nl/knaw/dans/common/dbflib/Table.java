@@ -499,6 +499,11 @@ public class Table
             }
 
             raFile.write(raw);
+
+            if (raw.length < field.getLength())
+            {
+                raFile.write(Util.repeat((byte) 0x00, field.getLength() - raw.length));
+            }
         }
     }
 
