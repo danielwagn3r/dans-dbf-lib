@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -219,24 +220,17 @@ class Util
     static byte[] readStringBytes(final DataInput dataInput, final int length)
                            throws IOException
     {
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        int c = 0;
-        int read = 1; // at least one byte will be read
+        final byte[] array = new byte[length];
+        dataInput.readFully(array);
 
-        while (((c = dataInput.readByte()) != 0) && read < length)
+        int index = 0;
+
+        while (index != length && array[index] != 0)
         {
-            bos.write(c);
-            ++read;
+            ++index;
         }
 
-        if (c != 0)
-        {
-            bos.write(c);
-        }
-
-        dataInput.skipBytes(length - read);
-
-        return bos.toByteArray();
+        return Arrays.copyOf(array, index == 0 ? index + 1 : index);
     }
 
     /**

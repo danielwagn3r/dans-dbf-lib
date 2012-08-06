@@ -85,7 +85,7 @@ public class StringValue
 
     private static boolean lookingAtSoftReturn(final byte[] buffer, final int index)
     {
-        return buffer[index] == (byte) 0x8d && buffer[index + 1] == (byte) 0x0a;
+        return index < buffer.length - 1 && buffer[index] == (byte) 0x8d && buffer[index + 1] == (byte) 0x0a;
     }
 
     @Override

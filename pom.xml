@@ -105,7 +105,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.0.2</version>
+                <version>2.5.1</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
@@ -154,7 +154,7 @@
 
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.3</version>
+                <version>2.5</version>
                 <executions>
                     <execution>
                         <id>copy-example-source</id>
@@ -201,7 +201,7 @@
             <distributionManagement>
                 <site>
                     <id>sourceforge-dans-dbf-lib</id>
-                    <name>DANS DataPerfect Library SourceForge Site</name>
+                    <name>DANS DBF Library SourceForge Site</name>
                     <url>scp://shell.sourceforge.net:/home/groups/d/da/dans-dbf-lib/htdocs</url>
                 </site>
             </distributionManagement>
