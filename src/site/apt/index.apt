@@ -13,6 +13,12 @@ This library is used by DANS for the {{{http://mixed.dans.knaw.nl}MIXED Project}
 
 News
 
+* 6 August 2012.  Beta 10.
+ 
+  Applied patches by Pavel Kuzmenko (solved bug a bug with last character being a soft return in a Cyrillic
+file) and Bartłomiej Pietrzyk (optimizing performance).
+
+
 * 29 November 2010.  Beta 09.
 
   Applied patch by Evgeniy Romanchenko which solved a the following bug.  The filtering of soft returns
