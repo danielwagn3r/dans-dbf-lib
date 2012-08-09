@@ -14,10 +14,17 @@ This library is used by DANS for the {{{http://mixed.dans.knaw.nl}MIXED Project}
 News
 
 * 6 August 2012.  Beta 10.
- 
-  Applied patches by Pavel Kuzmenko (solved bug a bug with last character being a soft return in a Cyrillic
-file) and Bartłomiej Pietrzyk (optimizing performance).
 
+  Applied patches by Pavel Kuzmenko, who solved a bug that appeared when the last character 
+of a file whas a Cyrillic character and one by Bartłomiej Pietrzyk, who managed to 
+improve performance significantly.
+
+  Upgraded the source code to Maven 3.  I will probably not build anymore using Maven 2.
+
+  To be honest, I haven't been keeping a very close eye on the mailing list, so the 
+response-time to your patches may seem very long to you.  You are right!  Anyway, I
+want to take this opportunity to express my gratitude to everyone who has contributed patches.
+Thank you!  
 
 * 29 November 2010.  Beta 09.
 
@@ -83,7 +90,7 @@ is what most people are likely to want.
     The library has grown another couple of K.  We added Clipper 5 support and made the
 API a little bit more flexible and robust.  You can now write Number objects to
 CHARACTER fields or Strings containing numbers to NUMBER fields, etc.  For the
-overview of all the validations see {{{./apidocs/nl/knaw/dans/common/dbflib/Record.html#Record(java.util.Map)}Javadoc for the Record class}}.
+overview of all the validations see {{{./apidocs/nl/knaw/dans/common/dbflib/Record.html}Javadoc for the Record class}}.
 
     Please, give us your feed-back.  The previous versions have been downloaded about 200 times
 from several sites, but so far we have had no comments or bug reports.  If you would
@@ -108,7 +115,7 @@ updated the web-site with one example.
 
     Every self-respecting library needs its "QuickStart Guide," or "Getting Started,"
 or "Usage" page, so we have added one.  Find out in under five minutes how to use
-DANS DBF Library {{{usage.html}here!}}
+DANS DBF Library {{{./usage.html}here!}}
 
 * 23 April 2009.  Alpha 05
 
