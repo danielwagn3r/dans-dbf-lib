@@ -19,7 +19,7 @@ News
 of a file whas a Cyrillic character and one by Bartłomiej Pietrzyk, who managed to 
 improve performance significantly.
 
-  Upgraded the source code to Maven 3.  I will probably not build anymore using Maven 2.
+  Upgraded the source code to Maven 3.  It will probably not build anymore using Maven 2.
 
   To be honest, I haven't been keeping a very close eye on the mailing list, so the 
 response-time to your patches may seem very long to you.  You are right!  Anyway, I
