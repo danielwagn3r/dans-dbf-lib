@@ -11,7 +11,7 @@
             <item name="NWO" href="http://www.nwo.nl/"/>
         </links>
 
-        <menu name="Documentation" inheritance="none">
+        <menu name="Documentation">
             <item name="Overview" href="index.html"/>
             <item name="Usage" href="usage.html" />
             <item name="Examples" href="examples.html" />
