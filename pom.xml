@@ -73,7 +73,7 @@
 
     <licenses>
         <license>
-            <name>GPLv3</name>
+            <name>GNU General Public License (GPL) version 3.0</name>
             <url>http://www.gnu.org/licenses/gpl-3.0.html</url>
         </license>
     </licenses>
@@ -90,13 +90,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.3</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.wagon</groupId>
-                        <artifactId>wagon-ssh</artifactId>
-                        <version>2.5</version>
-                    </dependency>
-                </dependencies>
             </plugin>
 
             <plugin>
@@ -192,6 +185,13 @@
             </plugin>
         </plugins>
 
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.5</version>
+            </extension>
+        </extensions>
 
         <pluginManagement>
             <plugins>
